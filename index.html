@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Directory</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            max-width: 1000px; /* Increased width to accommodate 4 columns */
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* Updated to four columns */
+            gap: 10px;
+        }
+        .header-section {
+            grid-column: span 4; /* Updated to span across all 4 columns */
+            margin-bottom: 10px;
+        }
+        a {
+            display: block;
+            padding: 12px 5px;
+            text-decoration: none;
+            background: #007acc;
+            color: white;
+            border-radius: 5px;
+            font-size: 13px; /* Slightly smaller font for tighter fit */
+            transition: background 0.2s;
+            word-wrap: break-word; /* Prevents long titles from breaking layout */
+        }
+        a:hover {
+            background: #005f99;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr 1fr; /* Drop to 2 columns on tablets */
+            }
+            .header-section {
+                grid-column: span 2;
+            }
+        }
+        @media (max-width: 600px) {
+            .container {
+                grid-template-columns: 1fr; /* 1 column on mobile */
+            }
+            .header-section {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-section">
+        <h1>File Directory</h1>
+        <p>Select a page to view:</p>
+    </div>
+
+    <!-- Column 1 Content -->
+  
+
+    <!-- Column 2 Content -->
+   >
+
+    <!-- Column 3 Content -->
+   
+
+</div>
+
+</body>
+</html>
