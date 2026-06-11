@@ -1,2 +1,2 @@
 # TP
-Repository for Travail personnalisé activities
+Repository for other interactive exercises
