@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounting English Lesson - A2 Level</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            background-color: #f4f7f6;
+        }
+
+        /* Tab Navigation */
+        .tabs {
+            display: flex;
+            background-color: #1a2a6c;
+            padding: 10px 10px 0 10px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            border: none;
+            background: #2a3a7c;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .tab-button:hover {
+            background: #f2a900;
+            color: #1a2a6c;
+        }
+
+        .tab-button.active {
+            background: #f4f7f6;
+            color: #1a2a6c;
+        }
+
+        /* Content Area */
+        .container {
+            padding: 40px;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Document Styling */
+        .header-box {
+            background-color: #1a2a6c;
+            color: white;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #1a2a6c;
+            border-bottom: 3px solid #f2a900;
+            padding-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #1a2a6c;
+            padding: 15px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+
+        .negative {
+            color: #d9534f;
+            font-weight: bold;
+        }
+
+        .worksheet-box {
+            background-color: #fff;
+            border-left: 6px solid #f2a900;
+            padding: 20px;
+            margin: 30px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .email-box {
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 25px;
+            font-family: 'Courier New', Courier, monospace;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+
+        ul, ol {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="tabs">
+        <button class="tab-button active" onclick="openTab(event, 'tab1')">1. The Problem</button>
+        <button class="tab-button" onclick="openTab(event, 'tab2')">2. Email from HQ</button>
+        <button class="tab-button" onclick="openTab(event, 'tab3')">3. The Result</button>
+    </div>
+
+    <div class="container">
+        
+        <div id="tab1" class="tab-content active">
+            <div class="header-box">
+                <h1>Financial Report: Jan - May</h1>
+                <p>French Subsidiary - Industrial Machining Division</p>
+            </div>
+            
+            <h2>Financial Data Table</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Revenue (€)</th>
+                        <th>Expenses (€)</th>
+                        <th>Net Profit (€)</th>
+                        <th>Accounts Receivable</th>
+                        <th>Cash at Bank (€)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>January</td><td>450,000</td><td>400,000</td><td>50,000</td><td>210,000</td><td>120,000</td></tr>
+                    <tr><td>February</td><td>460,000</td><td>405,000</td><td>55,000</td><td>280,000</td><td>95,000</td></tr>
+                    <tr><td>March</td><td>455,000</td><td>410,000</td><td>45,000</td><td>390,000</td><td>40,000</td></tr>
+                    <tr><td>April</td><td>470,000</td><td>405,000</td><td>65,000</td><td>510,000</td><td>5,000</td></tr>
+                    <tr><td>May</td><td>465,000</td><td>410,000</td><td>55,000</td><td>620,000</td><td class="negative">-25,000</td></tr>
+                </tbody>
+            </table>
+
+            <div class="worksheet-box">
+                <h3>Task 1: Analysis & Discussion</h3>
+                <ol>
+                    <li>Is the company making a profit every month?</li>
+                    <li>What is the problem in May? Look at the <strong>Cash at Bank</strong>.</li>
+                    <li>Look at <strong>Accounts Receivable</strong>. Is it increasing or decreasing?</li>
+                    <li><strong>Discussion:</strong> Why does the company have no cash if it has profit? How can we get the money from our customers?</li>
+                </ol>
+            </div>
+        </div>
+
+        <div id="tab2" class="tab-content">
+            <h2>Email from Head Office (Seoul, Korea)</h2>
+            <div class="email-box">
+                <strong>From:</strong> Sang-Hoon Kim (CFO, HQ Seoul)<br>
+                <strong>To:</strong> Accounting Team (France)<br>
+                <strong>Subject:</strong> URGENT: Negative Cash Position<br><br>
+                Dear Team,<br><br>
+                I am reviewing the May reports for the French subsidiary. Your <strong>Net Profit</strong> is good, but your <strong>Cash at Bank</strong> is -€25,000.<br><br>
+                This is a serious liquidity problem. Why is the cash balance negative? What is happening with our French clients?<br><br>
+                Please explain the situation and suggest an action plan to improve our cash flow immediately.<br><br>
+                Best regards,<br>
+                S. Kim
+            </div>
+
+            <div class="worksheet-box">
+                <h3>Task 2: Email Writing</h3>
+                <p>Write a reply to Mr. Kim. Use these structures:</p>
+                <ul>
+                    <li>"The problem is that our customers are paying very slowly..."</li>
+                    <li>"Our Accounts Receivable is currently €620,000."</li>
+                    <li>"To fix this, we will call all clients with late payments tomorrow."</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="tab3" class="tab-content">
+            <h2>Financial Report: June - August</h2>
+            <p>Following the actions taken in June, here is the new data:</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Revenue (€)</th>
+                        <th>Expenses (€)</th>
+                        <th>Net Profit (€)</th>
+                        <th>Accounts Receivable</th>
+                        <th>Cash at Bank (€)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>June</td><td>460,000</td><td>390,000</td><td>70,000</td><td>550,000</td><td>15,000</td></tr>
+                    <tr><td>July</td><td>440,000</td><td>380,000</td><td>60,000</td><td>480,000</td><td>45,000</td></tr>
+                    <tr><td>August</td><td>430,000</td><td>380,000</td><td>50,000</td><td>420,000</td><td>60,000</td></tr>
+                </tbody>
+            </table>
+
+            <div class="worksheet-box">
+                <h3>Task 3: Final Comprehension</h3>
+                <ol>
+                    <li>Is the cash situation better in August than in May?</li>
+                    <li>What happened to the <strong>Accounts Receivable</strong>? Did the customers pay?</li>
+                    <li>The CFO says the situation is "delicate" (sensitive). Look at January's cash (€120,000) vs August's cash (€60,000). Why is it still delicate?</li>
+                    <li><strong>Discussion:</strong> Should we change the payment terms for new customers? (e.g., pay in 30 days, not 60 days).</li>
+                </ol>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(tabName).style.display = "block";
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+    </script>
+</body>
+</html>

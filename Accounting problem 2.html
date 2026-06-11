@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional English: Industrial Accounting (A2/B1)</title>
+    <style>
+        :root {
+            --primary: #002c5f; /* Korean HQ Blue */
+            --secondary: #ed1c24; /* Alert Red */
+            --accent: #f2a900; /* Industrial Gold */
+            --bg: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: var(--bg);
+            margin: 0;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: var(--primary);
+            padding: 10px 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .tab-btn {
+            padding: 12px 25px;
+            border: none;
+            background: #1a3c6d;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            margin-right: 5px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .tab-btn:hover { background: var(--accent); color: var(--primary); }
+        .tab-btn.active { background: var(--bg); color: var(--primary); }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+        }
+
+        th {
+            background-color: #f2f5f8;
+            color: var(--primary);
+            text-align: left;
+            padding: 12px;
+            border: 1px solid #dee2e6;
+        }
+
+        td {
+            padding: 12px;
+            border: 1px solid #dee2e6;
+        }
+
+        tr:nth-child(even) { background-color: #fafafa; }
+
+        .highlight-alert {
+            background-color: #fff5f5 !important;
+            color: var(--secondary);
+            font-weight: bold;
+        }
+
+        /* UI Elements */
+        .header {
+            border-bottom: 4px solid var(--accent);
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+        }
+
+        .worksheet {
+            background: #fdfae6;
+            border-left: 5px solid var(--accent);
+            padding: 20px;
+            margin: 30px 0;
+        }
+
+        .email {
+            border: 1px solid #ddd;
+            background: #fff;
+            padding: 30px;
+            font-family: 'Courier New', monospace;
+            position: relative;
+        }
+
+        .email::before {
+            content: "INTERNAL MEMO: HQ SEOUL";
+            position: absolute;
+            top: 0; right: 0;
+            background: var(--primary);
+            color: white;
+            padding: 5px 15px;
+            font-size: 0.7em;
+        }
+
+        .glossary {
+            background: #eef2f7;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        kbd {
+            background: #eee;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="tabs">
+    <button class="tab-btn active" onclick="showTab('doc1')">1. Analysis Data</button>
+    <button class="tab-btn" onclick="showTab('doc2')">2. Email from CFO</button>
+    <button class="tab-btn" onclick="showTab('doc3')">3. Recovery Data</button>
+</nav>
+
+<div class="container">
+    
+    <div id="doc1" class="tab-content active">
+        <div class="header">
+            <h1>Activity Report: Industrial Machining Division</h1>
+            <p><strong>Entity:</strong> French Subsidiary | <strong>Period:</strong> Jan - May 2026</p>
+        </div>
+
+        <div class="glossary">
+            <strong>Accountant Vocabulary:</strong><br>
+            • <strong>WIP (Work in Progress):</strong> Products currently being made but not finished.<br>
+            • <strong>Inventory:</strong> Raw materials (steel, parts) in the warehouse.<br>
+            • <strong>Current Assets:</strong> Total value of Cash + Inventory + WIP + Receivables.
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Metric (€)</th>
+                    <th>Jan</th>
+                    <th>Feb</th>
+                    <th>Mar</th>
+                    <th>Apr</th>
+                    <th>May</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Revenue (Invoiced)</td><td>420,000</td><td>415,000</td><td>422,000</td><td>418,000</td><td>410,000</td></tr>
+                <tr><td>Cost of Labor</td><td>180,000</td><td>185,000</td><td>190,000</td><td>195,000</td><td>200,000</td></tr>
+                <tr><td>Raw Materials Purchased</td><td>100,000</td><td>120,000</td><td>140,000</td><td>160,000</td><td>180,000</td></tr>
+                <tr class="highlight-alert"><td>Work In Progress (WIP)</td><td>85,000</td><td>130,000</td><td>210,000</td><td>295,000</td><td>410,000</td></tr>
+                <tr><td>Bank Balance (Cash)</td><td>150,000</td><td>120,000</td><td>80,000</td><td>35,000</td><td>4,000</td></tr>
+            </tbody>
+        </table>
+
+        <div class="worksheet">
+            <h3>Discussion Exercise: Finding the "Hidden" Problem</h3>
+            <ol>
+                <li>Is the <strong>Revenue</strong> growing? (Yes / No)</li>
+                <li>Compare <strong>Raw Materials Purchased</strong> in Jan vs May. What is the trend?</li>
+                <li>Look at the <strong>WIP</strong>. Why is the money "disappearing" from the Bank Balance?</li>
+                <li><strong>Professional Interpretation:</strong> The factory is buying material and paying workers, but are they finishing the machines? Explain your theory.</li>
+            </ol>
+        </div>
+    </div>
+
+    <div id="doc2" class="tab-content">
+        <h2>Urgent Query: Group Financial Audit</h2>
+        <div class="email">
+            <strong>From:</strong> J. Park (CFO, Seoul Head Office)<br>
+            <strong>To:</strong> Finance Manager (France)<br>
+            <strong>Subject:</strong> Efficiency & Asset Allocation in Machining<br><br>
+            Dear Colleague,<br><br>
+            I am reviewing your <strong>Balance Sheet</strong>. Your "Current Assets" look very high, which usually is good. However, your <strong>Liquidity</strong> (Cash) is almost zero.<br><br>
+            I see a very high volume of <strong>Work in Progress (WIP)</strong>. It seems we have €410,000 tied up on the factory floor. Are we having technical problems finishing these orders?<br><br>
+            We cannot pay our suppliers with "WIP." We need cash.<br><br>
+            Please give me your <strong>professional advice</strong>: 
+            1. Why is the WIP so high? 
+            2. What action should the production manager take next week? <br><br>
+            Best regards,<br>
+            J. Park
+        </div>
+
+        <div class="worksheet">
+            <h3>Writing Task: Respond to HQ</h3>
+            <p>Write a professional response (50-80 words). Use these accounting terms:</p>
+            <ul>
+                <li><i>"High stock levels"</i></li>
+                <li><i>"Bottleneck in production"</i></li>
+                <li><i>"To convert WIP into Revenue"</i></li>
+                <li><i>"Slow down purchasing"</i></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="doc3" class="tab-content">
+        <div class="header">
+            <h1>Recovery Report: Q3 Performance</h1>
+            <p><strong>Action Taken:</strong> Stop new orders / Focus on finishing backlog.</p>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Metric (€)</th>
+                    <th>June</th>
+                    <th>July</th>
+                    <th>August</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Revenue (Invoiced)</td><td style="color:green; font-weight:bold;">580,000</td><td style="color:green; font-weight:bold;">610,000</td><td>490,000</td></tr>
+                <tr><td>Cost of Labor (Overtime)</td><td>240,000</td><td>230,000</td><td>190,000</td></tr>
+                <tr><td>Raw Materials Purchased</td><td>40,000</td><td>35,000</td><td>90,000</td></tr>
+                <tr><td>Work In Progress (WIP)</td><td>280,000</td><td>110,000</td><td>95,000</td></tr>
+                <tr><td>Bank Balance (Cash)</td><td>65,000</td><td>140,000</td><td>155,000</td></tr>
+            </tbody>
+        </table>
+
+        <div class="worksheet">
+            <h3>Final Comprehension & Research</h3>
+            <ol>
+                <li>Why did <strong>Revenue</strong> increase so much in June and July? Did we sell more, or just finish more?</li>
+                <li><strong>Labor Costs</strong> increased in June. Why? (Hint: The workers had to work faster to finish the backlog).</li>
+                <li>The situation is "Delicate." Look at the <strong>August Revenue</strong>. Why is it dropping? 
+                    <br><i>(Professional hint: If you stop starting new jobs to finish old ones, eventually you have no new work ready!)</i></li>
+                <li><strong>Action Plan:</strong> How do we keep a "balance" between WIP and Cash for the rest of the year?</li>
+            </ol>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function showTab(tabId) {
+        // Hide all
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        // Show selected
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+</script>
+
+</body>
+</html>

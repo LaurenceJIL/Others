@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tech Vocabulary — A2 English</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,sans-serif;background:#f4f4f0;color:#1a1a1a;padding:2rem 1rem}
+  .app{max-width:680px;margin:0 auto}
+  h1{font-size:24px;font-weight:500;margin-bottom:.25rem}
+  .subtitle{font-size:14px;color:#666;margin-bottom:2rem}
+  .section{background:#fff;border:1px solid #e0ddd5;border-radius:12px;padding:1.25rem;margin-bottom:1.5rem}
+  .section-title{font-size:16px;font-weight:500;margin-bottom:.25rem;display:flex;align-items:center;gap:8px}
+  .section-desc{font-size:13px;color:#666;margin-bottom:1.25rem}
+  .q{margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid #eee}
+  .q:last-of-type{border-bottom:none;margin-bottom:0;padding-bottom:0}
+  .q-text{font-size:15px;margin-bottom:.75rem;line-height:1.5}
+  .q-num{font-size:12px;color:#999;margin-bottom:.3rem}
+  .options{display:flex;flex-direction:column;gap:8px}
+  .opt{display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid #e0ddd5;border-radius:8px;cursor:pointer;font-size:14px;background:#f9f9f7;transition:border-color .15s}
+  .opt:hover{border-color:#888}
+  .opt.selected{border-color:#378ADD;background:#E6F1FB;color:#0C447C}
+  .tf-opts{display:flex;gap:10px}
+  .tf-btn{flex:1;padding:8px;border:1px solid #e0ddd5;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;background:#f9f9f7;transition:all .15s}
+  .tf-btn:hover{border-color:#888}
+  .tf-btn.selected{border-color:#378ADD;background:#E6F1FB;color:#0C447C}
+  .check-btn{width:100%;padding:10px;border:1px solid #ccc;border-radius:8px;background:#fff;cursor:pointer;font-size:14px;font-weight:500;margin-top:1rem;transition:all .15s}
+  .check-btn:hover{background:#f4f4f0}
+  .feedback{margin-top:.75rem;padding:.75rem 1rem;border-radius:8px;font-size:14px;line-height:1.6}
+  .fb-correct{background:#EAF3DE;color:#3B6D11;border:1px solid #C0DD97}
+  .fb-wrong{background:#FCEBEB;color:#A32D2D;border:1px solid #F7C1C1}
+  .score-bar{padding:.75rem 1rem;border-radius:8px;font-size:14px;font-weight:500;margin-top:.75rem}
+  .score-good{background:#E1F5EE;color:#0F6E56;border:1px solid #9FE1CB}
+  .score-ok{background:#FAEEDA;color:#854F0B;border:1px solid #FAC775}
+  .score-low{background:#FCEBEB;color:#A32D2D;border:1px solid #F7C1C1}
+  .drop-zone-line{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:15px;line-height:2.4}
+  .drop-slot{display:inline-flex;align-items:center;justify-content:center;min-width:90px;height:32px;border-bottom:2px solid #378ADD;padding:0 6px;cursor:pointer;font-size:14px;color:#185FA5;vertical-align:middle;transition:background .15s}
+  .drop-slot.filled{background:#E6F1FB;border-radius:4px;border:1px solid #378ADD}
+  .drop-slot.drag-over{background:#B5D4F4}
+  .word-bank{display:flex;flex-wrap:wrap;gap:8px;margin-top:.75rem;margin-bottom:1rem}
+  .drag-word{padding:5px 12px;border:1px solid #ccc;border-radius:20px;background:#f9f9f7;cursor:grab;font-size:14px;user-select:none;transition:opacity .15s}
+  .drag-word.used{opacity:.35;cursor:default}
+  .drag-word:active{cursor:grabbing}
+  @media(max-width:500px){.tf-opts{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="app">
+<h1>Tech vocabulary</h1>
+<p class="subtitle">A2 level · 20 questions · 3 sections</p>
+<div id="app-content"></div>
+</div>
+<script>
+const FY = arr => {
+  for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}
+  return arr;
+};
+
+const mcqPool = [
+  {q:"What do you do when you want to enter a website with your username and password?",opts:["Log in","Log out","Shut down","Restart"],ans:0},
+  {q:"You want to save a photo from the internet to your computer. What do you do?",opts:["Download","Upload","Delete","Print"],ans:0},
+  {q:"What do you use to move the cursor on a computer screen?",opts:["Mouse","Keyboard","Monitor","Speaker"],ans:0},
+  {q:"Which programme do you usually use to make a presentation with slides?",opts:["PowerPoint","Excel","Word","Paint"],ans:0},
+  {q:"What does it mean to 'click' on something?",opts:["Press the mouse button on it","Type a letter","Turn the computer off","Open a new window"],ans:0},
+  {q:"What is Wi-Fi?",opts:["A wireless internet connection","A type of computer","A cable to charge your phone","A programme for emails"],ans:0},
+  {q:"When you finish using a website, you ...",opts:["Log out","Log in","Download","Scroll"],ans:0},
+  {q:"You are new to a website and want to create an account. What do you do first?",opts:["Register","Log in","Click","Search"],ans:0},
+];
+
+const tfPool = [
+  {q:"'Download' means sending a file from your computer to the internet.",ans:false,exp:"Download means getting a file FROM the internet TO your computer. Sending to the internet is 'upload'."},
+  {q:"You need Wi-Fi to connect to the internet without a cable.",ans:true,exp:"Correct! Wi-Fi lets you connect wirelessly."},
+  {q:"A mouse is used to type letters and numbers.",ans:false,exp:"A mouse moves the cursor and lets you click. You type with a keyboard."},
+  {q:"When you 'log in', you leave a website.",ans:false,exp:"'Log in' means entering a website with your username and password. 'Log out' means leaving."},
+  {q:"PowerPoint is a programme for making presentations with slides.",ans:true,exp:"Correct! PowerPoint is used to make slide presentations."},
+  {q:"'Register' and 'log in' mean exactly the same thing.",ans:false,exp:"'Register' means creating a new account. 'Log in' means entering an account you already have."},
+  {q:"You can 'scroll' down a page to see more content.",ans:true,exp:"Correct! Scrolling lets you move up or down a long page."},
+];
+
+const dndPool = [
+  {before:"Please",blank:"log in",after:"with your email and password.",word:"log in"},
+  {before:"I need to",blank:"download",after:"the app on my phone.",word:"download"},
+  {before:"Move the",blank:"mouse",after:"to the right to open the menu.",word:"mouse"},
+  {before:"She made a great",blank:"presentation",after:"with PowerPoint for her class.",word:"presentation"},
+  {before:"",blank:"Click",after:"on the link to open the website.",word:"Click"},
+  {before:"The coffee shop has free",blank:"Wi-Fi",after:"for customers.",word:"Wi-Fi"},
+  {before:"Please",blank:"register",after:"to create a new account.",word:"register"},
+];
+
+const mcqQ = FY([...mcqPool]).slice(0,8);
+const tfQ = FY([...tfPool]).slice(0,6);
+const dndQ = FY([...dndPool]).slice(0,6);
+
+let mcqAnswers = new Array(mcqQ.length).fill(null);
+let tfAnswers = new Array(tfQ.length).fill(null);
+let dndAnswers = new Array(dndQ.length).fill(null);
+let mcqDone=false, tfDone=false, dndDone=false;
+
+function renderAll(){
+  document.getElementById('app-content').innerHTML = renderMCQ()+renderTF()+renderDND();
+  attachMCQ(); attachTF(); attachDND();
+}
+
+function renderMCQ(){
+  let html=`<div class="section" id="sec-mcq">
+  <div class="section-title">&#10003; Section 1 — Multiple choice</div>
+  <p class="section-desc">Choose the correct answer for each question.</p>`;
+  mcqQ.forEach((q,i)=>{
+    const opts = FY(q.opts.map((o,idx)=>({text:o,correct:idx===q.ans})));
+    html+=`<div class="q" id="mcq-${i}" data-correct="${opts.findIndex(o=>o.correct)}">
+    <div class="q-num">Question ${i+1} of ${mcqQ.length}</div>
+    <div class="q-text">${q.q}</div>
+    <div class="options">`;
+    opts.forEach((o,j)=>{
+      const sel = mcqAnswers[i]!==null && mcqAnswers[i].optIdx===j;
+      html+=`<label class="opt${sel?' selected':''}" data-q="${i}" data-opt="${j}">
+        <input type="radio" name="mcq${i}" value="${j}" ${sel?'checked':''} style="display:none"> ${o.text}
+      </label>`;
+    });
+    html+=`</div>`;
+    if(mcqDone && mcqAnswers[i]!==null){
+      const correct = mcqAnswers[i].correct;
+      html+=`<div class="feedback ${correct?'fb-correct':'fb-wrong'}">${correct?'✓ Correct!':'✗ Not quite. The correct answer is: <strong>'+opts.find(o=>o.correct).text+'</strong>'}</div>`;
+    }
+    html+=`</div>`;
+  });
+  if(mcqDone){
+    const sc=mcqAnswers.filter(a=>a&&a.correct).length;
+    const cls=sc>=6?'score-good':sc>=4?'score-ok':'score-low';
+    html+=`<div class="score-bar ${cls}">Section 1 score: ${sc} / ${mcqQ.length} ${sc===mcqQ.length?'🎉 Perfect!':sc>=6?'Well done!':sc>=4?'Good effort!':'Keep practising!'}</div>`;
+  } else {
+    html+=`<button class="check-btn" id="check-mcq">Check answers</button>`;
+  }
+  html+=`</div>`;
+  return html;
+}
+
+function renderTF(){
+  let html=`<div class="section" id="sec-tf">
+  <div class="section-title">T/F Section 2 — True or false</div>
+  <p class="section-desc">Is the sentence correct? Choose True or False.</p>`;
+  tfQ.forEach((q,i)=>{
+    html+=`<div class="q" id="tf-${i}">
+    <div class="q-num">Question ${i+1} of ${tfQ.length}</div>
+    <div class="q-text">${q.q}</div>
+    <div class="tf-opts">
+      <button class="tf-btn${tfAnswers[i]===true?' selected':''}" data-q="${i}" data-val="true">True</button>
+      <button class="tf-btn${tfAnswers[i]===false?' selected':''}" data-q="${i}" data-val="false">False</button>
+    </div>`;
+    if(tfDone && tfAnswers[i]!==null){
+      const correct = tfAnswers[i]===q.ans;
+      html+=`<div class="feedback ${correct?'fb-correct':'fb-wrong'}">${correct?'✓ Correct! '+q.exp:'✗ '+q.exp}</div>`;
+    }
+    html+=`</div>`;
+  });
+  if(tfDone){
+    const sc=tfQ.filter((q,i)=>tfAnswers[i]===q.ans).length;
+    const cls=sc>=5?'score-good':sc>=3?'score-ok':'score-low';
+    html+=`<div class="score-bar ${cls}">Section 2 score: ${sc} / ${tfQ.length} ${sc===tfQ.length?'🎉 Perfect!':sc>=5?'Well done!':sc>=3?'Good effort!':'Keep practising!'}</div>`;
+  } else {
+    html+=`<button class="check-btn" id="check-tf">Check answers</button>`;
+  }
+  html+=`</div>`;
+  return html;
+}
+
+function renderDND(){
+  const words = FY(dndQ.map(q=>q.word));
+  let html=`<div class="section" id="sec-dnd">
+  <div class="section-title">&#8631; Section 3 — Drag and drop</div>
+  <p class="section-desc">Drag the correct word into the gap in each sentence. Click a filled gap to remove the word.</p>
+  <div class="word-bank" id="word-bank">`;
+  words.forEach((w,i)=>{
+    const used = dndAnswers.some(a=>a===w);
+    html+=`<div class="drag-word${used?' used':''}" draggable="${!used}" data-word="${w}" id="dw-${i}">${w}</div>`;
+  });
+  html+=`</div>`;
+  dndQ.forEach((q,i)=>{
+    html+=`<div class="q" id="dnd-${i}">
+    <div class="q-num">Question ${i+1} of ${dndQ.length}</div>
+    <div class="drop-zone-line">`;
+    if(q.before) html+=`<span>${q.before}</span>`;
+    const filled = dndAnswers[i]!==null;
+    html+=`<span class="drop-slot${filled?' filled':''}" id="slot-${i}" data-slot="${i}">${filled?dndAnswers[i]:'drop here'}</span>`;
+    if(q.after) html+=`<span>${q.after}</span>`;
+    html+=`</div>`;
+    if(dndDone && dndAnswers[i]!==null){
+      const correct = dndAnswers[i]===q.word;
+      html+=`<div class="feedback ${correct?'fb-correct':'fb-wrong'}">${correct?'✓ Correct!':'✗ The answer is: <strong>'+q.word+'</strong>'}</div>`;
+    }
+    html+=`</div>`;
+  });
+  if(dndDone){
+    const sc=dndQ.filter((q,i)=>dndAnswers[i]===q.word).length;
+    const cls=sc>=5?'score-good':sc>=3?'score-ok':'score-low';
+    html+=`<div class="score-bar ${cls}">Section 3 score: ${sc} / ${dndQ.length} ${sc===dndQ.length?'🎉 Perfect!':sc>=5?'Well done!':sc>=3?'Good effort!':'Keep practising!'}</div>`;
+  } else {
+    html+=`<button class="check-btn" id="check-dnd">Check answers</button>`;
+  }
+  html+=`</div>`;
+  return html;
+}
+
+function attachMCQ(){
+  document.querySelectorAll('#sec-mcq .opt').forEach(el=>{
+    el.addEventListener('click',()=>{
+      if(mcqDone) return;
+      const qi=+el.dataset.q, oi=+el.dataset.opt;
+      const correct = el.querySelector('input').value === String(document.getElementById('mcq-'+qi).dataset.correct);
+      mcqAnswers[qi]={optIdx:oi,correct};
+      document.querySelectorAll(`[data-q="${qi}"].opt`).forEach(o=>o.classList.remove('selected'));
+      el.classList.add('selected');
+    });
+  });
+  const btn=document.getElementById('check-mcq');
+  if(btn) btn.addEventListener('click',()=>{
+    if(mcqAnswers.some(a=>a===null)){alert('Please answer all questions first!');return;}
+    mcqDone=true; renderAll();
+    document.getElementById('sec-mcq').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+}
+
+function attachTF(){
+  document.querySelectorAll('#sec-tf .tf-btn').forEach(el=>{
+    el.addEventListener('click',()=>{
+      if(tfDone) return;
+      const qi=+el.dataset.q, val=el.dataset.val==='true';
+      tfAnswers[qi]=val;
+      document.querySelectorAll(`[data-q="${qi}"].tf-btn`).forEach(b=>b.classList.remove('selected'));
+      el.classList.add('selected');
+    });
+  });
+  const btn=document.getElementById('check-tf');
+  if(btn) btn.addEventListener('click',()=>{
+    if(tfAnswers.some(a=>a===null)){alert('Please answer all questions first!');return;}
+    tfDone=true; renderAll();
+    document.getElementById('sec-tf').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+}
+
+function attachDND(){
+  let currentDrag=null;
+  document.querySelectorAll('.drag-word').forEach(el=>{
+    el.addEventListener('dragstart',e=>{
+      if(el.classList.contains('used')) return;
+      currentDrag=el.dataset.word;
+      e.dataTransfer.effectAllowed='move';
+    });
+  });
+  document.querySelectorAll('.drop-slot').forEach(slot=>{
+    slot.addEventListener('dragover',e=>{e.preventDefault();slot.classList.add('drag-over');});
+    slot.addEventListener('dragleave',()=>slot.classList.remove('drag-over'));
+    slot.addEventListener('drop',e=>{
+      e.preventDefault();
+      slot.classList.remove('drag-over');
+      if(!currentDrag||dndDone) return;
+      const si=+slot.dataset.slot;
+      const prev=dndAnswers[si];
+      if(prev){
+        const prevEl=document.querySelector(`.drag-word[data-word="${prev}"]`);
+        if(prevEl){prevEl.classList.remove('used');prevEl.setAttribute('draggable','true');}
+      }
+      dndAnswers[si]=currentDrag;
+      const dragEl=document.querySelector(`.drag-word[data-word="${currentDrag}"]`);
+      if(dragEl){dragEl.classList.add('used');dragEl.setAttribute('draggable','false');}
+      slot.textContent=currentDrag;
+      slot.classList.add('filled');
+      currentDrag=null;
+    });
+    slot.addEventListener('click',()=>{
+      if(dndDone) return;
+      const si=+slot.dataset.slot;
+      if(dndAnswers[si]){
+        const w=dndAnswers[si];
+        const prevEl=document.querySelector(`.drag-word[data-word="${w}"]`);
+        if(prevEl){prevEl.classList.remove('used');prevEl.setAttribute('draggable','true');}
+        dndAnswers[si]=null;
+        slot.textContent='drop here';
+        slot.classList.remove('filled');
+      }
+    });
+  });
+  const btn=document.getElementById('check-dnd');
+  if(btn) btn.addEventListener('click',()=>{
+    if(dndAnswers.some(a=>a===null)){alert('Please fill all the gaps first!');return;}
+    dndDone=true; renderAll();
+    document.getElementById('sec-dnd').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+}
+
+renderAll();
+</script>
+</body>
+</html>

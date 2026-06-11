@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Is it right or wrong?</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+    }
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .buttons button {
+      margin-right: 10px;
+    }
+    .correct {
+      color: green;
+    }
+    .incorrect {
+      color: red;
+    }
+    input[type="number"] {
+      width: 60px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Is it right or wrong?</h1>
+  <div id="quiz"></div>
+  <div style="text-align: center; margin-top: 20px;">
+    <button onclick="submitAnswers()">Submit</button>
+    <p id="finalScore" style="font-weight: bold;"></p>
+  </div>
+
+  <script>
+    const sentences = [
+      { text: "He go to school every day.", correct: false, explanation: "Incorrect verb form. It should be 'He goes'." },
+      { text: "I like to eat apples.", correct: true, explanation: "This sentence is correct." },
+      { text: "She can plays the piano.", correct: false, explanation: "'Can' is followed by the base form of the verb. It should be 'play'." },
+      { text: "We are happy today.", correct: true, explanation: "This sentence is correct." },
+      { text: "They doesn't have a car.", correct: false, explanation: "It should be 'They don't have a car'." },
+      { text: "It's raining outside.", correct: true, explanation: "This sentence is correct." },
+      { text: "You is my best friend.", correct: false, explanation: "It should be 'You are my best friend'." },
+      { text: "There are some books on the table.", correct: true, explanation: "This sentence is correct." },
+      { text: "My brother live in London.", correct: false, explanation: "It should be 'My brother lives in London'." },
+      { text: "We go to the park every Sunday.", correct: true, explanation: "This sentence is correct." },
+      { text: "She don’t like coffee.", correct: false, explanation: "It should be 'She doesn't like coffee'." },
+      { text: "I have a dog.", correct: true, explanation: "This sentence is correct." },
+      { text: "The children plays in the garden.", correct: false, explanation: "It should be 'The children play in the garden'." },
+      { text: "He works in a bank.", correct: true, explanation: "This sentence is correct." },
+      { text: "Are you ready?", correct: true, explanation: "This sentence is correct." },
+      { text: "I am go to the store.", correct: false, explanation: "It should be 'I am going to the store' or 'I go to the store'." },
+      { text: "We doesn’t know the answer.", correct: false, explanation: "It should be 'We don't know the answer'." },
+      { text: "They are playing football.", correct: true, explanation: "This sentence is correct." },
+      { text: "The sun rises in the east.", correct: true, explanation: "This sentence is correct." },
+      { text: "Is raining now.", correct: false, explanation: "It should be 'It is raining now'." },
+    ];
+
+    function shuffle(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    const shuffled = shuffle([...sentences]);
+
+    const quizDiv = document.getElementById('quiz');
+
+    shuffled.forEach((s, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <p><strong>${i + 1}.</strong> ${s.text}</p>
+        <div class="buttons">
+          <button onclick="selectAnswer(${i}, 'correct')">Correct</button>
+          <button onclick="selectAnswer(${i}, 'incorrect')">Incorrect</button>
+          <input type="number" id="wager-${i}" min="1" max="10" value="1"> points
+        </div>
+        <p id="feedback-${i}"></p>
+      `;
+      quizDiv.appendChild(card);
+    });
+
+    const answers = Array(shuffled.length).fill({ guess: null, wager: 1 });
+
+    function selectAnswer(index, guess) {
+      answers[index] = {
+        ...answers[index],
+        guess,
+        wager: parseInt(document.getElementById(`wager-${index}`).value) || 1
+      };
+      const buttons = document.querySelectorAll(`.card:nth-child(${index + 1}) .buttons button`);
+      buttons.forEach(btn => btn.style.fontWeight = btn.textContent.toLowerCase() === guess ? 'bold' : 'normal');
+    }
+
+    function submitAnswers() {
+      let score = 0;
+      answers.forEach((ans, i) => {
+        const isCorrectGuess = (shuffled[i].correct && ans.guess === 'correct') || (!shuffled[i].correct && ans.guess === 'incorrect');
+        const result = document.getElementById(`feedback-${i}`);
+        if (isCorrectGuess) {
+          result.innerHTML = `<span class='correct'>✔ Correct</span> - ${shuffled[i].explanation}`;
+          score += ans.wager;
+        } else {
+          result.innerHTML = `<span class='incorrect'>✖ Incorrect</span> - ${shuffled[i].explanation}`;
+          score -= ans.wager;
+        }
+      });
+      document.getElementById('finalScore').textContent = `Your final score is: ${score}`;
+    }
+  </script>
+</body>
+</html>

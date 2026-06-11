@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Travel & Hospitality Phrasal Verbs</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #f4f7f6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: var(--light);
+            color: var(--primary);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--secondary);
+            margin-bottom: 20px;
+        }
+
+        /* Tabs Styling */
+        .tabs {
+            display: flex;
+            cursor: pointer;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab-link {
+            padding: 10px 20px;
+            background: #eee;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+
+        .tab-link:hover { background: #ddd; }
+        .tab-link.active {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Content Styling */
+        .vocab-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .vocab-item {
+            padding: 10px;
+            border-left: 4px solid var(--secondary);
+            background: #f9f9f9;
+        }
+
+        .question-block {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-bottom: 1px dashed #ccc;
+        }
+
+        select, input { padding: 5px; border-radius: 4px; border: 1px solid #ccc; }
+
+        .btn-check {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin-top: 20px;
+        }
+
+        .feedback { font-weight: bold; margin-top: 10px; color: var(--accent); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>English for Travel & Hospitality</h1>
+        <p>B1 Level: Phrasal Verbs in Professional Contexts</p>
+    </header>
+
+    <div class="tabs">
+        <div class="tab-link active" onclick="openTab(event, 'page1')">1. Vocabulary List</div>
+        <div class="tab-link" onclick="openTab(event, 'page2')">2. Multiple Choice</div>
+        <div class="tab-link" onclick="openTab(event, 'page3')">3. True/False</div>
+        <div class="tab-link" onclick="openTab(event, 'page4')">4. Gap Fill</div>
+    </div>
+
+    <div id="page1" class="tab-content active">
+        <h2>Phrasal Verbs for Business Travel</h2>
+        <div class="vocab-list">
+            <div class="vocab-item"><strong>1. Check in:</strong> To register at a hotel or airport.</div>
+            <div class="vocab-item"><strong>2. Check out:</strong> To pay the bill and leave a hotel.</div>
+            <div class="vocab-item"><strong>3. Pick up:</strong> To collect someone from a specific place.</div>
+            <div class="vocab-item"><strong>4. Drop off:</strong> To take someone to a place and leave them there.</div>
+            <div class="vocab-item"><strong>5. Set off:</strong> To start a journey.</div>
+            <div class="vocab-item"><strong>6. Touch down:</strong> (Of an aircraft) to land.</div>
+            <div class="vocab-item"><strong>7. Take off:</strong> (Of an aircraft) to leave the ground.</div>
+            <div class="vocab-item"><strong>8. Hold up:</strong> To delay someone or something.</div>
+            <div class="vocab-item"><strong>9. Get in:</strong> To arrive (train, flight, etc.).</div>
+            <div class="vocab-item"><strong>10. See off:</strong> To go to a place to say goodbye to someone.</div>
+            <div class="vocab-item"><strong>11. Look forward to:</strong> To feel excited about a future event.</div>
+            <div class="vocab-item"><strong>12. Look around:</strong> To visit and tour a place.</div>
+            <div class="vocab-item"><strong>13. Call off:</strong> To cancel an event or meeting.</div>
+            <div class="vocab-item"><strong>14. Put off:</strong> To postpone something to a later date.</div>
+            <div class="vocab-item"><strong>15. Set up:</strong> To arrange or organize something (e.g., a booth).</div>
+            <div class="vocab-item"><strong>16. Get around:</strong> To move from place to place in a city.</div>
+            <div class="vocab-item"><strong>17. Show around:</strong> To give someone a tour of a building/city.</div>
+            <div class="vocab-item"><strong>18. Run into:</strong> To meet someone unexpectedly.</div>
+            <div class="vocab-item"><strong>19. Deal with:</strong> To handle a problem or a guest's request.</div>
+            <div class="vocab-item"><strong>20. Fill out:</strong> To complete a form with information.</div>
+        </div>
+    </div>
+
+    <div id="page2" class="tab-content">
+        <h2>Activity: Choose the Correct Phrasal Verb</h2>
+        <div id="mcq-container">
+            </div>
+        <button class="btn-check" onclick="checkMCQ()">Check Answers</button>
+        <div id="mcq-feedback" class="feedback"></div>
+    </div>
+
+    <div id="page3" class="tab-content">
+        <h2>Activity: True or False?</h2>
+        <p>Decide if the phrasal verb is used correctly in these professional contexts.</p>
+        <div id="tf-container"></div>
+        <button class="btn-check" onclick="checkTF()">Check Answers</button>
+        <div id="tf-feedback" class="feedback"></div>
+    </div>
+
+    <div id="page4" class="tab-content">
+        <h2>Professional Scenario: The Conference</h2>
+        <p>Complete the text by choosing the missing <strong>verb</strong> or <strong>preposition</strong>.</p>
+        <div style="background: #fffbe6; padding: 20px; border-radius: 8px; border: 1px solid #ffe58f;">
+            Our team will <select id="gap1"><option value="">...</option><option value="set">set</option><option value="get">get</option></select> off for the London conference at 6:00 AM. 
+            When we <select id="gap2"><option value="">...</option><option value="get">get</option><option value="touch">touch</option></select> in, we need to go straight to the hotel. 
+            Once we check <select id="gap3"><option value="">...</option><option value="out">out</option><option value="in">in</option></select> at reception, we have to <select id="gap4"><option value="">...</option><option value="set">set</option><option value="fill">fill</option></select> up our exhibition booth. 
+            I am really looking forward <select id="gap5"><option value="">...</option><option value="to">to</option><option value="at">at</option></select> meeting the keynote speaker. 
+            However, if there is a flight <select id="gap6"><option value="">...</option><option value="hold">hold</option><option value="touch">touch</option></select> up, we might be late. 
+            During the break, I will show the clients <select id="gap7"><option value="">...</option><option value="around">around</option><option value="over">over</option></select> the venue. 
+            Don't worry about transport; the shuttle will <select id="gap8"><option value="">...</option><option value="pick">pick</option><option value="take">take</option></select> us up at 8:00 PM. 
+            If the weather is bad, they might <select id="gap9"><option value="">...</option><option value="call">call</option><option value="run">run</option></select> off the outdoor gala. 
+            Finally, we will check <select id="gap10"><option value="">...</option><option value="out">out</option><option value="off">off</option></select> on Friday morning.
+        </div>
+        <button class="btn-check" onclick="checkGap()">Check Text</button>
+        <div id="gap-feedback" class="feedback"></div>
+    </div>
+
+</div>
+
+<script>
+    // Tab Logic
+    function openTab(evt, tabName) {
+        let i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) tabcontent[i].style.display = "none";
+        tablinks = document.getElementsByClassName("tab-link");
+        for (i = 0; i < tablinks.length; i++) tablinks[i].className = tablinks[i].className.replace(" active", "");
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    // MCQ Data
+    const mcqs = [
+        { q: "Our driver will ____ you up from the terminal.", options: ["pick", "take", "check"], a: "pick" },
+        { q: "The flight was delayed, so we didn't ____ in until midnight.", options: ["set", "get", "touch"], a: "get" },
+        { q: "Please ____ out this registration form at the desk.", options: ["fill", "look", "see"], a: "fill" },
+        { q: "The manager had to ____ off the meeting due to an emergency.", options: ["put", "call", "set"], a: "call" },
+        { q: "We need to ____ out of the hotel by 11:00 AM.", options: ["check", "drop", "hold"], a: "check" },
+        { q: "I'll ____ you around the new office facilities.", options: ["show", "deal", "get"], a: "show" },
+        { q: "How do you usually ____ around the city? By taxi?", options: ["get", "see", "run"], a: "get" },
+        { q: "We have to ____ with several complaints from the guests.", options: ["deal", "hold", "look"], a: "deal" },
+        { q: "The plane will ____ off in approximately ten minutes.", options: ["take", "touch", "set"], a: "take" },
+        { q: "We decided to ____ off the conference until next month.", options: ["put", "call", "set"], a: "put" }
+    ];
+
+    // True/False Data
+    const tfs = [
+        { q: "'Touch down' is used when a plane leaves the airport.", a: "False" },
+        { q: "If you 'see someone off', you are saying goodbye.", a: "True" },
+        { q: "To 'hold up' someone means to make them arrive faster.", a: "False" },
+        { q: "When you 'set up' a room, you are preparing it for an event.", a: "True" },
+        { q: "To 'look forward to' something means you are unhappy about it.", a: "False" },
+        { q: "To 'drop off' a guest means to leave them at their destination.", a: "True" },
+        { q: "'Run into' means to crash your car into a colleague.", a: "False" },
+        { q: "'Set off' means to start a journey.", a: "True" },
+        { q: "If you 'look around' a city, you are exploring it.", a: "True" },
+        { q: "'Check in' happens when you leave the hotel at the end.", a: "False" }
+    ];
+
+    // Load MCQ
+    const mcqContainer = document.getElementById('mcq-container');
+    mcqs.forEach((item, index) => {
+        let html = `<div class="question-block"><p>${index+1}. ${item.q}</p>`;
+        item.options.sort(() => Math.random() - 0.5).forEach(opt => {
+            html += `<label><input type="radio" name="mcq${index}" value="${opt}"> ${opt} </label> &nbsp;`;
+        });
+        html += `</div>`;
+        mcqContainer.innerHTML += html;
+    });
+
+    // Load T/F
+    const tfContainer = document.getElementById('tf-container');
+    tfs.sort(() => Math.random() - 0.5).forEach((item, index) => {
+        tfContainer.innerHTML += `<div class="question-block">
+            <p>${index+1}. ${item.q}</p>
+            <label><input type="radio" name="tf${index}" value="True"> True</label>
+            <label><input type="radio" name="tf${index}" value="False"> False</label>
+        </div>`;
+    });
+
+    // Checkers
+    function checkMCQ() {
+        let score = 0;
+        mcqs.forEach((item, i) => {
+            const selected = document.querySelector(`input[name="mcq${i}"]:checked`);
+            if(selected && selected.value === item.a) score++;
+        });
+        document.getElementById('mcq-feedback').innerText = `You got ${score} out of 10 correct!`;
+    }
+
+    function checkTF() {
+        let score = 0;
+        const shuffledTFs = tfs; // Note: they were shuffled on load
+        shuffledTFs.forEach((item, i) => {
+            const selected = document.querySelector(`input[name="tf${i}"]:checked`);
+            if(selected && selected.value === item.a) score++;
+        });
+        document.getElementById('tf-feedback').innerText = `You got ${score} out of 10 correct!`;
+    }
+
+    function checkGap() {
+        const answers = ["set", "get", "in", "set", "to", "hold", "around", "pick", "call", "out"];
+        let score = 0;
+        for(let i=1; i<=10; i++) {
+            if(document.getElementById(`gap${i}`).value === answers[i-1]) score++;
+        }
+        document.getElementById('gap-feedback').innerText = `Text Score: ${score} / 10`;
+    }
+</script>
+
+</body>
+</html>

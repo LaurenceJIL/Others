@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Conditionals Quiz · A2 Level</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --ink: #1A1714;
+    --ink-mid: #4A4540;
+    --ink-soft: #8C8580;
+    --accent: #C8502A;
+    --accent-light: #F0E0D8;
+    --green: #2E6B4F;
+    --green-light: #D8EDE4;
+    --red-light: #FAEBE6;
+    --border: #D8D0C4;
+    --white: #FFFFFF;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 16px; scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(200, 80, 42, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 85% 80%, rgba(46, 107, 79, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Decorative grid lines */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(26,23,20,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26,23,20,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 20px 80px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+    max-width: 560px;
+  }
+
+  .header-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .header-eyebrow::before,
+  .header-eyebrow::after {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.5;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.15;
+    margin-bottom: 14px;
+  }
+
+  .header-sub {
+    font-size: 15px;
+    color: var(--ink-soft);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* ── QUIZ CARD ── */
+  .quiz-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 620px;
+    padding: 40px 40px 36px;
+    box-shadow: 0 2px 40px rgba(26,23,20,0.07), 0 0 0 1px rgba(26,23,20,0.04);
+    animation: cardIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── PROGRESS ── */
+  .progress-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    gap: 16px;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 99px;
+    transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .progress-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+
+  /* ── QUESTION ── */
+  .q-number {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+
+  .q-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.05rem, 2.5vw, 1.2rem);
+    line-height: 1.6;
+    color: var(--ink);
+    margin-bottom: 28px;
+    min-height: 60px;
+  }
+
+  .blank {
+    display: inline-block;
+    border-bottom: 2px solid var(--accent);
+    padding: 0 4px;
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  /* ── OPTIONS ── */
+  .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .opt-btn {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--ink-mid);
+    cursor: pointer;
+    text-align: left;
+    line-height: 1.4;
+    transition: border-color 0.15s, background 0.15s, color 0.15s, transform 0.1s;
+    position: relative;
+  }
+
+  .opt-btn:hover:not(:disabled) {
+    background: var(--white);
+    border-color: var(--ink-mid);
+    color: var(--ink);
+    transform: translateY(-1px);
+  }
+
+  .opt-btn:active:not(:disabled) { transform: translateY(0); }
+
+  .opt-btn.correct {
+    background: var(--green-light);
+    border-color: var(--green);
+    color: var(--green);
+    font-weight: 500;
+  }
+
+  .opt-btn.wrong {
+    background: var(--red-light);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .opt-btn.reveal {
+    background: var(--green-light);
+    border-color: var(--green);
+    color: var(--green);
+    font-weight: 500;
+  }
+
+  .opt-letter {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--border);
+    color: var(--ink-soft);
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 20px;
+    margin-right: 8px;
+    flex-shrink: 0;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .opt-btn.correct .opt-letter { background: var(--green); color: white; }
+  .opt-btn.wrong .opt-letter { background: var(--accent); color: white; }
+  .opt-btn.reveal .opt-letter { background: var(--green); color: white; }
+
+  /* ── FEEDBACK ── */
+  .feedback {
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--ink-mid);
+    margin-bottom: 24px;
+    display: none;
+    border-left: 3px solid var(--border);
+    background: var(--cream);
+    animation: fadeUp 0.3s ease both;
+  }
+
+  .feedback.show { display: block; }
+
+  .feedback.good { border-left-color: var(--green); background: var(--green-light); color: var(--green); }
+  .feedback.bad  { border-left-color: var(--accent); background: var(--red-light); color: #8B3520; }
+
+  .feedback strong { font-weight: 500; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── NEXT BUTTON ── */
+  .next-btn {
+    display: none;
+    width: 100%;
+    padding: 15px 24px;
+    background: var(--ink);
+    color: var(--cream);
+    border: none;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: background 0.15s, transform 0.1s;
+  }
+
+  .next-btn:hover { background: var(--accent); }
+  .next-btn:active { transform: scale(0.99); }
+  .next-btn.show { display: block; animation: fadeUp 0.3s ease both; }
+
+  /* ── SCORE SCREEN ── */
+  .score-screen {
+    text-align: center;
+    padding: 12px 0;
+    display: none;
+    animation: cardIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .score-screen.show { display: block; }
+
+  .score-ring {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 24px;
+    position: relative;
+  }
+
+  .score-ring svg { width: 120px; height: 120px; transform: rotate(-90deg); }
+
+  .score-ring-num {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .score-big {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .score-denom {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 2px;
+  }
+
+  .score-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .score-msg {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin-bottom: 32px;
+    max-width: 380px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .grammar-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 32px;
+  }
+
+  .chip {
+    padding: 5px 12px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 500;
+    background: var(--accent-light);
+    color: var(--accent);
+    border: 1px solid rgba(200, 80, 42, 0.2);
+  }
+
+  .restart-btn {
+    display: inline-block;
+    padding: 14px 36px;
+    background: var(--ink);
+    color: var(--cream);
+    border: none;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: background 0.15s;
+  }
+
+  .restart-btn:hover { background: var(--accent); }
+
+  /* ── FOOTER ── */
+  .footer {
+    margin-top: 36px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    opacity: 0.6;
+    text-align: center;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 480px) {
+    .quiz-card { padding: 28px 22px 24px; }
+    .options { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header class="header">
+    <div class="header-eyebrow">A2 English · Grammar</div>
+    <h1>Conditionals Quiz</h1>
+    <p class="header-sub">Practice <em>unless, even if, in case, as long as</em> and more — 20 questions with instant explanations.</p>
+  </header>
+
+  <div class="quiz-card" id="card">
+
+    <!-- Quiz view -->
+    <div id="quiz-view">
+      <div class="progress-row">
+        <div class="progress-track">
+          <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+        </div>
+        <div class="progress-label" id="prog-label">0 / 20</div>
+      </div>
+
+      <div class="q-number" id="q-num">Question 1</div>
+      <div class="q-text" id="q-text"></div>
+
+      <div class="options" id="opts"></div>
+
+      <div class="feedback" id="feedback"></div>
+      <button class="next-btn" id="next-btn" onclick="nextQ()"></button>
+    </div>
+
+    <!-- Score view -->
+    <div class="score-screen" id="score-view">
+      <div class="score-ring">
+        <svg viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="50" fill="none" stroke="#E8E0D4" stroke-width="8"/>
+          <circle cx="60" cy="60" r="50" fill="none" stroke="#C8502A" stroke-width="8"
+            stroke-linecap="round" id="ring-arc"
+            stroke-dasharray="314" stroke-dashoffset="314"/>
+        </svg>
+        <div class="score-ring-num">
+          <div class="score-big" id="score-big">0</div>
+          <div class="score-denom">/ 20</div>
+        </div>
+      </div>
+      <div class="score-title" id="score-title"></div>
+      <p class="score-msg" id="score-msg"></p>
+      <div class="grammar-chips">
+        <span class="chip">unless</span>
+        <span class="chip">even if</span>
+        <span class="chip">in case</span>
+        <span class="chip">as long as</span>
+        <span class="chip">provided that</span>
+        <span class="chip">on condition that</span>
+        <span class="chip">whether or not</span>
+      </div>
+      <button class="restart-btn" onclick="restart()">Try again</button>
+    </div>
+
+  </div>
+
+  <footer class="footer">Grammar based on B2 conditional expressions · Adapted for A2 learners</footer>
+
+</div>
+
+<script>
+const Qs = [
+  { q:'I will help you _____ you ask me nicely.', opts:['unless','if','even if','in case'], ans:1, tip:'<strong>If</strong> introduces a simple condition. The sentence means: I will help you, but only when you ask nicely.' },
+  { q:'She won\'t come to the party _____ you invite her personally.', opts:['if','unless','even if','in case'], ans:1, tip:'<strong>Unless</strong> means "if not". She won\'t come <em>if you don\'t</em> invite her personally.' },
+  { q:'I always carry my umbrella _____ it rains.', opts:['unless','even if','in case','as long as'], ans:2, tip:'<strong>In case</strong> means you prepare for something that <em>might</em> happen. You carry an umbrella because it might rain later.' },
+  { q:'You can stay up late _____ you finish your homework first.', opts:['in case','even if','unless','as long as'], ans:3, tip:'<strong>As long as</strong> emphasises the condition that must be met. You can stay up late — but only if you finish your homework.' },
+  { q:'"Unless" has the same meaning as ___.', opts:['if','if not','even if','in case'], ans:1, tip:'<strong>Unless = if not.</strong> Example: I won\'t go unless it stops raining = I won\'t go <em>if it doesn\'t stop</em> raining.' },
+  { q:'He\'ll be angry _____ you apologise.', opts:['even if','in case','as long as','provided'], ans:0, tip:'<strong>Even if</strong> shows that something will happen no matter what. His anger won\'t change whether you apologise or not.' },
+  { q:'I save money every month _____ I lose my job.', opts:['unless','even if','in case','only if'], ans:2, tip:'<strong>In case</strong> is used to prepare for a future possibility. You save money now because you might need it later.' },
+  { q:'You can borrow my bike _____ you return it before 6pm.', opts:['in case','unless','provided that','even if'], ans:2, tip:'<strong>Provided that</strong> = as long as. It emphasises the condition. You can borrow it, but only if you return it on time.' },
+  { q:'Which sentence uses "even if" correctly?', opts:['I\'ll come even if it\'s raining.','I\'ll come even if you invite me.','I\'ll come even if I don\'t want to.','Both A and C'], ans:3, tip:'<strong>Even if</strong> shows the condition doesn\'t change the outcome. A = I\'ll come regardless of rain. C = I\'ll come regardless of my own feelings. Both are correct!' },
+  { q:'Don\'t open the door _____ you know who it is.', opts:['unless','in case','even if','as long as'], ans:0, tip:'<strong>Unless</strong> = "if not". Don\'t open the door <em>if you don\'t know</em> who it is.' },
+  { q:'I will lend you money _____ you pay me back.', opts:['in case','even if','unless','on condition that'], ans:3, tip:'<strong>On condition that</strong> = as long as / provided that. It strongly emphasises the condition that must happen.' },
+  { q:'We need to leave early _____ there\'s a lot of traffic.', opts:['unless','provided','in case','even if'], ans:2, tip:'<strong>In case</strong> = because something might happen. You leave early to prepare for possible traffic.' },
+  { q:'"Provided that" has the same meaning as ___.', opts:['because','even if','as long as','in case'], ans:2, tip:'<strong>Provided that, as long as, on condition that</strong> and <strong>only if</strong> all emphasise a necessary condition.' },
+  { q:'She\'ll be happy _____ he calls her.', opts:['unless','even if','whether or not','in case'], ans:0, tip:'<strong>Unless</strong> = if not. She won\'t be happy <em>if he doesn\'t call</em> her.' },
+  { q:'I will support you _____ you decide.', opts:['in case','unless','whether or not','provided'], ans:2, tip:'<strong>Whether or not</strong> covers both possibilities. I\'ll support you if you decide to go, AND if you decide not to go.' },
+  { q:'Which is correct? "In case" is used to ___.', opts:['give a reason for the past','prepare for a future possibility','say something is impossible','show two equal options'], ans:1, tip:'<strong>In case</strong> always refers to a future possibility you are preparing for. Example: Take your phone in case you need it.' },
+  { q:'You can park here _____ you leave before 8am.', opts:['even if','in case','as long as','unless'], ans:2, tip:'<strong>As long as</strong> sets the condition. You can park here, but you must leave before 8am.' },
+  { q:'_____ it snows tomorrow, we will still go for a walk.', opts:['Unless','In case','Even if','As long as'], ans:2, tip:'<strong>Even if</strong> at the start of a sentence means the outcome won\'t change. Snow won\'t stop us.' },
+  { q:'He won\'t eat vegetables _____ you add a lot of cheese.', opts:['unless','even if','in case','whether or not'], ans:0, tip:'<strong>Unless</strong> = "if not". He won\'t eat vegetables <em>if you don\'t add</em> cheese. The cheese is the required condition.' },
+  { q:'Which sentence is NOT correct?', opts:['I\'ll go unless you come with me.','Take a jacket in case it gets cold.','Call me in case you need help.','I\'ll help you in case you ask.'], ans:3, tip:'<strong>"In case"</strong> is for preparation, not conditions. "I\'ll help you in case you ask" is wrong. The correct version is: "I\'ll help you <em>if</em> you ask."' }
+];
+
+const LETTERS = ['A','B','C','D'];
+let cur = 0, score = 0, answered = false;
+
+function renderQ() {
+  answered = false;
+  const q = Qs[cur];
+  const pct = (cur / Qs.length) * 100;
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = cur + ' / ' + Qs.length;
+  document.getElementById('q-num').textContent = 'Question ' + (cur + 1);
+
+  // Build question text with styled blank
+  let txt = q.q.replace('_____', '<span class="blank">_____</span>');
+  document.getElementById('q-text').innerHTML = txt;
+
+  // Build options
+  const optsEl = document.getElementById('opts');
+  optsEl.innerHTML = '';
+  q.opts.forEach((o, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = '<span class="opt-letter">' + LETTERS[i] + '</span>' + o;
+    btn.onclick = () => choose(i);
+    optsEl.appendChild(btn);
+  });
+
+  // Reset feedback & next
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback';
+  fb.innerHTML = '';
+
+  const nb = document.getElementById('next-btn');
+  nb.className = 'next-btn';
+  nb.textContent = cur < Qs.length - 1 ? 'Next question →' : 'See my results →';
+}
+
+function choose(i) {
+  if (answered) return;
+  answered = true;
+  const q = Qs[cur];
+  const btns = document.querySelectorAll('.opt-btn');
+  btns.forEach(b => b.disabled = true);
+
+  const fb = document.getElementById('feedback');
+
+  if (i === q.ans) {
+    score++;
+    btns[i].classList.add('correct');
+    fb.className = 'feedback good show';
+    fb.innerHTML = '✓ Correct! &nbsp;' + q.tip;
+  } else {
+    btns[i].classList.add('wrong');
+    btns[q.ans].classList.add('reveal');
+    fb.className = 'feedback bad show';
+    fb.innerHTML = '✗ Not quite. &nbsp;' + q.tip;
+  }
+
+  document.getElementById('next-btn').className = 'next-btn show';
+}
+
+function nextQ() {
+  cur++;
+  if (cur >= Qs.length) {
+    showScore();
+  } else {
+    renderQ();
+  }
+}
+
+function showScore() {
+  document.getElementById('quiz-view').style.display = 'none';
+  const sv = document.getElementById('score-view');
+  sv.classList.add('show');
+
+  const pct = score / Qs.length;
+  document.getElementById('score-big').textContent = score;
+
+  // Animate ring
+  const circ = 2 * Math.PI * 50;
+  const offset = circ * (1 - pct);
+  setTimeout(() => {
+    document.getElementById('ring-arc').style.transition = 'stroke-dashoffset 1s cubic-bezier(0.22,1,0.36,1)';
+    document.getElementById('ring-arc').style.strokeDashoffset = offset;
+  }, 100);
+
+  let title, msg;
+  if (pct >= 0.85) {
+    title = 'Excellent work!';
+    msg = 'You have a strong understanding of English conditional expressions. Keep it up!';
+  } else if (pct >= 0.65) {
+    title = 'Good effort!';
+    msg = 'You understand most conditional expressions. Review the ones you missed and try again.';
+  } else if (pct >= 0.45) {
+    title = 'Keep practising!';
+    msg = 'You\'re making progress! Focus on the difference between <em>unless</em>, <em>even if</em>, and <em>in case</em>.';
+  } else {
+    title = 'Don\'t give up!';
+    msg = 'These expressions can be tricky. Read each explanation carefully and try again — you\'ll improve!';
+  }
+
+  document.getElementById('score-title').textContent = title;
+  document.getElementById('score-msg').innerHTML = msg;
+}
+
+function restart() {
+  cur = 0; score = 0; answered = false;
+  document.getElementById('score-view').classList.remove('show');
+  document.getElementById('quiz-view').style.display = '';
+  renderQ();
+}
+
+renderQ();
+</script>
+</body>
+</html>

@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Defining Relative Clauses — Grammar Practice</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --paper: #f5f2eb;
+    --cream: #ede9df;
+    --gold: #c9a84c;
+    --gold-light: #f0d890;
+    --rule: #2d4a6e;
+    --rule-light: #4a7ab5;
+    --success: #2a6b4a;
+    --success-bg: #e8f5ee;
+    --error: #8b2a2a;
+    --error-bg: #fdf0f0;
+    --neutral-bg: #eeeae0;
+    --border: #c8c0b0;
+    --shadow: rgba(26,26,46,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    background: var(--rule);
+    color: #fff;
+    padding: 2.8rem 2rem 2.2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent, transparent 60px,
+      rgba(255,255,255,0.03) 60px, rgba(255,255,255,0.03) 61px
+    );
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+  }
+  .header-tag {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 0.6rem;
+    opacity: 0.9;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+  header p {
+    margin-top: 0.7rem;
+    font-size: 0.95rem;
+    font-weight: 300;
+    opacity: 0.8;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ─── REFERENCE CARD ─── */
+  .reference {
+    max-width: 860px;
+    margin: 2.2rem auto 0;
+    padding: 0 1.5rem;
+  }
+  .ref-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--gold);
+    border-radius: 6px;
+    padding: 1.4rem 1.8rem;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  .ref-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--rule);
+    margin-bottom: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .ref-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.8rem;
+  }
+  .ref-item {
+    background: var(--cream);
+    border-radius: 4px;
+    padding: 0.7rem 1rem;
+    font-size: 0.88rem;
+  }
+  .ref-item strong {
+    display: block;
+    color: var(--rule);
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+  }
+  .ref-item em {
+    font-style: italic;
+    color: #555;
+    font-size: 0.83rem;
+  }
+
+  /* ─── MAIN LAYOUT ─── */
+  main {
+    max-width: 860px;
+    margin: 2rem auto 3rem;
+    padding: 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  /* ─── SECTION HEADERS ─── */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid var(--rule);
+  }
+  .section-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--rule);
+  }
+  .section-sub {
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 300;
+    margin-top: 0.15rem;
+  }
+  .section-count {
+    margin-left: auto;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.78rem;
+    color: #999;
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── QUESTION CARD ─── */
+  .question-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.4rem 1.6rem;
+    box-shadow: 0 2px 6px var(--shadow);
+    transition: box-shadow 0.2s;
+    position: relative;
+  }
+  .question-card.answered { box-shadow: none; }
+
+  .q-number {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    color: #999;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .q-text {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    line-height: 1.55;
+  }
+  .q-text strong { color: var(--rule); font-weight: 600; }
+
+  /* ─── MULTIPLE CHOICE ─── */
+  .mc-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .mc-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.65rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 5px;
+    background: var(--cream);
+    cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.92rem;
+    color: var(--ink);
+    text-align: left;
+    transition: border-color 0.15s, background 0.15s;
+    line-height: 1.45;
+  }
+  .mc-btn:hover:not(:disabled) { border-color: var(--rule-light); background: #f0eee8; }
+  .mc-btn .opt-letter {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--rule-light);
+    min-width: 1.2rem;
+    padding-top: 0.05rem;
+  }
+  .mc-btn.correct { border-color: var(--success); background: var(--success-bg); color: var(--success); }
+  .mc-btn.incorrect { border-color: var(--error); background: var(--error-bg); color: var(--error); }
+  .mc-btn.revealed { border-color: var(--success); background: var(--success-bg); color: var(--success); }
+  .mc-btn:disabled { cursor: default; }
+
+  /* ─── CORRECT / ERROR ─── */
+  .ce-options {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.9rem;
+  }
+  .ce-btn {
+    padding: 0.5rem 1.3rem;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    background: var(--cream);
+    cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .ce-btn:hover:not(:disabled) { border-color: var(--rule-light); background: #e8e4da; }
+  .ce-btn.selected-correct { border-color: var(--success); background: var(--success-bg); color: var(--success); }
+  .ce-btn.selected-error { border-color: var(--error-bg); background: var(--error-bg); color: var(--error); }
+  .ce-btn:disabled { cursor: default; }
+
+  .error-input-row {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .error-input {
+    flex: 1;
+    min-width: 160px;
+    padding: 0.5rem 0.8rem;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.9rem;
+    background: #fff;
+    color: var(--ink);
+    transition: border-color 0.15s;
+  }
+  .error-input:focus { outline: none; border-color: var(--rule-light); }
+  .error-input:disabled { background: var(--cream); }
+  .submit-btn {
+    padding: 0.5rem 1.2rem;
+    background: var(--rule);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: background 0.15s;
+  }
+  .submit-btn:hover:not(:disabled) { background: var(--rule-light); }
+  .submit-btn:disabled { background: #aaa; cursor: default; }
+
+  /* ─── COMPLETION ─── */
+  .comp-blank {
+    display: inline-block;
+    min-width: 140px;
+    border-bottom: 2px solid var(--rule);
+    margin: 0 4px;
+    padding: 0 4px;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.9rem;
+    vertical-align: bottom;
+    transition: border-color 0.15s;
+  }
+  .comp-input {
+    min-width: 140px;
+    border: none;
+    border-bottom: 2px solid var(--rule);
+    background: transparent;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.92rem;
+    color: var(--ink);
+    padding: 0 4px 2px;
+    outline: none;
+    width: 100%;
+  }
+  .comp-input:focus { border-color: var(--rule-light); }
+  .comp-input:disabled { color: #555; }
+
+  .comp-sentence {
+    font-size: 1rem;
+    line-height: 1.9;
+    margin-bottom: 0.9rem;
+  }
+
+  /* ─── FEEDBACK ─── */
+  .feedback {
+    margin-top: 0.85rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: 5px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct-fb { background: var(--success-bg); color: var(--success); border-left: 3px solid var(--success); }
+  .feedback.incorrect-fb { background: var(--error-bg); color: var(--error); border-left: 3px solid var(--error); }
+  .feedback strong { font-weight: 600; }
+
+  /* ─── SCORE PANEL ─── */
+  .score-panel {
+    background: var(--rule);
+    color: #fff;
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 16px var(--shadow);
+    display: none;
+  }
+  .score-panel.show { display: block; }
+  .score-panel h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    margin-bottom: 0.4rem;
+  }
+  .score-big {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    line-height: 1;
+    margin: 0.6rem 0;
+  }
+  .score-label { font-size: 0.9rem; opacity: 0.8; }
+  .score-msg { margin-top: 0.8rem; font-size: 1rem; opacity: 0.9; }
+
+  .btn-row {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .action-btn {
+    padding: 0.65rem 1.8rem;
+    border-radius: 5px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    border: 2px solid var(--gold);
+  }
+  .action-btn:hover { opacity: 0.85; }
+  .action-btn.primary { background: var(--gold); color: var(--rule); }
+  .action-btn.secondary { background: transparent; color: var(--gold); }
+
+  /* ─── SECTION WRAPPER ─── */
+  .section-block {
+    background: transparent;
+  }
+
+  /* ─── CHECK ALL BTN ─── */
+  .check-all-btn {
+    margin-top: 1rem;
+    padding: 0.6rem 1.6rem;
+    background: var(--rule);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.15s;
+  }
+  .check-all-btn:hover:not(:disabled) { background: var(--rule-light); }
+  .check-all-btn:disabled { background: #aaa; cursor: default; }
+
+  /* ─── PROGRESS BAR ─── */
+  .progress-bar-wrap {
+    background: var(--cream);
+    border-radius: 99px;
+    height: 6px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--rule), var(--gold));
+    border-radius: 99px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  hr.section-rule {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+
+  @media (max-width: 580px) {
+    header { padding: 1.8rem 1rem 1.6rem; }
+    main, .reference { padding: 0 1rem; }
+    .question-card { padding: 1.1rem 1.1rem; }
+    .score-big { font-size: 2.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-tag">Grammar Practice · B1 / B2 · Professional English</div>
+  <h1>Defining Relative Clauses</h1>
+  <p>20 questions across three exercise types. Complete all sections, then check your score.</p>
+</header>
+
+<div class="reference">
+  <div class="ref-card">
+    <h2>📋 Quick Reference</h2>
+    <div class="ref-grid">
+      <div class="ref-item"><strong>who / that</strong> for people<em>: The colleague who manages accounts…</em></div>
+      <div class="ref-item"><strong>which / that</strong> for things<em>: The software which we use…</em></div>
+      <div class="ref-item"><strong>whose</strong> for possession<em>: The client whose contract…</em></div>
+      <div class="ref-item"><strong>where</strong> for places<em>: The office where she works…</em></div>
+      <div class="ref-item"><strong>when</strong> for times<em>: The deadline when everything…</em></div>
+      <div class="ref-item"><strong>No commas</strong> — clause is essential to meaning</div>
+    </div>
+  </div>
+</div>
+
+<main id="main-content">
+
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+
+  <!-- ═══ SECTION A ═══ -->
+  <div class="section-block">
+    <div class="section-header">
+      <span class="section-num">A</span>
+      <div>
+        <div class="section-title">Multiple Choice</div>
+        <div class="section-sub">Choose the best word or phrase to complete each sentence.</div>
+      </div>
+      <span class="section-count">8 questions</span>
+    </div>
+    <div id="sectionA"></div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- ═══ SECTION B ═══ -->
+  <div class="section-block" style="margin-top:1rem;">
+    <div class="section-header">
+      <span class="section-num">B</span>
+      <div>
+        <div class="section-title">Correct or Not? Find the Error</div>
+        <div class="section-sub">Is the sentence correct? If not, identify the incorrect word and write it in the box.</div>
+      </div>
+      <span class="section-count">6 questions</span>
+    </div>
+    <div id="sectionB"></div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- ═══ SECTION C ═══ -->
+  <div class="section-block" style="margin-top:1rem;">
+    <div class="section-header">
+      <span class="section-num">C</span>
+      <div>
+        <div class="section-title">Complete the Sentence</div>
+        <div class="section-sub">Write the most logical and grammatically correct word or phrase in each gap.</div>
+      </div>
+      <span class="section-count">6 questions</span>
+    </div>
+    <div id="sectionC"></div>
+    <button class="check-all-btn" id="checkCompBtn" onclick="checkAllCompletion()">Check Section C</button>
+  </div>
+
+  <!-- ═══ SCORE ═══ -->
+  <div class="score-panel" id="scorePanel">
+    <h2>Exercise Complete</h2>
+    <div class="score-big" id="scoreBig">—</div>
+    <div class="score-label" id="scoreLabel">out of 20</div>
+    <div class="score-msg" id="scoreMsg"></div>
+    <div class="btn-row">
+      <button class="action-btn primary" onclick="resetAll()">Start Again</button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ═══════════════════════════════════════════
+// FISHER-YATES SHUFFLE
+// ═══════════════════════════════════════════
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ═══════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════
+
+const mcData = [
+  {
+    q: "The manager _______ interviewed me yesterday has offered me the position.",
+    options: ["which", "who", "whom", "whose"],
+    correct: 1,
+    explain: "<strong>who</strong> is used for people as the subject of the relative clause. <em>Whom</em> is the object form (less common in spoken English). <em>Which</em> is for things."
+  },
+  {
+    q: "We need to find a meeting room _______ can hold at least twenty people.",
+    options: ["where", "whose", "that", "when"],
+    correct: 2,
+    explain: "<strong>that</strong> (or <em>which</em>) is used for things/places when the pronoun functions as subject. <em>Where</em> would need no verb after it: <em>a room where we can meet</em>."
+  },
+  {
+    q: "The invoice _______ was sent last Friday has not yet been paid.",
+    options: ["who", "where", "which", "when"],
+    correct: 2,
+    explain: "<strong>which</strong> (or <em>that</em>) refers to a thing — here, the invoice. <em>Who</em> is only for people."
+  },
+  {
+    q: "The employee _______ laptop was stolen reported it to IT security immediately.",
+    options: ["who", "that", "which", "whose"],
+    correct: 3,
+    explain: "<strong>whose</strong> shows possession. The laptop <em>belongs to</em> the employee, so we use <em>whose</em> + noun."
+  },
+  {
+    q: "Monday is the day _______ the weekly performance report is normally submitted.",
+    options: ["which", "that", "when", "where"],
+    correct: 2,
+    explain: "<strong>when</strong> refers to a point in time. <em>That</em> is also acceptable here, but <em>when</em> is the most natural choice after a time expression."
+  },
+  {
+    q: "The branch _______ our largest client is based has just been acquired by a competitor.",
+    options: ["where", "which", "that", "when"],
+    correct: 0,
+    explain: "<strong>where</strong> refers to a place (the branch = a location). Compare: <em>the branch that processes orders</em> — here <em>that</em> is the subject of the verb."
+  },
+  {
+    q: "This is the software update _______ caused the system outage last Tuesday.",
+    options: ["whom", "who", "whose", "that"],
+    correct: 3,
+    explain: "<strong>that</strong> (or <em>which</em>) is correct for a thing. <em>Who/whom</em> are only for people."
+  },
+  {
+    q: "Any staff member _______ wishes to attend the training must register by Friday.",
+    options: ["which", "whose", "that", "where"],
+    correct: 2,
+    explain: "<strong>that</strong> (or <em>who</em>) is used for people. In formal/general reference contexts, <em>that</em> is very common with indefinite pronouns like <em>any</em>."
+  }
+];
+
+const ceData = [
+  {
+    sentence: "The colleague which won the sales award is being promoted.",
+    isCorrect: false,
+    error: "which",
+    correction: "who",
+    explain: "Use <strong>who</strong> (not <em>which</em>) when referring to a person."
+  },
+  {
+    sentence: "The contract that expires in December needs to be renegotiated.",
+    isCorrect: true,
+    explain: "Correct. <em>That</em> is used here to identify which specific contract — the one expiring in December. No commas needed."
+  },
+  {
+    sentence: "The department where processes all overseas payments is currently understaffed.",
+    isCorrect: false,
+    error: "where",
+    correction: "that / which",
+    explain: "Use <strong>that</strong> or <strong>which</strong> here because <em>processes</em> is the verb of the clause (subject pronoun needed). <em>Where</em> is for location, not for a subject pronoun role."
+  },
+  {
+    sentence: "The client whose company went into administration owes us a significant sum.",
+    isCorrect: true,
+    explain: "Correct. <em>Whose</em> shows that the company belongs to the client. This is a defining relative clause with no commas."
+  },
+  {
+    sentence: "The report which the board approved it last month will be published next week.",
+    isCorrect: false,
+    error: "approved it",
+    correction: "approved (remove 'it')",
+    explain: "Do not repeat the object pronoun. The relative pronoun <em>which</em> already replaces <em>it</em>, so writing <em>approved it</em> creates a double object."
+  },
+  {
+    sentence: "This is the quarter when profits traditionally peak.",
+    isCorrect: true,
+    explain: "Correct. <em>When</em> refers back to a time period (the quarter). The clause defines <em>which</em> quarter is meant."
+  }
+];
+
+const compData = [
+  {
+    before: "Anyone",
+    after: "wants to join the project team should speak to HR before the end of the week.",
+    answer: ["who", "that"],
+    acceptPartial: false,
+    explain: "Use <strong>who</strong> or <strong>that</strong> after <em>anyone</em> (a person). Both are correct in this context."
+  },
+  {
+    before: "The city",
+    after: "our head office is located has excellent transport links.",
+    answer: ["where"],
+    acceptPartial: false,
+    explain: "Use <strong>where</strong> to refer to a place (the city as a location)."
+  },
+  {
+    before: "The consultant",
+    after: "recommendations we followed has since left the firm.",
+    answer: ["whose"],
+    acceptPartial: false,
+    explain: "Use <strong>whose</strong> to show possession — the recommendations belong to the consultant."
+  },
+  {
+    before: "The financial year",
+    after: "we exceeded all targets was 2022.",
+    answer: ["when", "in which"],
+    acceptPartial: false,
+    explain: "Use <strong>when</strong> (or <em>in which</em>) to refer to a time period."
+  },
+  {
+    before: "The platform",
+    after: "we use for client presentations crashed during the demo.",
+    answer: ["that", "which"],
+    acceptPartial: false,
+    explain: "Use <strong>that</strong> or <strong>which</strong> to refer to a thing (the platform is not a person or place)."
+  },
+  {
+    before: "The colleague",
+    after: "trained me when I joined is now the regional director.",
+    answer: ["who", "that"],
+    acceptPartial: false,
+    explain: "Use <strong>who</strong> or <strong>that</strong> to refer to a person as the subject of the relative clause."
+  }
+];
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let totalAnswered = 0;
+let totalScore = 0;
+const TOTAL_Q = 20;
+
+// ═══════════════════════════════════════════
+// PROGRESS
+// ═══════════════════════════════════════════
+function updateProgress() {
+  const pct = (totalAnswered / TOTAL_Q) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  if (totalAnswered === TOTAL_Q) showScore();
+}
+
+// ═══════════════════════════════════════════
+// SECTION A — MULTIPLE CHOICE
+// ═══════════════════════════════════════════
+function buildMC(data, container) {
+  const shuffledQ = shuffle(data);
+  shuffledQ.forEach((item, qi) => {
+    // Shuffle options but track which is now correct
+    const indexed = item.options.map((o, i) => ({ text: o, orig: i }));
+    const shuffledOpts = shuffle(indexed);
+    const correctNewIdx = shuffledOpts.findIndex(o => o.orig === item.correct);
+
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = `mc_${qi}`;
+
+    let optsHTML = '';
+    const letters = ['A','B','C','D'];
+    shuffledOpts.forEach((opt, oi) => {
+      optsHTML += `<button class="mc-btn" onclick="answerMC(${qi}, ${oi}, ${correctNewIdx}, this)"
+        data-card="mc_${qi}">
+        <span class="opt-letter">${letters[oi]}</span>${opt.text}
+      </button>`;
+    });
+
+    card.innerHTML = `
+      <div class="q-number">Question A${qi+1}</div>
+      <div class="q-text">${item.q}</div>
+      <div class="mc-options">${optsHTML}</div>
+      <div class="feedback" id="mc_fb_${qi}"></div>
+    `;
+    container.appendChild(card);
+  });
+  // Store shuffled data for feedback lookup
+  container._shuffled = shuffledQ;
+}
+
+function answerMC(qi, chosen, correct, btn) {
+  const card = document.getElementById(`mc_${qi}`);
+  if (card.classList.contains('answered')) return;
+  card.classList.add('answered');
+
+  const allBtns = card.querySelectorAll('.mc-btn');
+  allBtns.forEach(b => b.disabled = true);
+
+  const fb = document.getElementById(`mc_fb_${qi}`);
+  // Get the data item
+  const shuffledQ = document.getElementById('sectionA')._shuffled;
+  const item = shuffledQ[qi];
+
+  if (chosen === correct) {
+    btn.classList.add('correct');
+    fb.className = 'feedback show correct-fb';
+    fb.innerHTML = '✓ Correct! ' + item.explain;
+    totalScore++;
+  } else {
+    btn.classList.add('incorrect');
+    allBtns[correct].classList.add('revealed');
+    fb.className = 'feedback show incorrect-fb';
+    fb.innerHTML = '✗ Not quite. ' + item.explain;
+  }
+
+  totalAnswered++;
+  updateProgress();
+}
+
+// ═══════════════════════════════════════════
+// SECTION B — CORRECT OR ERROR
+// ═══════════════════════════════════════════
+function buildCE(data, container) {
+  const shuffledQ = shuffle(data);
+  container._shuffled = shuffledQ;
+
+  shuffledQ.forEach((item, qi) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = `ce_${qi}`;
+
+    const errorInputHTML = item.isCorrect ? '' : `
+      <div class="error-input-row" id="ce_err_row_${qi}" style="display:none;">
+        <input class="error-input" id="ce_err_input_${qi}" 
+          placeholder="Type the incorrect word(s)…" autocomplete="off" spellcheck="false">
+        <button class="submit-btn" onclick="submitCEError(${qi})">Submit</button>
+      </div>`;
+
+    card.innerHTML = `
+      <div class="q-number">Question B${qi+1}</div>
+      <div class="q-text">"${item.sentence}"</div>
+      <div class="ce-options">
+        <button class="ce-btn" id="ce_correct_${qi}" onclick="answerCE(${qi}, true)">✓ Correct</button>
+        <button class="ce-btn" id="ce_error_${qi}" onclick="answerCE(${qi}, false)">✗ Contains an error</button>
+      </div>
+      ${errorInputHTML}
+      <div class="feedback" id="ce_fb_${qi}"></div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function answerCE(qi, userSaysCorrect) {
+  const card = document.getElementById(`ce_${qi}`);
+  if (card.classList.contains('answered-first')) return;
+  card.classList.add('answered-first');
+
+  const item = document.getElementById('sectionB')._shuffled[qi];
+
+  document.getElementById(`ce_correct_${qi}`).disabled = true;
+  document.getElementById(`ce_error_${qi}`).disabled = true;
+
+  if (userSaysCorrect) {
+    // They clicked "Correct"
+    if (item.isCorrect) {
+      document.getElementById(`ce_correct_${qi}`).classList.add('selected-correct');
+      const fb = document.getElementById(`ce_fb_${qi}`);
+      fb.className = 'feedback show correct-fb';
+      fb.innerHTML = '✓ Correct! ' + item.explain;
+      card.classList.add('answered');
+      totalScore++;
+      totalAnswered++;
+      updateProgress();
+    } else {
+      document.getElementById(`ce_correct_${qi}`).classList.add('selected-error');
+      const fb = document.getElementById(`ce_fb_${qi}`);
+      fb.className = 'feedback show incorrect-fb';
+      fb.innerHTML = `✗ This sentence actually contains an error. The word/phrase <strong>"${item.error}"</strong> should be <strong>"${item.correction}"</strong>. ${item.explain}`;
+      card.classList.add('answered');
+      totalAnswered++;
+      updateProgress();
+    }
+  } else {
+    // They clicked "Contains an error"
+    document.getElementById(`ce_error_${qi}`).classList.add('selected-error');
+    if (!item.isCorrect) {
+      // Show input for error identification
+      const row = document.getElementById(`ce_err_row_${qi}`);
+      if (row) row.style.display = 'flex';
+    } else {
+      // Wrong — it was correct
+      const fb = document.getElementById(`ce_fb_${qi}`);
+      fb.className = 'feedback show incorrect-fb';
+      fb.innerHTML = '✗ This sentence is actually correct. ' + item.explain;
+      card.classList.add('answered');
+      totalAnswered++;
+      updateProgress();
+    }
+  }
+}
+
+function submitCEError(qi) {
+  const card = document.getElementById(`ce_${qi}`);
+  if (card.classList.contains('answered')) return;
+
+  const item = document.getElementById('sectionB')._shuffled[qi];
+  const input = document.getElementById(`ce_err_input_${qi}`);
+  const userVal = input.value.trim().toLowerCase();
+  const fb = document.getElementById(`ce_fb_${qi}`);
+
+  input.disabled = true;
+  const submitBtn = input.nextElementSibling;
+  if (submitBtn) submitBtn.disabled = true;
+  card.classList.add('answered');
+
+  // Check if user's answer matches or contains the error word
+  const errorLC = item.error.toLowerCase();
+  const isClose = userVal.length > 0 && (
+    userVal === errorLC ||
+    errorLC.includes(userVal) ||
+    userVal.includes(errorLC.split(' ')[0])
+  );
+
+  if (isClose) {
+    fb.className = 'feedback show correct-fb';
+    fb.innerHTML = `✓ Well spotted! The error is <strong>"${item.error}"</strong> → should be <strong>"${item.correction}"</strong>. ${item.explain}`;
+    totalScore++;
+  } else {
+    fb.className = 'feedback show incorrect-fb';
+    fb.innerHTML = `✗ Not quite. The error is <strong>"${item.error}"</strong> → should be <strong>"${item.correction}"</strong>. ${item.explain}`;
+  }
+
+  totalAnswered++;
+  updateProgress();
+}
+
+// ═══════════════════════════════════════════
+// SECTION C — COMPLETION
+// ═══════════════════════════════════════════
+function buildCompletion(data, container) {
+  const shuffledQ = shuffle(data);
+  container._shuffled = shuffledQ;
+
+  shuffledQ.forEach((item, qi) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = `comp_${qi}`;
+
+    card.innerHTML = `
+      <div class="q-number">Question C${qi+1}</div>
+      <div class="comp-sentence">
+        ${item.before} <input class="comp-input" id="comp_input_${qi}"
+          placeholder="…" autocomplete="off" spellcheck="false"> ${item.after}
+      </div>
+      <div class="feedback" id="comp_fb_${qi}"></div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function checkAllCompletion() {
+  const shuffledQ = document.getElementById('sectionC')._shuffled;
+  let allFilled = true;
+  shuffledQ.forEach((_, qi) => {
+    const input = document.getElementById(`comp_input_${qi}`);
+    if (!input.value.trim()) allFilled = false;
+  });
+
+  if (!allFilled) {
+    alert('Please fill in all gaps in Section C before checking.');
+    return;
+  }
+
+  document.getElementById('checkCompBtn').disabled = true;
+
+  shuffledQ.forEach((item, qi) => {
+    const input = document.getElementById(`comp_input_${qi}`);
+    const userVal = input.value.trim().toLowerCase().replace(/['"]/g,'');
+    input.disabled = true;
+
+    const correct = item.answer.map(a => a.toLowerCase());
+    const isCorrect = correct.some(a => userVal === a);
+
+    const fb = document.getElementById(`comp_fb_${qi}`);
+    const card = document.getElementById(`comp_${qi}`);
+
+    if (isCorrect) {
+      fb.className = 'feedback show correct-fb';
+      fb.innerHTML = `✓ Correct! ${item.explain}`;
+      input.style.color = 'var(--success)';
+      input.style.borderBottomColor = 'var(--success)';
+      totalScore++;
+    } else {
+      fb.className = 'feedback show incorrect-fb';
+      fb.innerHTML = `✗ The expected answer is <strong>${item.answer.join(' / ')}</strong>. ${item.explain}`;
+      input.style.color = 'var(--error)';
+      input.style.borderBottomColor = 'var(--error)';
+    }
+    card.classList.add('answered');
+    totalAnswered++;
+  });
+
+  updateProgress();
+}
+
+// ═══════════════════════════════════════════
+// SCORE
+// ═══════════════════════════════════════════
+function showScore() {
+  const panel = document.getElementById('scorePanel');
+  panel.classList.add('show');
+  document.getElementById('scoreBig').textContent = `${totalScore} / ${TOTAL_Q}`;
+  document.getElementById('scoreLabel').textContent = `out of ${TOTAL_Q}`;
+
+  const pct = (totalScore / TOTAL_Q) * 100;
+  let msg = '';
+  if (pct >= 90) msg = 'Outstanding performance. You have excellent command of defining relative clauses.';
+  else if (pct >= 75) msg = 'Strong result. Review any errors and focus on where vs. when vs. which distinctions.';
+  else if (pct >= 60) msg = 'Good effort. Pay close attention to the pronoun selection rules in the reference card.';
+  else msg = 'Keep practising. Re-read the reference card and try again — you will improve quickly.';
+
+  document.getElementById('scoreMsg').textContent = msg;
+  panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ═══════════════════════════════════════════
+// RESET
+// ═══════════════════════════════════════════
+function resetAll() {
+  totalAnswered = 0;
+  totalScore = 0;
+  document.getElementById('progressBar').style.width = '0%';
+  ['sectionA','sectionB','sectionC'].forEach(id => {
+    document.getElementById(id).innerHTML = '';
+  });
+  document.getElementById('scorePanel').classList.remove('show');
+  document.getElementById('checkCompBtn').disabled = false;
+  init();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+function init() {
+  buildMC(mcData, document.getElementById('sectionA'));
+  buildCE(ceData, document.getElementById('sectionB'));
+  buildCompletion(compData, document.getElementById('sectionC'));
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

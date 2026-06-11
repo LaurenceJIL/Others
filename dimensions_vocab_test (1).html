@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Size & Dimension – Vocabulary Test</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --paper: #faf8f3;
+    --cream: #f2ede3;
+    --rule: #d4c9b0;
+    --accent: #c0392b;
+    --accent-light: #f8e8e6;
+    --green: #27ae60;
+    --green-light: #e8f8ee;
+    --muted: #7a6f60;
+    --highlight: #fffbe6;
+    --sel-bg: #e8f0ff;
+    --sel-border: #3a5bd9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--ink); color: var(--paper);
+    padding: 2.5rem 2rem 2rem; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  header::before {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.04) 39px,rgba(255,255,255,.04) 40px);
+  }
+  .header-label { font-size:.75rem; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:var(--rule); margin-bottom:.6rem; position:relative; }
+  header h1 { font-family:'Playfair Display',Georgia,serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.1; position:relative; }
+  header h1 em { font-style:italic; color:#e8c99a; }
+  .header-sub { margin-top:.8rem; font-size:.9rem; color:var(--rule); font-style:italic; position:relative; }
+
+  /* PROGRESS */
+  .progress-wrap {
+    background:var(--cream); border-bottom:1px solid var(--rule);
+    padding:.9rem 2rem; display:flex; align-items:center; gap:1rem;
+    position:sticky; top:0; z-index:100;
+  }
+  .progress-label { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
+  .progress-track { flex:1; height:6px; background:var(--rule); border-radius:3px; overflow:hidden; }
+  .progress-fill { height:100%; background:var(--accent); border-radius:3px; transition:width .5s ease; width:0%; }
+  .score-display { font-family:'Playfair Display',serif; font-weight:700; font-size:1rem; color:var(--ink); white-space:nowrap; }
+
+  /* LAYOUT */
+  main { max-width:760px; margin:0 auto; padding:2.5rem 1.5rem 4rem; }
+
+  /* SECTION HEADS */
+  .section-head { display:flex; align-items:baseline; gap:1rem; margin:3rem 0 1.8rem; padding-bottom:.6rem; border-bottom:2px solid var(--ink); }
+  .section-num { font-family:'Playfair Display',serif; font-size:2.5rem; font-weight:900; color:var(--accent); line-height:1; }
+  .section-info h2 { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; }
+  .section-info p { font-size:.85rem; color:var(--muted); font-style:italic; margin-top:.1rem; }
+
+  /* QUESTION CARD */
+  .q-card { background:white; border:1px solid var(--rule); border-radius:4px; padding:1.4rem 1.6rem; margin-bottom:1.2rem; transition:border-color .2s; }
+  .q-card.locked { pointer-events:none; }
+  .q-num { font-size:.72rem; font-weight:600; letter-spacing:.15em; text-transform:uppercase; color:var(--muted); margin-bottom:.5rem; }
+  .q-text { font-size:1.05rem; margin-bottom:1rem; font-style:italic; color:var(--ink); }
+
+  /* OPTIONS */
+  .options { display:grid; grid-template-columns:1fr 1fr; gap:.55rem; }
+  @media(max-width:500px){ .options { grid-template-columns:1fr; } }
+
+  .opt-btn {
+    background:var(--cream); border:1.5px solid var(--rule); border-radius:3px;
+    padding:.6rem 1rem; font-family:'Source Serif 4',serif; font-size:.95rem;
+    color:var(--ink); cursor:pointer; text-align:left;
+    transition:background .15s,border-color .15s,transform .1s;
+    display:flex; align-items:center; gap:.6rem;
+  }
+  .opt-btn:hover:not(:disabled) { background:var(--highlight); border-color:var(--ink); transform:translateY(-1px); }
+  .opt-btn.selected { background:var(--sel-bg); border-color:var(--sel-border); color:#1a2a70; }
+  .opt-btn.selected .opt-letter { color:var(--sel-border); }
+  .opt-btn .opt-letter { font-family:'Playfair Display',serif; font-weight:700; font-size:1rem; color:var(--muted); min-width:1.1rem; }
+  .opt-btn.correct { background:var(--green-light); border-color:var(--green); color:#145a32; }
+  .opt-btn.correct .opt-letter { color:var(--green); }
+  .opt-btn.wrong { background:var(--accent-light); border-color:var(--accent); color:#7b241c; }
+  .opt-btn.wrong .opt-letter { color:var(--accent); }
+
+  /* CHECK BUTTON */
+  .check-btn {
+    display:block; width:100%; margin-top:.5rem; padding:.75rem 1.8rem;
+    background:var(--ink); color:var(--paper); border:none; border-radius:3px;
+    font-family:'Source Serif 4',serif; font-size:1rem; font-weight:600;
+    cursor:pointer; letter-spacing:.03em;
+    transition:background .15s,transform .1s,opacity .15s;
+  }
+  .check-btn:hover:not(:disabled) { background:#2d2d4e; transform:translateY(-1px); }
+  .check-btn:disabled { opacity:.4; cursor:default; transform:none; }
+
+  /* SECTION FEEDBACK */
+  .section-fb {
+    margin-top:1rem; padding:.9rem 1.2rem; border-radius:3px;
+    font-size:.95rem; display:none; line-height:1.6;
+  }
+  .section-fb.show { display:block; animation:fadeIn .3s ease; }
+  .section-fb.ok { background:var(--green-light); border-left:4px solid var(--green); color:#145a32; }
+  .section-fb.err { background:var(--accent-light); border-left:4px solid var(--accent); color:#7b241c; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:none} }
+
+  /* WORD BANK */
+  .word-bank {
+    display:flex; flex-wrap:wrap; gap:.45rem;
+    margin-bottom:1.2rem; padding:.9rem 1rem;
+    background:var(--cream); border:1px dashed var(--rule); border-radius:3px;
+  }
+  .word-bank-label { width:100%; font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:.3rem; }
+  .word-chip {
+    background:white; border:1.5px solid var(--rule); border-radius:20px;
+    padding:.25rem .8rem; font-family:'Source Serif 4',serif; font-size:.9rem;
+    cursor:pointer; transition:background .15s,border-color .15s;
+  }
+  .word-chip:hover:not(.used):not(.chip-active) { background:var(--highlight); border-color:var(--ink); }
+  .word-chip.chip-active { background:var(--sel-bg); border-color:var(--sel-border); color:#1a2a70; outline:2px solid var(--sel-border); }
+  .word-chip.used { opacity:.35; text-decoration:line-through; pointer-events:none; }
+
+  /* GAP */
+  .gap-sentence { font-size:1.05rem; line-height:2.6; font-style:italic; }
+  .gap {
+    display:inline-block; min-width:88px; border-bottom:2px solid var(--ink);
+    padding:0 6px; text-align:center; font-style:normal; font-weight:600;
+    cursor:pointer; border-radius:2px 2px 0 0;
+    transition:background .15s,border-color .15s;
+    color:#888;
+  }
+  .gap:empty::before { content:'___'; }
+  .gap.filled { color:var(--sel-border); border-color:var(--sel-border); background:var(--sel-bg); }
+  .gap.correct-gap { color:var(--green)!important; border-color:var(--green)!important; background:var(--green-light)!important; }
+  .gap.wrong-gap { color:var(--accent)!important; border-color:var(--accent)!important; background:var(--accent-light)!important; }
+
+  /* CLOZE */
+  .cloze-text { font-size:1.05rem; line-height:2.8; font-style:italic; padding:1.2rem 1.4rem; background:var(--highlight); border:1px solid var(--rule); border-radius:3px; margin-bottom:1rem; }
+  .cloze-input {
+    display:inline-block; min-width:76px;
+    border:none; border-bottom:2px solid var(--ink);
+    background:transparent; font-family:'Source Serif 4',serif;
+    font-size:1rem; font-weight:600; color:var(--ink);
+    text-align:center; outline:none; padding:0 4px;
+    transition:border-color .2s; font-style:normal;
+  }
+  .cloze-input:focus { border-color:var(--sel-border); }
+  .cloze-input.correct-input { color:var(--green); border-color:var(--green); }
+  .cloze-input.wrong-input { color:var(--accent); border-color:var(--accent); }
+
+  /* RESULTS */
+  #results {
+    display:none; text-align:center; padding:3rem 2rem;
+    background:var(--ink); color:var(--paper); border-radius:6px; margin-top:3rem;
+    animation:fadeIn .5s ease;
+  }
+  #results h2 { font-family:'Playfair Display',serif; font-size:2.5rem; margin-bottom:.5rem; color:#e8c99a; }
+  .final-score { font-family:'Playfair Display',serif; font-size:5rem; font-weight:900; line-height:1; margin:1rem 0; }
+  .final-score span { color:#e8c99a; }
+  .result-msg { font-size:1.1rem; font-style:italic; color:var(--rule); margin-bottom:1.5rem; }
+  .retry-btn { background:#e8c99a; color:var(--ink); border:none; padding:.7rem 2rem; font-family:'Source Serif 4',serif; font-weight:600; font-size:1rem; cursor:pointer; border-radius:3px; }
+  .retry-btn:hover { background:#f0d8b0; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-label">A2 English · Vocabulary Test</div>
+  <h1>Size &amp; <em>Dimension</em></h1>
+  <p class="header-sub">20 questions · three sections · change your answers before you check</p>
+</header>
+
+<div class="progress-wrap">
+  <span class="progress-label">Score</span>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <span class="score-display" id="scoreDisplay">– / –</span>
+</div>
+
+<main>
+
+  <div class="section-head">
+    <div class="section-num">A</div>
+    <div class="section-info">
+      <h2>Multiple Choice</h2>
+      <p>Choose the best word to complete each sentence. Click again to change your choice. Check when you're ready.</p>
+    </div>
+  </div>
+  <div id="sectionA"></div>
+  <button class="check-btn" id="checkA" disabled>Check Section A →</button>
+  <div class="section-fb" id="fbA"></div>
+
+  <div class="section-head">
+    <div class="section-num">B</div>
+    <div class="section-info">
+      <h2>Fill the Gap</h2>
+      <p>Click a word from the box, then click a gap. Click a filled gap to clear it. There are more words than gaps!</p>
+    </div>
+  </div>
+  <div id="sectionB"></div>
+  <button class="check-btn" id="checkB" disabled>Check Section B →</button>
+  <div class="section-fb" id="fbB"></div>
+
+  <div class="section-head">
+    <div class="section-num">C</div>
+    <div class="section-info">
+      <h2>Complete the Text</h2>
+      <p>Type the correct word in each gap. Use the word box to help you.</p>
+    </div>
+  </div>
+  <div id="sectionC"></div>
+  <button class="check-btn" id="checkC">Check Section C →</button>
+  <div class="section-fb" id="fbC"></div>
+
+  <div id="results">
+    <h2>Test Complete!</h2>
+    <div class="final-score" id="finalScore"></div>
+    <p class="result-msg" id="resultMsg"></p>
+    <button class="retry-btn" onclick="location.reload()">Try Again</button>
+  </div>
+
+</main>
+
+<script>
+// ══════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════
+
+const mcQ = [
+  {
+    q: "The table is two metres ___. It doesn't fit in my kitchen.",
+    opts:["long","length","tall","wide"], ans:0,
+    exp:"<strong>Long</strong> (adjective) describes horizontal measurement. <em>Length</em> is the noun form."
+  },
+  {
+    q: "What is the ___ of this bridge? Is it more than 500 metres?",
+    opts:["high","wide","length","tall"], ans:2,
+    exp:"<strong>Length</strong> is the noun we use to ask how long something is."
+  },
+  {
+    q: "The shelf is very ___. I can't reach it without a chair.",
+    opts:["long","tall","high","deep"], ans:2,
+    exp:"<strong>High</strong> describes how far something is above the ground — shelves, ceilings, mountains."
+  },
+  {
+    q: "My brother is 1 metre 90. He is very ___.",
+    opts:["high","big","tall","length"], ans:2,
+    exp:"<strong>Tall</strong> is used for people (and trees). We say <em>tall</em>, not <em>high</em>, for a person."
+  },
+  {
+    q: "The river is not very ___. I can swim across it easily.",
+    opts:["wide","long","deep","tall"], ans:0,
+    exp:"<strong>Wide</strong> describes the measurement from one side to the other."
+  },
+  {
+    q: "Be careful — the swimming pool is three metres ___.",
+    opts:["tall","high","wide","deep"], ans:3,
+    exp:"<strong>Deep</strong> describes measurement from top to bottom — in water, a hole, or a container."
+  },
+  {
+    q: "The ___ of the room is 4 metres, so we can fit a big sofa in it.",
+    opts:["width","deep","tall","length"], ans:0,
+    exp:"<strong>Width</strong> is the noun form of <em>wide</em> — how wide something is."
+  },
+  {
+    q: "My jeans are too ___ around the waist. I need a smaller size.",
+    opts:["long","high","wide","deep"], ans:2,
+    exp:"<strong>Wide</strong> — clothing can be too wide (or too narrow) around the waist, hips, or shoulders."
+  }
+];
+
+const gapQ = [
+  { s:"The ___ of the swimming pool is 50 metres.",         ans:"length" },
+  { s:"Mont Blanc is nearly 5,000 metres in ___.",          ans:"height" },
+  { s:"Is the river ___ enough to swim across?",            ans:"wide"   },
+  { s:"We measured the ___ of the box: it is 30 cm.",       ans:"depth"  },
+  { s:"The Great Wall of China is very ___.",               ans:"long"   },
+  { s:"The ___ of the road is only 3 metres, so big trucks cannot pass.", ans:"width" },
+  { s:"The lake is very ___. Divers can go 40 metres down.",ans:"deep"   },
+  { s:"She is not very ___ — she is only 1 metre 55.",      ans:"tall"   }
+];
+
+const bankWords = ["length","height","wide","depth","long","width","deep","tall","size","high","short","narrow"];
+
+// Cloze — 4 gaps → total = 8 + 8 + 4 = 20
+// Gap 2 (towers) accepts both 'high' and 'tall'
+const clozeSlots = [
+  { ans:"long",  alts:[]       },
+  { ans:"high",  alts:["tall"] },
+  { ans:"wide",  alts:[]       },
+  { ans:"deep",  alts:[]       }
+];
+const clozeHTML = `My city has a famous old bridge. It is quite <span class='cs' data-i='0'>___</span> — about 120 metres from end to end. The towers at each end are very <span class='cs' data-i='1'>___</span>, rising about 30 metres above the road. The bridge is not very <span class='cs' data-i='2'>___</span>, so two people cannot walk side by side easily. Under the bridge, the river is quite <span class='cs' data-i='3'>___</span>, around 8 metres at its lowest point.`;
+const clozeHints = ["long","high","tall","wide","deep","length","narrow","short"];
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let score = 0;
+const TOTAL = 20;
+
+const mcSel  = new Array(8).fill(null);
+let mcLocked = false;
+
+let activeChip = null;
+const gapFill  = new Array(8).fill(null);
+let gapLocked  = false;
+
+let clozeLocked = false;
+
+// ══════════════════════════════════════════
+// PROGRESS
+// ══════════════════════════════════════════
+function updateProgress(checked) {
+  const pct = (score / TOTAL) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('scoreDisplay').textContent = score + ' / ' + checked;
+}
+
+// ══════════════════════════════════════════
+// SECTION A
+// ══════════════════════════════════════════
+function buildMC() {
+  const con = document.getElementById('sectionA');
+  const LTR = ['A','B','C','D'];
+  mcQ.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = 'mc-' + qi;
+    card.innerHTML = `<div class="q-num">Question ${qi+1}</div>
+      <p class="q-text">${q.q.replace('___','<span style="letter-spacing:.05em">___</span>')}</p>
+      <div class="options" id="opts-${qi}"></div>`;
+    con.appendChild(card);
+    const od = card.querySelector('#opts-'+qi);
+    q.opts.forEach((opt, oi) => {
+      const b = document.createElement('button');
+      b.className = 'opt-btn';
+      b.innerHTML = `<span class="opt-letter">${LTR[oi]}</span>${opt}`;
+      b.onclick = () => pickMC(qi, oi);
+      od.appendChild(b);
+    });
+  });
+  document.getElementById('checkA').onclick = checkA;
+}
+
+function pickMC(qi, oi) {
+  if (mcLocked) return;
+  const btns = document.getElementById('opts-'+qi).querySelectorAll('.opt-btn');
+  if (mcSel[qi] === oi) {
+    // deselect
+    btns[oi].classList.remove('selected');
+    mcSel[qi] = null;
+  } else {
+    if (mcSel[qi] !== null) btns[mcSel[qi]].classList.remove('selected');
+    mcSel[qi] = oi;
+    btns[oi].classList.add('selected');
+  }
+  document.getElementById('checkA').disabled = mcSel.some(v => v === null);
+}
+
+function checkA() {
+  if (mcLocked) return;
+  mcLocked = true;
+  document.getElementById('checkA').disabled = true;
+  let correct = 0;
+  const errs = [];
+  mcQ.forEach((q, qi) => {
+    const card = document.getElementById('mc-'+qi);
+    card.classList.add('locked');
+    const btns = card.querySelectorAll('.opt-btn');
+    btns.forEach(b => b.disabled = true);
+    const chosen = mcSel[qi];
+    if (chosen === q.ans) {
+      btns[chosen].classList.remove('selected');
+      btns[chosen].classList.add('correct');
+      correct++;
+    } else {
+      if (chosen !== null) { btns[chosen].classList.remove('selected'); btns[chosen].classList.add('wrong'); }
+      btns[q.ans].classList.add('correct');
+      errs.push(`<em>Q${qi+1}:</em> ${q.exp}`);
+    }
+  });
+  score += correct;
+  updateProgress(8);
+  const fb = document.getElementById('fbA');
+  fb.className = 'section-fb show ' + (correct===8 ? 'ok' : 'err');
+  fb.innerHTML = correct===8
+    ? '✓ Perfect! All 8 correct.'
+    : `✗ You got <strong>${correct}/8</strong> correct.<br><br>` + errs.join('<br>');
+  fb.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+// ══════════════════════════════════════════
+// SECTION B
+// ══════════════════════════════════════════
+function buildGap() {
+  const con = document.getElementById('sectionB');
+
+  // Bank
+  const bank = document.createElement('div');
+  bank.className = 'word-bank'; bank.id = 'wbank';
+  bank.innerHTML = '<div class="word-bank-label">Word bank — click a word, then click a gap</div>';
+  bankWords.forEach(w => {
+    const c = document.createElement('button');
+    c.className = 'word-chip'; c.textContent = w; c.dataset.word = w; c.id = 'chip-'+w;
+    c.onclick = () => pickChip(c, w);
+    bank.appendChild(c);
+  });
+  con.appendChild(bank);
+
+  // Cards
+  gapQ.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    const num = document.createElement('div'); num.className='q-num'; num.textContent='Question '+(qi+9);
+    card.appendChild(num);
+    const p = document.createElement('p'); p.className='gap-sentence';
+    const parts = q.s.split('___');
+    p.appendChild(document.createTextNode(parts[0]));
+    const gap = document.createElement('span'); gap.className='gap'; gap.dataset.qi=qi;
+    gap.onclick = () => tapGap(gap, qi);
+    p.appendChild(gap);
+    p.appendChild(document.createTextNode(parts[1]||''));
+    card.appendChild(p);
+    con.appendChild(card);
+  });
+
+  document.getElementById('checkB').onclick = checkB;
+}
+
+function pickChip(chip, word) {
+  if (gapLocked) return;
+  if (chip.classList.contains('used')) return;
+  if (activeChip === word) {
+    chip.classList.remove('chip-active'); activeChip = null;
+  } else {
+    if (activeChip) { const p = document.getElementById('chip-'+activeChip); if(p) p.classList.remove('chip-active'); }
+    activeChip = word; chip.classList.add('chip-active');
+  }
+}
+
+function tapGap(gap, qi) {
+  if (gapLocked) return;
+  const current = gapFill[qi];
+  if (activeChip) {
+    // replace
+    if (current) returnChip(current);
+    gap.textContent = activeChip; gap.classList.add('filled');
+    gapFill[qi] = activeChip;
+    const c = document.getElementById('chip-'+activeChip);
+    if(c){c.classList.remove('chip-active'); c.classList.add('used');}
+    activeChip = null;
+  } else if (current) {
+    // clear
+    returnChip(current); gap.textContent=''; gap.classList.remove('filled');
+    gapFill[qi] = null;
+  }
+  document.getElementById('checkB').disabled = gapFill.some(v=>v===null);
+}
+
+function returnChip(word) {
+  const c = document.getElementById('chip-'+word);
+  if(c){c.classList.remove('used','chip-active');}
+  if(activeChip===word) activeChip=null;
+}
+
+function checkB() {
+  if (gapLocked) return;
+  gapLocked = true;
+  document.getElementById('checkB').disabled = true;
+  document.querySelectorAll('.word-chip').forEach(c=>{c.disabled=true; c.classList.remove('chip-active');});
+  activeChip = null;
+  let correct=0; const errs=[];
+  gapQ.forEach((q,qi)=>{
+    const gap = document.querySelector(`.gap[data-qi="${qi}"]`);
+    const given = gapFill[qi];
+    if(given && given.toLowerCase()===q.ans.toLowerCase()){
+      gap.classList.remove('filled'); gap.classList.add('correct-gap'); correct++;
+    } else {
+      gap.classList.remove('filled'); gap.classList.add('wrong-gap');
+      errs.push(`Q${qi+9}: <strong>${q.ans}</strong>`);
+    }
+  });
+  score+=correct; updateProgress(16);
+  const fb=document.getElementById('fbB');
+  fb.className='section-fb show '+(correct===8?'ok':'err');
+  fb.innerHTML=correct===8
+    ? '✓ Perfect! All 8 correct.'
+    : `✗ You got <strong>${correct}/8</strong>. Correct answers: `+errs.join(' &nbsp;|&nbsp; ');
+  fb.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ══════════════════════════════════════════
+// SECTION C
+// ══════════════════════════════════════════
+function buildCloze() {
+  const con = document.getElementById('sectionC');
+
+  // Hints
+  const hints = document.createElement('div'); hints.className='word-bank';
+  hints.innerHTML='<div class="word-bank-label">Words to help you (you may not need all of them)</div>';
+  clozeHints.forEach(w=>{
+    const s=document.createElement('span'); s.className='word-chip';
+    s.textContent=w; s.style.cssText='cursor:default;pointer-events:none;';
+    hints.appendChild(s);
+  });
+  con.appendChild(hints);
+
+  // Card
+  const card=document.createElement('div'); card.className='q-card';
+  card.innerHTML='<div class="q-num">Questions 17–20 · Read the text and fill each gap</div>';
+  const tp=document.createElement('p'); tp.className='cloze-text'; tp.innerHTML=clozeHTML;
+  card.appendChild(tp);
+  // swap placeholders for inputs
+  tp.querySelectorAll('.cs').forEach(slot=>{
+    const i=parseInt(slot.dataset.i);
+    const inp=document.createElement('input');
+    inp.type='text'; inp.className='cloze-input'; inp.placeholder='?';
+    inp.dataset.i=i; inp.size=Math.max(clozeSlots[i].ans.length+2,6);
+    slot.parentNode.replaceChild(inp,slot);
+  });
+  con.appendChild(card);
+  document.getElementById('checkC').onclick=checkC;
+}
+
+function checkC() {
+  if(clozeLocked) return;
+  clozeLocked=true;
+  document.getElementById('checkC').disabled=true;
+  const inputs=document.querySelectorAll('.cloze-input');
+  let correct=0; const errs=[];
+  inputs.forEach(inp=>{
+    const i=parseInt(inp.dataset.i);
+    inp.disabled=true;
+    const given=inp.value.trim().toLowerCase();
+    const expected=clozeSlots[i].ans.toLowerCase();
+    const alts=clozeSlots[i].alts.map(a=>a.toLowerCase());
+    if(given===expected||alts.includes(given)){
+      inp.classList.add('correct-input'); correct++;
+    } else {
+      inp.classList.add('wrong-input');
+      const acc=alts.length?`<strong>${expected}</strong> or <strong>${alts.join('/')}</strong>`:`<strong>${expected}</strong>`;
+      errs.push(`gap ${i+1}: ${acc}`);
+    }
+  });
+  score+=correct; updateProgress(TOTAL);
+  const fb=document.getElementById('fbC');
+  fb.className='section-fb show '+(correct===4?'ok':'err');
+  fb.innerHTML=correct===4
+    ? '✓ Excellent! All 4 gaps correct.'
+    : `✗ You got <strong>${correct}/4</strong>. Correct answers: `+errs.join(', ');
+  fb.scrollIntoView({behavior:'smooth',block:'nearest'});
+  setTimeout(showResults,1200);
+}
+
+// ══════════════════════════════════════════
+// RESULTS
+// ══════════════════════════════════════════
+function showResults() {
+  const res=document.getElementById('results');
+  res.style.display='block';
+  document.getElementById('finalScore').innerHTML=score+'<span>/'+TOTAL+'</span>';
+  const pct=score/TOTAL;
+  let msg;
+  if(pct>=.9)      msg="Outstanding! You have an excellent command of size and dimension vocabulary.";
+  else if(pct>=.7) msg="Well done! You know most of this vocabulary. Review the words you missed.";
+  else if(pct>=.5) msg="Good effort. Focus on the noun forms — length, width, height, depth — and their adjective pairs.";
+  else             msg="Keep practising! Study the word pairs: long/length, wide/width, high/height, deep/depth, and tall.";
+  document.getElementById('resultMsg').textContent=msg;
+  res.scrollIntoView({behavior:'smooth'});
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{ buildMC(); buildGap(); buildCloze(); });
+</script>
+</body>
+</html>

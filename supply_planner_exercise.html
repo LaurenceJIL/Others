@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supply Planning – Logic Exercise</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Barlow:wght@400;600;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --panel: #1c2330;
+    --border: #2a3444;
+    --accent: #f0a500;
+    --accent2: #00c9a7;
+    --danger: #e05252;
+    --text: #d1d9e0;
+    --muted: #7a8798;
+    --mono: 'DM Mono', monospace;
+    --body: 'Barlow', sans-serif;
+    --head: 'Barlow Condensed', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--body); font-size: 16px; min-height: 100vh; padding: 32px 16px; }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(240,165,0,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(240,165,0,0.04) 1px, transparent 1px);
+    background-size: 48px 48px; pointer-events: none; z-index: 0;
+  }
+  .container { position: relative; max-width: 800px; margin: 0 auto; z-index: 1; }
+
+  header { margin-bottom: 36px; border-left: 4px solid var(--accent); padding-left: 16px; }
+  .tag { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 6px; }
+  h1 { font-family: var(--head); font-size: clamp(28px, 5vw, 44px); font-weight: 800; line-height: 1; letter-spacing: -0.01em; color: #fff; }
+  h1 span { color: var(--accent); }
+  .subtitle { margin-top: 8px; color: var(--muted); font-size: 14px; font-family: var(--mono); }
+
+  .progress-bar-wrap { margin-bottom: 32px; }
+  .progress-label { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-bottom: 6px; letter-spacing:.08em; text-transform:uppercase; }
+  .progress-track { height: 4px; background: var(--border); border-radius: 2px; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; width: 0%; transition: width 0.4s ease; }
+
+  .scenario { background: var(--panel); border: 1px solid var(--border); border-top: 3px solid var(--accent); border-radius: 4px; padding: 24px; margin-bottom: 28px; }
+  .scenario h2 { font-family: var(--head); font-size: 18px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+  .scenario p { line-height: 1.65; margin-bottom: 10px; color: var(--text); }
+  .scenario p:last-child { margin-bottom: 0; }
+
+  .data-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 13px; margin: 16px 0; overflow-x:auto; display:block; }
+  .data-table th { background: #0d1117; border: 1px solid var(--border); padding: 8px 12px; text-align: left; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; font-size: 11px; white-space:nowrap; }
+  .data-table td { border: 1px solid var(--border); padding: 8px 12px; color: var(--text); white-space:nowrap; }
+  .data-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+  .highlight-row td { color: var(--accent); font-weight: 500; }
+
+  .section-label { font-family: var(--head); font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .question-block { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 20px 24px; margin-bottom: 16px; transition: border-color 0.2s; }
+  .question-block.correct { border-color: var(--accent2); }
+  .question-block.wrong { border-color: var(--danger); }
+  .q-number { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .q-text { font-size: 15px; line-height: 1.6; margin-bottom: 16px; color: #e6edf3; }
+  .q-text strong { color: var(--accent); font-weight: 600; }
+  .q-text em { color: var(--muted); font-style: italic; }
+
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .opt-btn { background: transparent; border: 1px solid var(--border); border-radius: 3px; padding: 10px 14px; color: var(--text); font-family: var(--body); font-size: 14px; text-align: left; cursor: pointer; transition: all 0.15s; display: flex; align-items: flex-start; gap: 10px; }
+  .opt-btn:hover:not(:disabled) { border-color: var(--accent); color: #fff; background: rgba(240,165,0,0.06); }
+  .opt-btn:disabled { cursor: default; }
+  .opt-btn.selected-correct { border-color: var(--accent2); background: rgba(0,201,167,0.1); color: var(--accent2); }
+  .opt-btn.selected-wrong { border-color: var(--danger); background: rgba(224,82,82,0.1); color: var(--danger); }
+  .opt-btn.reveal-correct { border-color: var(--accent2); color: var(--accent2); opacity: 0.6; }
+  .opt-key { font-family: var(--mono); font-size: 12px; width: 22px; height: 22px; min-width:22px; border: 1px solid currentColor; border-radius: 2px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; opacity: 0.7; margin-top:1px; }
+
+  .feedback { margin-top: 12px; font-size: 13px; font-family: var(--mono); padding: 10px 14px; border-radius: 3px; display: none; line-height: 1.6; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: rgba(0,201,167,0.08); color: var(--accent2); border: 1px solid rgba(0,201,167,0.2); }
+  .feedback.ko { background: rgba(224,82,82,0.08); color: #f08080; border: 1px solid rgba(224,82,82,0.2); }
+
+  .fill-input { background: var(--bg); border: 1px solid var(--border); border-bottom: 2px solid var(--accent); border-radius: 2px 2px 0 0; color: var(--accent); font-family: var(--mono); font-size: 14px; padding: 4px 8px; width: 190px; outline: none; transition: border-color 0.2s; }
+  .fill-input:focus { border-bottom-color: #fff; }
+  .fill-input.correct-input { border-bottom-color: var(--accent2); color: var(--accent2); }
+  .fill-input.wrong-input { border-bottom-color: var(--danger); color: var(--danger); }
+  .check-btn { margin-top: 14px; background: var(--accent); color: #000; border: none; padding: 8px 20px; font-family: var(--head); font-size: 14px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 3px; cursor: pointer; transition: opacity 0.15s; display:block; }
+  .check-btn:hover { opacity: 0.85; }
+  .check-btn:disabled { opacity: 0.4; cursor: default; }
+
+  .vocab-pill { display: inline-block; background: rgba(240,165,0,0.12); border: 1px solid rgba(240,165,0,0.3); color: var(--accent); font-family: var(--mono); font-size: 12px; padding: 3px 10px; border-radius: 2px; margin: 3px; }
+
+  /* DND */
+  .dnd-chips-pool { display: flex; flex-wrap: wrap; gap: 10px; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; margin-bottom: 20px; min-height: 56px; }
+  .chip { background: var(--panel); border: 1px solid var(--accent); color: var(--accent); font-family: var(--mono); font-size: 13px; padding: 5px 12px; border-radius: 3px; cursor: grab; user-select: none; transition: opacity 0.15s, transform 0.15s, background 0.15s; }
+  .chip:hover { background: rgba(240,165,0,0.12); transform: translateY(-1px); }
+  .chip.dragging { opacity: 0.4; cursor: grabbing; }
+  .chip.used { opacity: 0.2; pointer-events: none; }
+  .chip.tapped { outline: 2px solid #fff; }
+
+  .dnd-email { background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 24px 28px; font-size: 15px; line-height: 2.1; color: var(--text); }
+  .email-header { font-family: var(--mono); font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 18px; line-height: 1.9; }
+  .email-header span { color: var(--text); }
+
+  .drop-zone { display: inline-block; min-width: 140px; border-bottom: 2px dashed var(--accent); margin: 0 3px; vertical-align: middle; text-align: center; padding: 2px 8px; border-radius: 2px 2px 0 0; transition: background 0.15s, border-color 0.15s; cursor: pointer; }
+  .drop-zone.drag-over { background: rgba(240,165,0,0.12); border-color: #fff; border-style: solid; }
+  .drop-zone.filled { border-bottom: 2px solid var(--accent2); background: rgba(0,201,167,0.06); border-style: solid; }
+  .drop-zone.filled-wrong { border-bottom: 2px solid var(--danger); background: rgba(224,82,82,0.06); border-style: solid; }
+  .zone-chip { font-family: var(--mono); font-size: 13px; color: var(--accent2); }
+  .zone-placeholder { font-family: var(--mono); font-size: 12px; color: var(--muted); font-style: italic; }
+  .drop-zone.filled-wrong .zone-chip { color: var(--danger); }
+
+  .dnd-btn-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+  .dnd-check-btn { background: var(--accent); color: #000; border: none; padding: 10px 28px; font-family: var(--head); font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 3px; cursor: pointer; transition: opacity 0.15s; }
+  .dnd-check-btn:hover { opacity: 0.85; }
+  .dnd-check-btn:disabled { opacity: 0.4; cursor: default; }
+  .dnd-reset-btn { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 10px 20px; font-family: var(--head); font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 3px; cursor: pointer; transition: all 0.15s; }
+  .dnd-reset-btn:hover { border-color: var(--muted); color: var(--text); }
+
+  .dnd-feedback { margin-top: 16px; font-size: 13px; font-family: var(--mono); padding: 12px 16px; border-radius: 3px; display: none; line-height: 1.6; }
+  .dnd-feedback.show { display: block; }
+  .dnd-feedback.ok { background: rgba(0,201,167,0.08); color: var(--accent2); border: 1px solid rgba(0,201,167,0.2); }
+  .dnd-feedback.partial { background: rgba(240,165,0,0.08); color: var(--accent); border: 1px solid rgba(240,165,0,0.2); }
+  .dnd-feedback.ko { background: rgba(224,82,82,0.08); color: #f08080; border: 1px solid rgba(224,82,82,0.2); }
+
+  /* Score */
+  #score-section { display: none; background: var(--panel); border: 1px solid var(--border); border-top: 3px solid var(--accent2); border-radius: 4px; padding: 32px; margin-top: 32px; text-align: center; }
+  #score-section.show { display: block; }
+  .score-num { font-family: var(--head); font-size: 80px; font-weight: 800; color: var(--accent2); line-height: 1; }
+  .score-label { color: var(--muted); font-family: var(--mono); font-size: 13px; margin-top: 6px; }
+  .score-breakdown { display: flex; justify-content: center; gap: 32px; margin: 24px 0; flex-wrap: wrap; }
+  .score-part-num { font-family: var(--head); font-size: 36px; font-weight: 800; color: var(--accent); }
+  .score-part-label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing:.08em; }
+  .score-msg { margin-top: 12px; font-size: 15px; line-height: 1.7; color: var(--text); max-width: 520px; margin-left: auto; margin-right: auto; }
+
+  @media (max-width: 520px) {
+    .fill-input { width: 130px; }
+    .dnd-email { padding: 14px; font-size: 14px; }
+    .drop-zone { min-width: 110px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="tag">B1 English · Workplace Training</div>
+    <h1>Supply <span>Planning</span><br>Logic Exercise</h1>
+    <div class="subtitle">Chemical Production · 32 Points · Vocabulary in Context</div>
+  </header>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-label">Progress — <span id="prog-text">0 / 25 answered</span></div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+  </div>
+
+  <!-- SCENARIO -->
+  <div class="scenario">
+    <h2>📋 Scenario</h2>
+    <p>You are the <strong>supply planner</strong> at ChemPro Industries, a specialty chemical manufacturer. It is Monday morning. You receive the following information:</p>
+    <table class="data-table">
+      <thead>
+        <tr><th>Material</th><th>Current Stock</th><th>Reorder Point</th><th>Lead Time</th><th>Weekly Usage</th><th>Min. Order Qty</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Sodium Hydroxide</td><td>420 kg</td><td>300 kg</td><td>5 days</td><td>150 kg</td><td>200 kg</td></tr>
+        <tr class="highlight-row"><td>Ethanol (96%)</td><td>180 L</td><td>200 L</td><td>3 days</td><td>90 L</td><td>100 L</td></tr>
+        <tr><td>Hydrochloric Acid</td><td>600 L</td><td>250 L</td><td>7 days</td><td>80 L</td><td>100 L</td></tr>
+        <tr><td>Activated Carbon</td><td>50 kg</td><td>100 kg</td><td>10 days</td><td>20 kg</td><td>50 kg</td></tr>
+        <tr><td>Sulfuric Acid</td><td>310 L</td><td>300 L</td><td>4 days</td><td>60 L</td><td>100 L</td></tr>
+      </tbody>
+    </table>
+    <p>Batch <strong>#CH-449</strong> requires <strong>120 L of Ethanol</strong> and is scheduled for <strong>Wednesday</strong>. Your supplier's next delivery slot is <strong>Thursday</strong>. The production manager has also warned that Activated Carbon consumption may <strong>double next week</strong> due to a new customer order.</p>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PART 1 -->
+  <!-- ============================================================ -->
+  <div class="section-label" style="margin-top:8px;">Part 1 — Multiple Choice · 12 questions</div>
+
+  <div class="question-block" id="qb1">
+    <div class="q-number">QUESTION 01 / 12</div>
+    <div class="q-text">Two materials are below their reorder point. Which one is <strong>most urgent to reorder</strong> because it is also needed for a scheduled production batch this week?</div>
+    <div class="options">
+      <button class="opt-btn" onclick="mcAnswer(1,'A')"><span class="opt-key">A</span> Sodium Hydroxide — stock is high but lead time is long</button>
+      <button class="opt-btn" onclick="mcAnswer(1,'B')"><span class="opt-key">B</span> Ethanol (96%) — below reorder point and needed for Batch #CH-449</button>
+      <button class="opt-btn" onclick="mcAnswer(1,'C')"><span class="opt-key">C</span> Hydrochloric Acid — stock is well above its reorder point</button>
+      <button class="opt-btn" onclick="mcAnswer(1,'D')"><span class="opt-key">D</span> Activated Carbon — below reorder point but not needed this week</button>
+    </div>
+    <div class="feedback" id="fb1"></div>
+  </div>
+
+  <div class="question-block" id="qb2">
+    <div class="q-number">QUESTION 02 / 12</div>
+    <div class="q-text">Can Batch #CH-449 start on Wednesday as planned, using current Ethanol stock? Choose the best answer.</div>
+    <div class="options">
+      <button class="opt-btn" onclick="mcAnswer(2,'A')"><span class="opt-key">A</span> Yes — the current stock of 180 L is enough for 120 L.</button>
+      <button class="opt-btn" onclick="mcAnswer(2,'B')"><span class="opt-key">B</span> No — Ethanol is already below the reorder point, so production is blocked.</button>
+      <button class="opt-btn" onclick="mcAnswer(2,'C')"><span class="opt-key">C</span> No — after the batch, only 60 L will remain, which is below the reorder point.</button>
+      <button class="opt-btn" onclick="mcAnswer(2,'D')"><span class="opt-key">D</span> Yes — a new delivery arrives on Thursday, so there is no risk.</button>
+    </div>
+    <div class="feedback" id="fb2"></div>
+  </div>
+
+  <div class="question-block" id="qb3">
+    <div class="q-number">QUESTION 03 / 12</div>
+    <div class="q-text">Your manager asks: <em>"Should we place an <strong>emergency purchase order</strong> for Ethanol today?"</em> What is the most logical answer?</div>
+    <div class="options">
+      <button class="opt-btn" onclick="mcAnswer(3,'A')"><span class="opt-key">A</span> No, we have enough stock for the whole week.</button>
+      <button class="opt-btn" onclick="mcAnswer(3,'B')"><span class="opt-key">B</span> Yes, because stock is already below the reorder point and the batch will reduce it further.</button>
+      <button class="opt-btn" onclick="mcAnswer(3,'C')"><span class="opt-key">C</span> No, the supplier's lead time is only 3 days, so we can wait until Wednesday.</button>
+      <button class="opt-btn" onclick="mcAnswer(3,'D')"><span class="opt-key">D</span> Yes, but only if the price is acceptable.</button>
+    </div>
+    <div class="feedback" id="fb3"></div>
+  </div>
+
+  <div class="question-block" id="qb4">
+    <div class="q-number">QUESTION 04 / 12</div>
+    <div class="q-text">Which material has the <strong>longest lead time</strong> AND is <strong>also below its reorder point</strong>? This combination is the most critical for planning.</div>
+    <div class="options">
+      <button class="opt-btn" onclick="mcAnswer(4,'A')"><span class="opt-key">A</span> Hydrochloric Acid (7 days lead time)</button>
+      <button class="opt-btn" onclick="mcAnswer(4,'B')"><span class="opt-key">B</span> Ethanol (3 days lead time)</button>
+      <button class="opt-btn" onclick="mcAnswer(4,'C')"><span class="opt-key">C</span> Activated Carbon (10 days lead time)</button>
+      <button class="opt-btn" onclick="mcAnswer(4,'D')"><span class="opt-key">D</span> Sodium Hydroxide (5 days lead time)</button>
+    </div>
+    <div class="feedback" id="fb4"></div>
+  </div>
+
+  <div class="question-block" id="qb5">
+    <div class="q-number">QUESTION 05 / 12</div>
+    <div class="q-text">A colleague says: <em>"Our <strong>stock coverage</strong> for Sodium Hydroxide is less than 3 weeks."</em> Is this correct? (Stock: 420 kg · Weekly usage: 150 kg)</div>
+    <div class="options">
+      <button class="opt-btn" onclick="mcAnswer(5,'A')"><span class="opt-key">A</span> Yes — 420 ÷ 150 = 2.8 weeks, which is less than 3.</button>
+      <button class="opt-btn" onclick="mcAnswer(5,'B')"><span class="opt-key">B</span> No — 420 kg is well above the reorder point of 300 kg.</button>
+      <button class="opt-btn" onclick="mcAnswer(5,'C')"><span class="opt-key">C</span> No — stock coverage is calculated in days, not weeks.</button>
+      <button class="opt-btn" onclick="mcAnswer(5,'D')"><span class="opt-key">D</span> Yes — but only if you include safety stock in the calculation.</button>
+    </div>
+    <div class="feedback" id="fb5"></div>
+  </div>
+
+  <div class="question-block" id="qb6">
+    <div class="q-number">QUESTION 06 / 12</div>
+    <div class="q-text">After Batch #CH-449 runs on Wednesday, you will have 60 L of Ethanol left. The minimum order quantity is 100 L and the reorder point is 200 L. What is the <strong>minimum quantity</strong> you should order so that stock after delivery is at least at the reorder point?</div>
+    <div class="options">
+      <button class="opt-btn" onclick="mcAnswer(6,'A')"><span class="opt-key">A</span> 100 L — the minimum order quantity</button>
+      <button class="opt-btn" onclick="mcAnswer(6,'B')"><span class="opt-key">B</span> 140 L — exactly enough to reach the reorder point</button>
+      <button class="opt-btn" onclick="mcAnswer(6,'C')"><span class="opt-key">C</span> 200 L — to have comfortable stock after delivery</button>
+      <button class="opt-btn" onclick="mcAnswer(6,'D')"><span class="opt-key">D</span> 60 L — to replace only what the batch used</button>
+    </div>
+    <div class="feedback" id="fb6"></div>
+  </div>
+
+  <div class="question-block" id="qb7">
+    <div class="q-number">QUESTION 07 / 12</div>
+    <div class="q-text">Activated Carbon consumption may <strong>double next week</strong> to 40 kg. Current stock is 50 kg and lead time is 10 days (~1.4 weeks). What is the <strong>main risk</strong>?</div>
+    <div class="options">
+      <button class="opt-btn" onclick="mcAnswer(7,'A')"><span class="opt-key">A</span> The price of Activated Carbon will increase.</button>
+      <button class="opt-btn" onclick="mcAnswer(7,'B')"><span class="opt-key">B</span> Stock will run out before the next delivery arrives, causing a production stoppage.</button>
+      <button class="opt-btn" onclick="mcAnswer(7,'C')"><span class="opt-key">C</span> The minimum order quantity will be too large to store safely.</button>
+      <button class="opt-btn" onclick="mcAnswer(7,'D')"><span class="opt-key">D</span> The reorder point must be updated in the ERP system.</button>
+    </div>
+    <div class="feedback" id="fb7"></div>
+  </div>
+
+  <div class="question-block" id="qb8">
+    <div class="q-number">QUESTION 08 / 12</div>
+    <div class="q-text">Sulfuric Acid has 310 L in stock and a reorder point of 300 L. Weekly usage is 60 L. Which statement <strong>best describes</strong> the situation?</div>
+    <div class="options">
+      <button class="opt-btn" onclick="mcAnswer(8,'A')"><span class="opt-key">A</span> It is critical — stock is far below the reorder point.</button>
+      <button class="opt-btn" onclick="mcAnswer(8,'B')"><span class="opt-key">B</span> It is safe — stock coverage is more than 5 weeks.</button>
+      <button class="opt-btn" onclick="mcAnswer(8,'C')"><span class="opt-key">C</span> It needs attention — stock is just above the reorder point and will fall below it within days.</button>
+      <button class="opt-btn" onclick="mcAnswer(8,'D')"><span class="opt-key">D</span> It is fine — the 4-day lead time means we can always reorder quickly.</button>
+    </div>
+    <div class="feedback" id="fb8"></div>
+  </div>
+
+  <div class="question-block" id="qb9">
+    <div class="q-number">QUESTION 09 / 12</div>
+    <div class="q-text">You receive this message from the logistics team: <em>"Please confirm the <strong>ETA</strong> of the Hydrochloric Acid delivery."</em> What does ETA mean in supply chain?</div>
+    <div class="options">
+      <button class="opt-btn" onclick="mcAnswer(9,'A')"><span class="opt-key">A</span> Estimated Total Amount</button>
+      <button class="opt-btn" onclick="mcAnswer(9,'B')"><span class="opt-key">B</span> Estimated Time of Arrival</button>
+      <button class="opt-btn" onclick="mcAnswer(9,'C')"><span class="opt-key">C</span> Extra Transport Agreement</button>
+      <button class="opt-btn" onclick="mcAnswer(9,'D')"><span class="opt-key">D</span> Emergency Transport Action</button>
+    </div>
+    <div class="feedback" id="fb9"></div>
+  </div>
+
+  <div class="question-block" id="qb10">
+    <div class="q-number">QUESTION 10 / 12</div>
+    <div class="q-text">Your supplier calls to say they can only deliver <strong>half the quantity</strong> of Sodium Hydroxide you ordered. What should you do <strong>first</strong>?</div>
+    <div class="options">
+      <button class="opt-btn" onclick="mcAnswer(10,'A')"><span class="opt-key">A</span> Cancel the order immediately and find another supplier.</button>
+      <button class="opt-btn" onclick="mcAnswer(10,'B')"><span class="opt-key">B</span> Accept the partial delivery, check if remaining stock covers production, and inform the production team.</button>
+      <button class="opt-btn" onclick="mcAnswer(10,'C')"><span class="opt-key">C</span> Refuse the delivery — partial deliveries are not allowed in chemical production.</button>
+      <button class="opt-btn" onclick="mcAnswer(10,'D')"><span class="opt-key">D</span> Wait for the full delivery before updating your inventory system.</button>
+    </div>
+    <div class="feedback" id="fb10"></div>
+  </div>
+
+  <div class="question-block" id="qb11">
+    <div class="q-number">QUESTION 11 / 12</div>
+    <div class="q-text">At the end of the week, you compare <strong>actual consumption</strong> to the <strong>forecast</strong>. Hydrochloric Acid forecast was 80 L but actual was 110 L. What does this tell you?</div>
+    <div class="options">
+      <button class="opt-btn" onclick="mcAnswer(11,'A')"><span class="opt-key">A</span> The forecast was accurate — a small difference is normal and not important.</button>
+      <button class="opt-btn" onclick="mcAnswer(11,'B')"><span class="opt-key">B</span> There was a positive variance of 30 L — you used more than planned, which may affect next week's stock.</button>
+      <button class="opt-btn" onclick="mcAnswer(11,'C')"><span class="opt-key">C</span> There was a negative variance — production was more efficient than expected.</button>
+      <button class="opt-btn" onclick="mcAnswer(11,'D')"><span class="opt-key">D</span> You must update the reorder point to 110 L in the system immediately.</button>
+    </div>
+    <div class="feedback" id="fb11"></div>
+  </div>
+
+  <div class="question-block" id="qb12">
+    <div class="q-number">QUESTION 12 / 12</div>
+    <div class="q-text">Which of the following is the <strong>best definition</strong> of <strong>safety stock</strong> in chemical production planning?</div>
+    <div class="options">
+      <button class="opt-btn" onclick="mcAnswer(12,'A')"><span class="opt-key">A</span> The quantity of material stored in a locked safety cabinet for emergencies.</button>
+      <button class="opt-btn" onclick="mcAnswer(12,'B')"><span class="opt-key">B</span> Extra stock kept to protect against unexpected demand increases or delivery delays.</button>
+      <button class="opt-btn" onclick="mcAnswer(12,'C')"><span class="opt-key">C</span> The minimum amount of material needed to start one production batch.</button>
+      <button class="opt-btn" onclick="mcAnswer(12,'D')"><span class="opt-key">D</span> The stock level that is reported in the monthly safety compliance audit.</button>
+    </div>
+    <div class="feedback" id="fb12"></div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PART 2 -->
+  <!-- ============================================================ -->
+  <div class="section-label" style="margin-top:40px;">Part 2 — Complete the Sentences · 12 questions</div>
+  <p style="color:var(--muted);font-size:13px;font-family:var(--mono);margin-bottom:20px;">Type the correct word or phrase. Check the word bank — spelling must be exact.</p>
+
+  <div style="margin-bottom:24px;padding:16px 18px;background:var(--panel);border:1px solid var(--border);border-radius:4px;">
+    <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:10px;letter-spacing:.1em;text-transform:uppercase;">Word Bank</div>
+    <span class="vocab-pill">lead time</span><span class="vocab-pill">reorder point</span><span class="vocab-pill">shortage</span>
+    <span class="vocab-pill">batch</span><span class="vocab-pill">forecast</span><span class="vocab-pill">supplier</span>
+    <span class="vocab-pill">stock coverage</span><span class="vocab-pill">purchase order</span><span class="vocab-pill">safety stock</span>
+    <span class="vocab-pill">partial delivery</span><span class="vocab-pill">minimum order quantity</span><span class="vocab-pill">backorder</span>
+  </div>
+
+  <div class="question-block" id="fqb1">
+    <div class="q-number">FILL-IN A</div>
+    <div class="q-text">The time between placing an order and receiving the goods is called the <input class="fill-input" id="fi1" placeholder="?" autocomplete="off">.</div>
+    <button class="check-btn" onclick="checkFill(1,'lead time')">Check</button>
+    <div class="feedback" id="ffb1"></div>
+  </div>
+
+  <div class="question-block" id="fqb2">
+    <div class="q-number">FILL-IN B</div>
+    <div class="q-text">When stock falls below the <input class="fill-input" id="fi2" placeholder="?" autocomplete="off">, you must send a new order to your supplier immediately.</div>
+    <button class="check-btn" onclick="checkFill(2,'reorder point')">Check</button>
+    <div class="feedback" id="ffb2"></div>
+  </div>
+
+  <div class="question-block" id="fqb3">
+    <div class="q-number">FILL-IN C</div>
+    <div class="q-text">If you cannot supply enough Ethanol for production, you will have a <input class="fill-input" id="fi3" placeholder="?" autocomplete="off"> and the batch will be delayed.</div>
+    <button class="check-btn" onclick="checkFill(3,'shortage')">Check</button>
+    <div class="feedback" id="ffb3"></div>
+  </div>
+
+  <div class="question-block" id="fqb4">
+    <div class="q-number">FILL-IN D</div>
+    <div class="q-text">Each production run that uses Ethanol and other chemicals is called a <input class="fill-input" id="fi4" placeholder="?" autocomplete="off">.</div>
+    <button class="check-btn" onclick="checkFill(4,'batch')">Check</button>
+    <div class="feedback" id="ffb4"></div>
+  </div>
+
+  <div class="question-block" id="fqb5">
+    <div class="q-number">FILL-IN E</div>
+    <div class="q-text">A company that provides you with raw materials such as Hydrochloric Acid is called a <input class="fill-input" id="fi5" placeholder="?" autocomplete="off">.</div>
+    <button class="check-btn" onclick="checkFill(5,'supplier')">Check</button>
+    <div class="feedback" id="ffb5"></div>
+  </div>
+
+  <div class="question-block" id="fqb6">
+    <div class="q-number">FILL-IN F</div>
+    <div class="q-text">To estimate how much Ethanol you will need next month, you prepare a demand <input class="fill-input" id="fi6" placeholder="?" autocomplete="off">.</div>
+    <button class="check-btn" onclick="checkFill(6,'forecast')">Check</button>
+    <div class="feedback" id="ffb6"></div>
+  </div>
+
+  <div class="question-block" id="fqb7">
+    <div class="q-number">FILL-IN G</div>
+    <div class="q-text"><input class="fill-input" id="fi7" placeholder="?" autocomplete="off" style="width:200px;"> shows how many weeks your current stock will last at the current rate of consumption.</div>
+    <button class="check-btn" onclick="checkFill(7,'stock coverage')">Check</button>
+    <div class="feedback" id="ffb7"></div>
+  </div>
+
+  <div class="question-block" id="fqb8">
+    <div class="q-number">FILL-IN H</div>
+    <div class="q-text">To buy materials from a supplier, you send them a formal <input class="fill-input" id="fi8" placeholder="?" autocomplete="off" style="width:200px;">.</div>
+    <button class="check-btn" onclick="checkFill(8,'purchase order')">Check</button>
+    <div class="feedback" id="ffb8"></div>
+  </div>
+
+  <div class="question-block" id="fqb9">
+    <div class="q-number">FILL-IN I</div>
+    <div class="q-text">Extra stock kept to protect against delivery delays or unexpected demand increases is called <input class="fill-input" id="fi9" placeholder="?" autocomplete="off" style="width:160px;">.</div>
+    <button class="check-btn" onclick="checkFill(9,'safety stock')">Check</button>
+    <div class="feedback" id="ffb9"></div>
+  </div>
+
+  <div class="question-block" id="fqb10">
+    <div class="q-number">FILL-IN J</div>
+    <div class="q-text">When your supplier can only send part of the quantity you ordered, this is called a <input class="fill-input" id="fi10" placeholder="?" autocomplete="off" style="width:190px;">.</div>
+    <button class="check-btn" onclick="checkFill(10,'partial delivery')">Check</button>
+    <div class="feedback" id="ffb10"></div>
+  </div>
+
+  <div class="question-block" id="fqb11">
+    <div class="q-number">FILL-IN K</div>
+    <div class="q-text">The smallest quantity that a supplier will accept and ship in a single order is called the <input class="fill-input" id="fi11" placeholder="?" autocomplete="off" style="width:240px;">.</div>
+    <button class="check-btn" onclick="checkFill(11,'minimum order quantity')">Check</button>
+    <div class="feedback" id="ffb11"></div>
+  </div>
+
+  <div class="question-block" id="fqb12">
+    <div class="q-number">FILL-IN L</div>
+    <div class="q-text">When a customer orders a product that is not currently in stock, the order becomes a <input class="fill-input" id="fi12" placeholder="?" autocomplete="off"> and is fulfilled when new stock arrives.</div>
+    <button class="check-btn" onclick="checkFill(12,'backorder')">Check</button>
+    <div class="feedback" id="ffb12"></div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PART 3: DRAG AND DROP -->
+  <!-- ============================================================ -->
+  <div class="section-label" style="margin-top:40px;">Part 3 — Drag &amp; Drop: Complete the Email · 8 gaps</div>
+  <p style="color:var(--muted);font-size:13px;font-family:var(--mono);margin-bottom:20px;">Drag the correct terms from the word pool into the numbered gaps in this professional supply planning email. On mobile, tap a word then tap a gap.</p>
+
+  <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:10px;letter-spacing:.1em;text-transform:uppercase;">Word Pool</div>
+  <div class="dnd-chips-pool" id="chips-pool">
+    <div class="chip" draggable="true" data-word="shortage">shortage</div>
+    <div class="chip" draggable="true" data-word="lead time">lead time</div>
+    <div class="chip" draggable="true" data-word="reorder point">reorder point</div>
+    <div class="chip" draggable="true" data-word="purchase order">purchase order</div>
+    <div class="chip" draggable="true" data-word="stock coverage">stock coverage</div>
+    <div class="chip" draggable="true" data-word="replenishment">replenishment</div>
+    <div class="chip" draggable="true" data-word="forecast">forecast</div>
+    <div class="chip" draggable="true" data-word="partial delivery">partial delivery</div>
+    <div class="chip" draggable="true" data-word="safety audit">safety audit</div>
+    <div class="chip" draggable="true" data-word="batch record">batch record</div>
+  </div>
+
+  <div class="dnd-email">
+    <div class="email-header">
+      <div><strong>From:</strong> <span>Maria Santos &lt;m.santos@chempro.com&gt;</span></div>
+      <div><strong>To:</strong> <span>David Kim &lt;d.kim@alphachem-supply.com&gt;</span></div>
+      <div><strong>Subject:</strong> <span>Urgent — Ethanol Replenishment Request · PO #7741</span></div>
+      <div><strong>Date:</strong> <span>Monday, 8:47 AM</span></div>
+    </div>
+
+    <p>Dear Mr Kim,</p><br>
+    <p>
+      I am writing to inform you that our current Ethanol (96%) stock has fallen below our
+      <span class="drop-zone" data-answer="reorder point" data-slot="1" id="slot1"><span class="zone-placeholder">gap 1</span></span>.
+      We currently hold only 180 litres, which is insufficient to maintain our minimum
+      <span class="drop-zone" data-answer="stock coverage" data-slot="2" id="slot2"><span class="zone-placeholder">gap 2</span></span>
+      target of two weeks.
+    </p><br>
+    <p>
+      Batch #CH-449 is scheduled for Wednesday and requires 120 litres of Ethanol.
+      Without immediate
+      <span class="drop-zone" data-answer="replenishment" data-slot="3" id="slot3"><span class="zone-placeholder">gap 3</span></span>,
+      we risk a material
+      <span class="drop-zone" data-answer="shortage" data-slot="4" id="slot4"><span class="zone-placeholder">gap 4</span></span>
+      that will delay the batch and negatively impact our customer delivery schedule.
+    </p><br>
+    <p>
+      According to your confirmed
+      <span class="drop-zone" data-answer="lead time" data-slot="5" id="slot5"><span class="zone-placeholder">gap 5</span></span>
+      of 3 days, an order placed today would arrive on Thursday — which is our earliest acceptable date to avoid a production stoppage.
+    </p><br>
+    <p>
+      Please find attached a formal
+      <span class="drop-zone" data-answer="purchase order" data-slot="6" id="slot6"><span class="zone-placeholder">gap 6</span></span>
+      for 200 litres of Ethanol (96%). Kindly confirm receipt and advise immediately if there is any risk of a
+      <span class="drop-zone" data-answer="partial delivery" data-slot="7" id="slot7"><span class="zone-placeholder">gap 7</span></span>,
+      as we would need to revise our production
+      <span class="drop-zone" data-answer="forecast" data-slot="8" id="slot8"><span class="zone-placeholder">gap 8</span></span>
+      for the coming week accordingly.
+    </p><br>
+    <p>Thank you for your prompt attention to this matter. We look forward to your confirmation.</p><br>
+    <p>Best regards,<br><strong>Maria Santos</strong><br><em>Supply Planner — ChemPro Industries</em></p>
+  </div>
+
+  <div class="dnd-btn-row">
+    <button class="dnd-check-btn" id="dnd-check-btn" onclick="checkDND()">Check Email</button>
+    <button class="dnd-reset-btn" onclick="resetDND()">↺ Reset</button>
+  </div>
+  <div class="dnd-feedback" id="dnd-feedback"></div>
+
+  <!-- SCORE -->
+  <div id="score-section">
+    <div class="score-num" id="final-score">0</div>
+    <div class="score-label">TOTAL POINTS OUT OF 32</div>
+    <div class="score-breakdown">
+      <div class="score-part"><div class="score-part-num" id="sc-mc">—</div><div class="score-part-label">Part 1 · Multiple Choice /12</div></div>
+      <div class="score-part"><div class="score-part-num" id="sc-fill">—</div><div class="score-part-label">Part 2 · Fill-in /12</div></div>
+      <div class="score-part"><div class="score-part-num" id="sc-dnd">—</div><div class="score-part-label">Part 3 · Email /8</div></div>
+    </div>
+    <div class="score-msg" id="score-msg"></div>
+  </div>
+
+</div>
+
+<script>
+// ====== DATA ======
+const mcData = {
+  1:{correct:'B',ok:'Both Ethanol (180 L vs 200 L) and Activated Carbon (50 kg vs 100 kg) are below their reorder point. Ethanol is most urgent because it is directly needed for Batch #CH-449 on Wednesday.',ko:'Two materials are below their reorder point: Ethanol and Activated Carbon. Which one also has a production batch scheduled this week?'},
+  2:{correct:'C',ok:'180 L is technically enough to start the batch (120 L needed), but only 60 L would remain — far below the 200 L reorder point. The batch can start, but a replenishment order is urgently needed.',ko:'Check two things: (1) Is 180 L enough to produce 120 L? Yes. (2) What is the stock level AFTER the batch? Is it above or below the reorder point?'},
+  3:{correct:'B',ok:'Stock is already below the reorder point. After the batch it will drop to 60 L. With a 3-day lead time, ordering today means delivery on Thursday — just in time, but very tight.',ko:'Think about the full picture: stock is already below the reorder point, the batch will reduce it further, and the next delivery slot is Thursday. What is the safest decision to take today?'},
+  4:{correct:'C',ok:'Activated Carbon has a 10-day lead time AND is below its reorder point (50 kg vs 100 kg). This is the most critical combination — you must act now.',ko:'You need to find the material that meets BOTH conditions: longest lead time AND already below its reorder point. Check each material carefully.'},
+  5:{correct:'A',ok:'420 ÷ 150 = 2.8 weeks. The statement is true. Stock coverage = current stock ÷ weekly usage. It tells you how many weeks (or days) your stock will last.',ko:'Do the calculation: 420 ÷ 150 = ? Then compare the result to 3 weeks.'},
+  6:{correct:'C',ok:'After the batch: 60 L remains. With minimum order qty of 100 L → 60+100 = 160 L, still below the 200 L reorder point. Ordering 200 L → 60+200 = 260 L, above the reorder point. 200 L is the minimum safe order.',ko:'After the batch you have 60 L. You need to reach at least 200 L (reorder point) after delivery. Also: 60 + 100 (min. order) = 160 L — is that enough?'},
+  7:{correct:'B',ok:'50 kg stock ÷ 40 kg/week (doubled) = 1.25 weeks of stock. Lead time is 10 days (~1.4 weeks). Stock will run out BEFORE the next delivery arrives. This means a production stoppage.',ko:'Calculate how long the stock will last at doubled consumption: 50 ÷ 40 = ? weeks. Then compare to the lead time of 10 days (~1.4 weeks). Will stock last long enough?'},
+  8:{correct:'C',ok:'Stock is 310 L — only 10 L above the reorder point of 300 L. Weekly usage is 60 L, so stock will fall below the reorder point in less than 2 days. A replenishment order is needed very soon.',ko:'The gap between current stock and reorder point is only 10 L. Weekly usage is 60 L. Calculate how quickly stock will cross the reorder point.'},
+  9:{correct:'B',ok:'ETA = Estimated Time of Arrival. It is a very common abbreviation in supply chain and logistics, used to confirm when a shipment is expected to arrive at your facility.',ko:'ETA is one of the most used abbreviations in logistics. It refers to when something is expected to reach its destination.'},
+  10:{correct:'B',ok:'The professional approach is to accept the partial delivery, check whether the remaining stock is enough to cover production until the rest arrives, and communicate the situation to the production team.',ko:'In supply planning, communication and flexibility are key. What is the most practical and professional first step when a supplier cannot deliver the full quantity?'},
+  11:{correct:'B',ok:'Actual (110 L) > forecast (80 L): a positive variance of +30 L. You used more than planned. This is important because it may mean next week\'s stock level will also be lower than expected.',ko:'Compare actual (110 L) with forecast (80 L). Was actual higher or lower? A positive variance means you used MORE than planned. What is the consequence for stock?'},
+  12:{correct:'B',ok:'Safety stock is a buffer of extra inventory kept to protect against supply disruptions — delivery delays, demand spikes, or quality rejections. It ensures production continuity.',ko:'Safety stock is a planning concept, not a physical location. Think about why a planner would keep stock beyond the normal production requirement.'}
+};
+
+const fillData = {
+  1:'lead time',2:'reorder point',3:'shortage',4:'batch',
+  5:'supplier',6:'forecast',7:'stock coverage',8:'purchase order',
+  9:'safety stock',10:'partial delivery',11:'minimum order quantity',12:'backorder'
+};
+
+const dndAnswers = {
+  1:'reorder point',2:'stock coverage',3:'replenishment',
+  4:'shortage',5:'lead time',6:'purchase order',
+  7:'partial delivery',8:'forecast'
+};
+
+// ====== STATE ======
+let mcAnswered = {}, fillAnswered = {}, dndChecked = false;
+let scores = {mc:0, fill:0, dnd:0};
+const TOTAL = 25; // 12 + 12 + 1
+
+function updateProgress() {
+  const done = Object.keys(mcAnswered).length + Object.keys(fillAnswered).length + (dndChecked ? 1 : 0);
+  document.getElementById('prog-text').textContent = done + ' / ' + TOTAL + ' answered';
+  document.getElementById('prog-fill').style.width = (done / TOTAL * 100) + '%';
+}
+
+// ====== MC ======
+function mcAnswer(q, choice) {
+  if (mcAnswered[q]) return;
+  mcAnswered[q] = true;
+  const block = document.getElementById('qb'+q);
+  const fb = document.getElementById('fb'+q);
+  const btns = block.querySelectorAll('.opt-btn');
+  const isOk = choice === mcData[q].correct;
+  btns.forEach(btn => {
+    btn.disabled = true;
+    if (btn.querySelector('.opt-key').textContent === mcData[q].correct) btn.classList.add('reveal-correct');
+  });
+  const clicked = btns[['A','B','C','D'].indexOf(choice)];
+  if (isOk) {
+    clicked.classList.add('selected-correct'); block.classList.add('correct');
+    fb.textContent = '✓ ' + mcData[q].ok; fb.className = 'feedback show ok'; scores.mc++;
+  } else {
+    clicked.classList.add('selected-wrong'); block.classList.add('wrong');
+    fb.textContent = '✗ ' + mcData[q].ko; fb.className = 'feedback show ko';
+  }
+  updateProgress(); checkComplete();
+}
+
+// ====== FILL ======
+function checkFill(n, correct) {
+  if (fillAnswered[n]) return;
+  fillAnswered[n] = true;
+  const input = document.getElementById('fi'+n);
+  const fb = document.getElementById('ffb'+n);
+  const btn = document.getElementById('fqb'+n).querySelector('.check-btn');
+  const val = input.value.trim().toLowerCase();
+  const isOk = val === correct.toLowerCase();
+  input.disabled = true; btn.disabled = true;
+  if (isOk) {
+    input.classList.add('correct-input');
+    document.getElementById('fqb'+n).classList.add('correct');
+    fb.textContent = '✓ Correct! "' + correct + '" is the right term.';
+    fb.className = 'feedback show ok'; scores.fill++;
+  } else {
+    input.classList.add('wrong-input');
+    document.getElementById('fqb'+n).classList.add('wrong');
+    fb.textContent = '✗ Not quite. The correct answer is: "' + correct + '". Read the sentence context again.';
+    fb.className = 'feedback show ko';
+  }
+  updateProgress(); checkComplete();
+}
+
+// ====== DRAG AND DROP ======
+let dragWord = null, tappedWord = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('dragstart', e => {
+      dragWord = chip.dataset.word;
+      setTimeout(() => chip.classList.add('dragging'), 0);
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    chip.addEventListener('dragend', () => chip.classList.remove('dragging'));
+    chip.addEventListener('click', () => {
+      if (dndChecked) return;
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('tapped'));
+      if (tappedWord === chip.dataset.word) { tappedWord = null; return; }
+      tappedWord = chip.dataset.word;
+      chip.classList.add('tapped');
+    });
+  });
+
+  document.querySelectorAll('.drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault(); zone.classList.remove('drag-over');
+      if (!dragWord || dndChecked) return;
+      placeWord(zone, dragWord); dragWord = null;
+    });
+    zone.addEventListener('click', () => {
+      if (dndChecked) return;
+      if (tappedWord) {
+        placeWord(zone, tappedWord);
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('tapped'));
+        tappedWord = null;
+      }
+    });
+  });
+});
+
+function placeWord(zone, word) {
+  const prev = zone.dataset.placed;
+  if (prev) {
+    const prevChip = document.querySelector('.chip[data-word="'+prev+'"]');
+    if (prevChip) prevChip.classList.remove('used');
+  }
+  zone.dataset.placed = word;
+  zone.className = 'drop-zone filled';
+  zone.innerHTML = '<span class="zone-chip">'+word+'</span>';
+  const chip = document.querySelector('.chip[data-word="'+word+'"]');
+  if (chip) { chip.classList.add('used'); chip.classList.remove('tapped'); }
+}
+
+function checkDND() {
+  if (dndChecked) return;
+  let correct = 0;
+  document.querySelectorAll('.drop-zone').forEach(zone => {
+    const placed = (zone.dataset.placed || '').toLowerCase();
+    const expected = dndAnswers[zone.dataset.slot].toLowerCase();
+    if (placed === expected) {
+      zone.classList.remove('filled-wrong'); zone.classList.add('filled'); correct++;
+    } else {
+      zone.classList.remove('filled'); zone.classList.add('filled-wrong');
+      if (!zone.dataset.placed) zone.innerHTML = '<span class="zone-chip">— empty —</span>';
+    }
+  });
+  dndChecked = true;
+  document.getElementById('dnd-check-btn').disabled = true;
+  scores.dnd = correct;
+  const fb = document.getElementById('dnd-feedback');
+  if (correct === 8) {
+    fb.textContent = '✓ Perfect score! All 8 gaps correct. This email is clear and professional — exactly the kind of message a supply planner sends to a supplier.';
+    fb.className = 'dnd-feedback show ok';
+  } else if (correct >= 5) {
+    fb.textContent = '✓ Good work — '+correct+'/8 correct. Re-read the sentences where you made mistakes. Each gap has a strong context clue that points to the correct term.';
+    fb.className = 'dnd-feedback show partial';
+  } else {
+    fb.textContent = '✗ '+correct+'/8 correct. Click Reset and try again. Read each sentence slowly — the surrounding words tell you which supply planning term belongs in each gap.';
+    fb.className = 'dnd-feedback show ko';
+  }
+  updateProgress(); checkComplete();
+}
+
+function resetDND() {
+  dndChecked = false;
+  scores.dnd = 0;
+  document.getElementById('dnd-check-btn').disabled = false;
+  document.querySelectorAll('.drop-zone').forEach(zone => {
+    zone.className = 'drop-zone';
+    delete zone.dataset.placed;
+    zone.innerHTML = '<span class="zone-placeholder">gap '+zone.dataset.slot+'</span>';
+  });
+  document.querySelectorAll('.chip').forEach(c => { c.classList.remove('used','dragging','tapped'); });
+  document.getElementById('dnd-feedback').className = 'dnd-feedback';
+  updateProgress();
+}
+
+// ====== COMPLETION ======
+function checkComplete() {
+  if (Object.keys(mcAnswered).length === 12 && Object.keys(fillAnswered).length === 12 && dndChecked) showScore();
+}
+
+function showScore() {
+  const total = scores.mc + scores.fill + scores.dnd;
+  document.getElementById('final-score').textContent = total;
+  document.getElementById('sc-mc').textContent = scores.mc + '/12';
+  document.getElementById('sc-fill').textContent = scores.fill + '/12';
+  document.getElementById('sc-dnd').textContent = scores.dnd + '/8';
+  let msg = total >= 28
+    ? '🏆 Outstanding! You have a strong command of supply planning vocabulary and professional communication. You are ready to work confidently in an English-speaking supply chain environment.'
+    : total >= 20
+    ? '👍 Good work! You understand most key concepts. Review the terms you missed — especially in the email exercise, which tests vocabulary in a real professional context.'
+    : total >= 12
+    ? '📖 You are making progress! Re-read the scenario and the explanations for each wrong answer. Focusing on the word bank will help you improve quickly.'
+    : '📚 This is a solid starting point. Go back to the scenario, study the word bank carefully, and re-read each explanation. Practice with real supply documents will help you progress.';
+  document.getElementById('score-msg').textContent = msg;
+  const s = document.getElementById('score-section');
+  s.classList.add('show');
+  s.scrollIntoView({behavior:'smooth',block:'center'});
+}
+</script>
+</body>
+</html>

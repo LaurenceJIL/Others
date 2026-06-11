@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Placement Test</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --paper: #f8f4ee;
+    --cream: #ede8df;
+    --gold: #c9a84c;
+    --sage: #6b8f71;
+    --rust: #b85c38;
+    --border: rgba(26,26,46,0.12);
+    --shadow: 0 4px 24px rgba(26,26,46,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 10% 0%, rgba(201,168,76,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 90% 100%, rgba(107,143,113,0.07) 0%, transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; position: relative; z-index: 1; }
+  .screen.active { display: block; }
+
+  /* ══════════════════════════════════════
+     LANDING
+  ══════════════════════════════════════ */
+  #landing {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 2rem; text-align: center;
+  }
+
+  .landing-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.6rem, 6vw, 4.2rem);
+    font-weight: 900; line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem; color: var(--ink);
+  }
+  .landing-title span { color: var(--gold); }
+
+  .landing-sub {
+    font-size: 1rem; color: rgba(26,26,46,0.52);
+    max-width: 400px; margin: 0 auto 2.8rem;
+    line-height: 1.7; font-weight: 300;
+  }
+
+  .entry-grid {
+    display: grid; grid-template-columns: repeat(3,1fr);
+    gap: 1rem; max-width: 620px; width: 100%; margin: 0 auto;
+  }
+  @media (max-width: 560px) { .entry-grid { grid-template-columns: 1fr; max-width: 320px; } }
+
+  .entry-card {
+    background: white; border: 1.5px solid var(--border);
+    border-radius: 10px; padding: 1.6rem 1.1rem 1.4rem;
+    cursor: pointer; transition: all 0.2s ease; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .entry-card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 3px; background: var(--gold);
+    transform: scaleX(0); transform-origin: center; transition: transform 0.2s ease;
+  }
+  .entry-card:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: var(--shadow); }
+  .entry-card:hover::after { transform: scaleX(1); }
+
+  .entry-icon {
+    width: 50px; height: 50px; border-radius: 50%; background: var(--cream);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 0.85rem; color: var(--gold);
+  }
+  .entry-title {
+    font-family: 'Playfair Display', serif; font-size: 1.15rem;
+    font-weight: 700; color: var(--ink); margin-bottom: 0.45rem;
+  }
+  .entry-hint { font-size: 0.78rem; color: rgba(26,26,46,0.46); line-height: 1.55; }
+
+  .landing-footnote {
+    font-size: 0.73rem; color: rgba(26,26,46,0.33);
+    margin-top: 1.4rem; letter-spacing: 0.02em;
+  }
+
+  /* ══════════════════════════════════════
+     TEST
+  ══════════════════════════════════════ */
+  #test { min-height: 100vh; padding: 0 1rem 5rem; }
+
+  .test-header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(248,244,238,0.93);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.7rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    max-width: 760px; margin: 0 auto;
+  }
+
+  .progress-wrap { flex: 1; margin-right: 1.5rem; }
+  .progress-label {
+    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: rgba(26,26,46,0.38);
+    margin-bottom: 0.3rem; display: flex; justify-content: space-between;
+  }
+  .progress-bar { height: 3px; background: var(--cream); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.4s ease; }
+
+  .timer-wrap {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-size: 0.85rem; font-weight: 500; white-space: nowrap;
+  }
+  .timer-icon { width: 14px; height: 14px; opacity: 0.45; }
+  .timer-val { font-variant-numeric: tabular-nums; }
+  .timer-val.warning { color: var(--rust); font-weight: 700; animation: pulse 1s infinite; }
+
+  .question-wrap {
+    max-width: 640px; margin: 2.8rem auto 0; padding: 0 1rem;
+    animation: fadeUp 0.28s ease forwards;
+  }
+
+  .q-number {
+    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.15em;
+    text-transform: uppercase; color: rgba(26,26,46,0.32); margin-bottom: 0.9rem;
+  }
+  .q-stem {
+    font-family: 'Playfair Display', serif; font-size: 1.3rem;
+    line-height: 1.55; font-weight: 400; margin-bottom: 1.8rem; color: var(--ink);
+  }
+
+  .options { display: flex; flex-direction: column; gap: 0.6rem; }
+
+  .option {
+    background: white; border: 1.5px solid var(--border); border-radius: 6px;
+    padding: 0.8rem 1.1rem; cursor: pointer; transition: all 0.16s;
+    font-size: 0.93rem; display: flex; align-items: center; gap: 0.75rem;
+  }
+  .option-letter {
+    width: 26px; height: 26px; border-radius: 50%;
+    border: 1.5px solid var(--border); display: flex; align-items: center;
+    justify-content: center; font-size: 0.72rem; font-weight: 700;
+    flex-shrink: 0; transition: all 0.16s; color: rgba(26,26,46,0.38);
+  }
+  .option:hover { border-color: var(--gold); }
+  .option:hover .option-letter { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.08); }
+  .option.chosen { border-color: var(--ink); background: rgba(26,26,46,0.03); }
+  .option.chosen .option-letter { background: var(--ink); border-color: var(--ink); color: white; }
+  .option.disabled { cursor: default; pointer-events: none; }
+
+  .q-actions {
+    margin-top: 1.8rem; display: flex; justify-content: flex-end;
+  }
+
+  .btn-primary {
+    background: var(--ink); color: var(--paper); border: none;
+    padding: 0.85rem 2.2rem; font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem; font-weight: 600; letter-spacing: 0.04em;
+    border-radius: 4px; cursor: pointer; transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s, background 0.2s;
+  }
+  .btn-primary.visible { opacity: 1; pointer-events: auto; }
+  .btn-primary:hover { background: var(--gold); color: var(--ink); }
+
+  /* ══════════════════════════════════════
+     REVIEW SCREEN
+  ══════════════════════════════════════ */
+  #review { padding: 0 1rem 5rem; }
+
+  .review-header {
+    max-width: 700px; margin: 0 auto;
+    padding: 2rem 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .review-header-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; font-weight: 700;
+  }
+  .review-score-pill {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(107,143,113,0.1); border: 1px solid rgba(107,143,113,0.3);
+    border-radius: 20px; padding: 0.3rem 0.9rem;
+    font-size: 0.82rem; font-weight: 600; color: var(--sage);
+  }
+
+  .review-list {
+    max-width: 700px; margin: 0 auto;
+    display: flex; flex-direction: column; gap: 0;
+  }
+
+  .review-item {
+    padding: 1.2rem 1rem;
+    border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: 2rem 1fr; gap: 0.8rem;
+    align-items: start;
+  }
+
+  .review-qnum {
+    font-size: 0.7rem; font-weight: 700; color: rgba(26,26,46,0.32);
+    letter-spacing: 0.06em; margin-top: 0.18rem;
+  }
+
+  .review-stem {
+    font-size: 0.9rem; line-height: 1.5; color: var(--ink);
+    margin-bottom: 0.55rem;
+  }
+
+  .review-answers {
+    display: flex; flex-wrap: wrap; gap: 0.4rem 0.7rem; font-size: 0.8rem;
+  }
+
+  .ra-chip {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    padding: 0.2rem 0.55rem; border-radius: 4px; font-weight: 500;
+  }
+  .ra-chip.correct-answer {
+    background: rgba(107,143,113,0.13); color: var(--sage);
+    border: 1px solid rgba(107,143,113,0.3);
+  }
+  .ra-chip.wrong-answer {
+    background: rgba(184,92,56,0.1); color: var(--rust);
+    border: 1px solid rgba(184,92,56,0.25);
+    text-decoration: line-through; opacity: 0.85;
+  }
+  .ra-label { font-size: 0.65rem; font-weight: 700; opacity: 0.7; }
+
+  .review-footer {
+    max-width: 700px; margin: 2rem auto 0;
+    display: flex; justify-content: center; gap: 1rem;
+    padding: 0 1rem;
+  }
+
+  /* ══════════════════════════════════════
+     RESULT SCREEN
+  ══════════════════════════════════════ */
+  #result {
+    min-height: 100vh;
+    display: none; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 3rem 1.5rem; text-align: center;
+  }
+  #result.active { display: flex; }
+
+  .result-intro {
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; color: rgba(26,26,46,0.36); margin-bottom: 1.1rem;
+  }
+
+  .result-hero { display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem; }
+
+  .result-label-cefr {
+    font-size: 0.66rem; font-weight: 700; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.4); padding: 0.25rem 0.7rem;
+    border-radius: 20px; margin-bottom: 0.85rem;
+  }
+
+  .result-badge {
+    font-family: 'Playfair Display', serif; font-size: 5.5rem;
+    font-weight: 900; color: var(--gold); line-height: 1;
+    margin-bottom: 0.25rem; letter-spacing: -0.02em;
+  }
+
+  .result-group {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: rgba(26,26,46,0.4); margin-bottom: 0.3rem;
+  }
+
+  .result-sublabel {
+    font-family: 'Playfair Display', serif; font-size: 1.45rem;
+    font-weight: 700; color: var(--ink);
+  }
+
+  .result-stats {
+    display: flex; gap: 1.2rem; justify-content: center;
+    flex-wrap: wrap; margin-bottom: 2rem;
+  }
+  .stat-box {
+    background: white; border: 1.5px solid var(--border);
+    border-radius: 8px; padding: 1rem 1.4rem; min-width: 110px;
+  }
+  .stat-val { font-family: 'Playfair Display', serif; font-size: 1.9rem; font-weight: 700; }
+  .stat-label {
+    font-size: 0.66rem; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: rgba(26,26,46,0.38); margin-top: 0.15rem;
+  }
+
+  .level-desc-box {
+    background: white; border: 1.5px solid var(--gold); border-radius: 10px;
+    padding: 1.5rem 1.8rem; max-width: 520px; width: 100%;
+    margin: 0 auto 2rem; text-align: left;
+  }
+  .level-desc-header {
+    display: flex; align-items: center; gap: 0.85rem; margin-bottom: 0.95rem;
+  }
+  .level-desc-tag {
+    font-family: 'Playfair Display', serif; font-size: 1.45rem; font-weight: 900;
+    color: var(--gold); background: rgba(201,168,76,0.1);
+    width: 50px; height: 50px; display: flex; align-items: center;
+    justify-content: center; border-radius: 7px; flex-shrink: 0;
+  }
+  .level-desc-header h3 { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 700; }
+  .level-desc-subtitle { font-size: 0.75rem; font-weight: 500; color: var(--gold); margin-top: 0.1rem; }
+  .level-desc-official { font-size: 0.9rem; line-height: 1.7; color: rgba(26,26,46,0.65); margin-bottom: 1rem; }
+
+  .level-skills { display: flex; flex-direction: column; gap: 0.45rem; border-top: 1px solid var(--border); padding-top: 0.95rem; }
+  .skill-row { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.83rem; line-height: 1.5; color: rgba(26,26,46,0.65); }
+  .skill-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); flex-shrink: 0; margin-top: 0.48rem; }
+
+  .result-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .result-actions a { text-decoration: none; }
+
+  .btn-result-primary {
+    background: var(--ink); color: var(--paper); border: none;
+    padding: 0.85rem 2rem; font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; font-weight: 600; border-radius: 4px;
+    cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .btn-result-primary:hover { background: var(--gold); color: var(--ink); }
+
+  .btn-result-secondary {
+    background: white; color: var(--ink); border: 1.5px solid var(--border);
+    padding: 0.85rem 2rem; font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; font-weight: 500; border-radius: 4px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-result-secondary:hover { border-color: var(--ink); }
+
+  /* ══ Shared ══ */
+  .deco-line { width: 38px; height: 2px; background: var(--gold); margin: 0 auto 1.4rem; border-radius: 1px; }
+
+  @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.45} }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ LANDING ═══════════ -->
+<div id="landing" class="screen active">
+  <h1 class="landing-title">English<br><span>Placement</span> Test</h1>
+  <p class="landing-sub">40 adaptive questions · 30 minutes maximum.<br>How would you describe your English right now?</p>
+
+  <div class="entry-grid">
+    <div class="entry-card" onclick="beginTest('A2')">
+      <div class="entry-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      </div>
+      <div class="entry-title">Beginner</div>
+      <div class="entry-hint">I know some basic English — greetings, simple sentences and everyday words.</div>
+    </div>
+    <div class="entry-card" onclick="beginTest('B1')">
+      <div class="entry-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26"><path d="M2 20h20M6 20V10m4 10V4m4 10V8m4 8V2"/></svg>
+      </div>
+      <div class="entry-title">Intermediate</div>
+      <div class="entry-hint">I can hold a conversation and handle most everyday situations in English.</div>
+    </div>
+    <div class="entry-card" onclick="beginTest('C1')">
+      <div class="entry-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <div class="entry-title">Proficient</div>
+      <div class="entry-hint">I use English fluently and confidently, including complex ideas and nuanced expression.</div>
+    </div>
+  </div>
+
+  <p class="landing-footnote">Clicking a card starts the test immediately · No feedback given until the end</p>
+</div>
+
+<!-- ═══════════ TEST ═══════════ -->
+<div id="test" class="screen">
+  <div class="test-header">
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>PROGRESS</span>
+        <span id="qCounter">1 / 40</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+    <div class="timer-wrap">
+      <svg class="timer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span class="timer-val" id="timerDisplay">30:00</span>
+    </div>
+  </div>
+  <div class="question-wrap" id="questionWrap"></div>
+</div>
+
+<!-- ═══════════ REVIEW ═══════════ -->
+<div id="review" class="screen">
+  <div class="review-header">
+    <div class="review-header-title">Your Answers</div>
+    <div class="review-score-pill" id="reviewScorePill">— / 40 correct</div>
+  </div>
+  <div class="review-list" id="reviewList"></div>
+  <div class="review-footer">
+    <button class="btn-result-primary" onclick="showScreen('result')">
+      See My Level
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════ RESULT ═══════════ -->
+<div id="result" class="screen">
+  <div class="deco-line"></div>
+  <div class="result-intro">Your result</div>
+
+  <div class="result-hero">
+    <div class="result-label-cefr">CEFR Level</div>
+    <div class="result-badge" id="resultLevel">—</div>
+    <div class="result-group" id="resultGroup">—</div>
+    <div class="result-sublabel" id="resultSublabel">—</div>
+  </div>
+
+  <div class="result-stats">
+    <div class="stat-box">
+      <div class="stat-val" id="statCorrect">—</div>
+      <div class="stat-label">Correct</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val" id="statTotal">—</div>
+      <div class="stat-label">Answered</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val" id="statTime">—</div>
+      <div class="stat-label">Time used</div>
+    </div>
+  </div>
+
+  <div class="level-desc-box">
+    <div class="level-desc-header">
+      <span class="level-desc-tag" id="levelDescTag">—</span>
+      <div>
+        <h3 id="levelDescTitle">Official CEFR Description</h3>
+        <div class="level-desc-subtitle" id="levelDescSubtitle"></div>
+      </div>
+    </div>
+    <p class="level-desc-official" id="levelDescOfficial"></p>
+    <div class="level-skills" id="levelSkills"></div>
+  </div>
+
+  <div class="result-actions">
+    <button class="btn-result-secondary" onclick="exitTest()">Exit</button>
+    <button class="btn-result-primary" onclick="restartTest()">
+      Take test again
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   QUESTION BANK  A1×16  A2×32  B1×48  B2×40  C1×16  C2×8 = 160
+   answer is the INDEX (0-3) of the correct option in the options array.
+   We will ROTATE options at selection time to balance A/B/C/D.
+═══════════════════════════════════════════════════════ */
+
+// Each question stored with correctIndex = index of correct answer in the canonical options array.
+// At question-selection time we reassign them to balance A/B/C/D across the 40.
+
+const BANK_RAW = [
+/* ── A1 (16) ──────────────────────────────────────── */
+{id:'a1_01',level:'A1',stem:'Choose the correct sentence.',options:['She have a cat.','She has a cat.','She is have a cat.','She does has a cat.'],ci:1},
+{id:'a1_02',level:'A1',stem:'Which word completes the sentence? "I ___ from Spain."',options:['is','are','am','be'],ci:2},
+{id:'a1_03',level:'A1',stem:'Choose the correct negative: "He ___ play tennis."',options:["don't","doesn't","isn't","aren't"],ci:1},
+{id:'a1_04',level:'A1',stem:'"___ you speak English?" — "Yes, I do."',options:['Do','Are','Have','Is'],ci:0},
+{id:'a1_05',level:'A1',stem:'Choose the correct option: "There ___ two books on the table."',options:['is','am','are','be'],ci:2},
+{id:'a1_06',level:'A1',stem:'Which sentence is in the past simple?',options:['I go to school.','I am going to school.','I went to school.','I have gone to school.'],ci:2},
+{id:'a1_07',level:'A1',stem:'"___ she a doctor?" — "No, she isn\'t."',options:['Do','Has','Is','Are'],ci:2},
+{id:'a1_08',level:'A1',stem:'Choose the correct possessive: "This is ___ book." (referring to Maria)',options:["Maria book","Marias book","Maria's book","of Maria book"],ci:2},
+{id:'a1_09',level:'A1',stem:'Which option correctly uses "can"?',options:['I can to swim.','I can swimming.','I can swim.','I cans swim.'],ci:2},
+{id:'a1_10',level:'A1',stem:'"___ I bring my bag?" — asking for permission.',options:['Must','Shall','Can','Need'],ci:2},
+{id:'a1_11',level:'A1',stem:'Choose the correct sentence about a future plan.',options:['I will going to see her.','I am going to see her.','I go to see her tomorrow.','I seeing her tomorrow.'],ci:1},
+{id:'a1_12',level:'A1',stem:'Which sentence uses "must" correctly for obligation?',options:['You must to study.','You musts study.','You must study.','You are must study.'],ci:2},
+{id:'a1_13',level:'A1',stem:'"The shop is ___ the bank." Which preposition of place fits?',options:['on','at','from','next to'],ci:3},
+{id:'a1_14',level:'A1',stem:'Choose the correct adverb form.',options:['He runs quick.','He runs quickly.','He runs quickness.','He runs quicked.'],ci:1},
+{id:'a1_15',level:'A1',stem:'"I have ___ eaten sushi." Which word is in the correct position?',options:['I never have eaten sushi.','I have eaten never sushi.','I have never eaten sushi.','Never I have eaten sushi.'],ci:2},
+{id:'a1_16',level:'A1',stem:'Choose the correct question tag: "She is Spanish, ___?"',options:["is she","isn't she","does she","doesn't she"],ci:1},
+
+/* ── A2 (32) ──────────────────────────────────────── */
+{id:'a2_01',level:'A2',stem:'Choose the correct first conditional: "If it ___ tomorrow, I will stay at home."',options:['rains','will rain','rained','is raining'],ci:0},
+{id:'a2_02',level:'A2',stem:'Which sentence uses the past progressive correctly?',options:['I was watch TV when she called.','I was watching TV when she called.','I watching TV when she called.','I were watching TV when she called.'],ci:1},
+{id:'a2_03',level:'A2',stem:'"You ___ wear a uniform — it is optional." Which modal fits?',options:["must","needn't","mustn't","should"],ci:1},
+{id:'a2_04',level:'A2',stem:'Choose the correct comparative: "This car is ___ than mine."',options:['expensiver','most expensive','more expensive','the most expensive'],ci:2},
+{id:'a2_05',level:'A2',stem:'"Have you ___ been to Paris?" Choose the correct word.',options:['already','just','since','ever'],ci:3},
+{id:'a2_06',level:'A2',stem:'Which sentence uses "should" for advice correctly?',options:['You should to sleep more.','You should sleeping more.','You shoulds sleep more.','You should sleep more.'],ci:3},
+{id:'a2_07',level:'A2',stem:'"She ___ play the piano before she started school." Choose the correct modal.',options:['can','could','must','shall'],ci:1},
+{id:'a2_08',level:'A2',stem:'Choose the correct sentence about a definite future plan.',options:['He will sells his car.','He going to sell his car.','He is going to sell his car.','He selling his car.'],ci:2},
+{id:'a2_09',level:'A2',stem:'"I ___ English for seven years." Which option is correct?',options:['learn','am learning','was learning','have been learning'],ci:3},
+{id:'a2_10',level:'A2',stem:'Choose the correct word order.',options:['She ate quickly her lunch.','She ate her lunch quick.','She ate her lunch quickly.','She quickly ate her lunch quickly.'],ci:2},
+{id:'a2_11',level:'A2',stem:'"___ you post this letter for me?" Which polite request is correct?',options:['Shall','Would','Could','Must'],ci:2},
+{id:'a2_12',level:'A2',stem:'Choose the correct reflexive pronoun: "He did it all by ___."',options:['him','his','hisself','himself'],ci:3},
+{id:'a2_13',level:'A2',stem:'"I have ___ finished my homework." Which word fits?',options:['yet','since','already','ever'],ci:2},
+{id:'a2_14',level:'A2',stem:'Which sentence uses a relative pronoun correctly?',options:['She is the woman which speaks five languages.','She is the woman who speaks five languages.','She is the woman whose speaks five languages.','She is the woman that she speaks five languages.'],ci:1},
+{id:'a2_15',level:'A2',stem:'"I ___ to go to the dentist last week." Choose the correct form.',options:['must','had to','should','could'],ci:1},
+{id:'a2_16',level:'A2',stem:'Choose the correct zero conditional.',options:['If you heat water, it will boil.','If you heat water, it boils.','If you heated water, it boils.','If you heat water, it boiled.'],ci:1},
+{id:'a2_17',level:'A2',stem:'"I wish I ___ taller." Choose the correct form.',options:['am','be','was','will be'],ci:2},
+{id:'a2_18',level:'A2',stem:'"I ___ have to take medicine every day." Choose the correct option.',options:['am','have','must','shall'],ci:1},
+{id:'a2_19',level:'A2',stem:'Which sentence correctly uses the present progressive for a future arrangement?',options:['I see my doctor tomorrow.','I am seeing my doctor tomorrow.','I will see my doctor tomorrow.','I going to see my doctor tomorrow.'],ci:1},
+{id:'a2_20',level:'A2',stem:'"She is as tall ___ her sister." Choose the correct word.',options:['than','like','that','as'],ci:3},
+{id:'a2_21',level:'A2',stem:'"He ___ watched TV all evening." Choose the correct negative.',options:["didn't","hasn't","wasn't","weren't"],ci:0},
+{id:'a2_22',level:'A2',stem:'"___ we go for a walk?" Which modal is used for suggestions?',options:['Would','Could','Shall','Must'],ci:2},
+{id:'a2_23',level:'A2',stem:'"I ___ see you after work." Choose the correct option for possibility.',options:['must','shall','can','need'],ci:2},
+{id:'a2_24',level:'A2',stem:'Choose the correct sentence with "want".',options:['I want seeing my family.','I want to see my family.','I want see my family.','I wanting to see my family.'],ci:1},
+{id:'a2_25',level:'A2',stem:'"The train ___ at 8." Which tense is used for a scheduled event?',options:['is leaving','leaves','will leave','going to leave'],ci:1},
+{id:'a2_26',level:'A2',stem:'Choose the correct superlative.',options:['He is the more intelligent student.','He is the most intelligenter student.','He is most intelligent student.','He is the most intelligent student.'],ci:3},
+{id:'a2_27',level:'A2',stem:'"I ___ swim when I was five." Choose the correct option.',options:['can','could','must','was able'],ci:1},
+{id:'a2_28',level:'A2',stem:'"Did he ___ it?" Which form is correct?',options:['did','does','do','done'],ci:2},
+{id:'a2_29',level:'A2',stem:'Choose the correct sentence using "must" for prohibition.',options:['You must smoke here.','You must not smoke here.','You must not to smoke here.','You must smoking here.'],ci:1},
+{id:'a2_30',level:'A2',stem:'"She enjoys ___." Choose the correct form.',options:['to dance','dance','dances','dancing'],ci:3},
+{id:'a2_31',level:'A2',stem:'"___ you ever been to Italy?" Choose the correct question form.',options:['Did','Are','Do','Have'],ci:3},
+{id:'a2_32',level:'A2',stem:'"He isn\'t as old ___ he looks." Choose the correct word.',options:['than','that','as','like'],ci:2},
+
+/* ── B1 (48) ──────────────────────────────────────── */
+{id:'b1_01',level:'B1',stem:'"If I had more time, I ___ travel more." Choose the correct second conditional.',options:['will','would','could have','shall'],ci:1},
+{id:'b1_02',level:'B1',stem:'"When I arrived, everybody ___." Choose the correct past perfect.',options:['left','has left','had left','was leaving'],ci:2},
+{id:'b1_03',level:'B1',stem:'"I ___ be late — the meeting starts at 9." Which modal expresses obligation?',options:['ought to','shall','might','need'],ci:0},
+{id:'b1_04',level:'B1',stem:'"She said she ___ the film." Choose the correct reported speech form.',options:['loves','loved','had loved','is loving'],ci:1},
+{id:'b1_05',level:'B1',stem:'Choose the sentence that correctly uses the present perfect progressive.',options:['I am learning English for ten years.','I learned English for ten years.','I have been learning English for ten years.','I have learned English since ten years.'],ci:2},
+{id:'b1_06',level:'B1',stem:'"The book ___ written by Tolstoy." Choose the correct passive form.',options:['is','was','has','were'],ci:1},
+{id:'b1_07',level:'B1',stem:'"I ___ to live in Paris." Choose the correct form for a past habit.',options:['use','used','would use','was used'],ci:1},
+{id:'b1_08',level:'B1',stem:'"If we had trained harder, we ___ won." Choose the correct third conditional.',options:['will have','had','would have','would'],ci:2},
+{id:'b1_09',level:'B1',stem:'"I have been working here ___ 2015." Choose the correct preposition.',options:['for','during','in','since'],ci:3},
+{id:'b1_10',level:'B1',stem:'"She must ___ asleep when I called." Choose the correct deduction.',options:['be','is','been','have been'],ci:3},
+{id:'b1_11',level:'B1',stem:'"I ___ use the internet when I was a child." Choose the correct negative ability.',options:["didn't","couldn't","wasn't able","mustn't"],ci:1},
+{id:'b1_12',level:'B1',stem:'Which sentence uses the past perfect progressive correctly?',options:['She has been waiting for two hours.','She was waiting for two hours.','She had wait for two hours.','She had been waiting for two hours.'],ci:3},
+{id:'b1_13',level:'B1',stem:'"He isn\'t as clever ___ his brother." Choose the correct word.',options:['than','that','as','like'],ci:2},
+{id:'b1_14',level:'B1',stem:'"You ___ have told me earlier!" Choose the modal for criticism of a past action.',options:['must','ought','would','should'],ci:3},
+{id:'b1_15',level:'B1',stem:'"The results ___ announced next Friday." Choose the correct passive future.',options:['will be','are being','have been','were'],ci:0},
+{id:'b1_16',level:'B1',stem:'Choose the correct sentence with "might".',options:['I might to go to the cinema.','I might going to the cinema.','I might go to the cinema.','I mights go to the cinema.'],ci:2},
+{id:'b1_17',level:'B1',stem:'"She ___ waiting for three hours when he finally arrived." Choose correctly.',options:['was','has been','had been','were'],ci:2},
+{id:'b1_18',level:'B1',stem:'"You ___ wear a tie — it\'s a casual event." Which modal means it is not necessary?',options:["mustn't","can't","needn't","shouldn't"],ci:2},
+{id:'b1_19',level:'B1',stem:'"He will ___ to come to the party next week." Choose the correct future ability.',options:['can','could','be able','be able to'],ci:3},
+{id:'b1_20',level:'B1',stem:'"She is ___ bored than she was yesterday." Choose the correct comparative.',options:['most','so','as','more'],ci:3},
+{id:'b1_21',level:'B1',stem:'Choose the correct sentence using the future progressive.',options:['I will working tomorrow.','I will be working tomorrow.','I am working tomorrow.','I will work tomorrow.'],ci:1},
+{id:'b1_22',level:'B1',stem:'"She told me that she ___ tired." Choose the correct reported speech.',options:['is','was','has been','be'],ci:1},
+{id:'b1_23',level:'B1',stem:'"You ___ be careful — that road is dangerous." Which modal gives strong advice?',options:['might','shall','ought to','would'],ci:2},
+{id:'b1_24',level:'B1',stem:'"He stopped ___ in 2010." Choose the correct form.',options:['to smoke','smoked','smoking','smoke'],ci:2},
+{id:'b1_25',level:'B1',stem:'Choose the correct passive voice for the present.',options:['English speaks worldwide.','English is speaking worldwide.','English is spoken worldwide.','English spoken worldwide.'],ci:2},
+{id:'b1_26',level:'B1',stem:'"I ___ lived here since I was born." Choose the correct tense.',options:['am','was','did','have'],ci:3},
+{id:'b1_27',level:'B1',stem:'"It ___ be the manager — he always arrives late." Choose the modal for deduction.',options:['can','would','should','must'],ci:3},
+{id:'b1_28',level:'B1',stem:'Choose the correct sentence with "-ing" as a noun.',options:['Swim is good for you.','To swimming is good for you.','Swimming is good for you.','Swims is good for you.'],ci:2},
+{id:'b1_29',level:'B1',stem:'"She hadn\'t eaten anything, ___ she was hungry." Choose the correct conjunction.',options:['but','because','while','so'],ci:3},
+{id:'b1_30',level:'B1',stem:'"She ___ painting when she was a child." Choose the correct past habit.',options:['was used to liking','use to like','got used to like','used to like'],ci:3},
+{id:'b1_31',level:'B1',stem:'"We would have arrived on time if we ___ earlier." Choose correctly.',options:['left','would leave','have left','had left'],ci:3},
+{id:'b1_32',level:'B1',stem:'"It\'s getting dark. ___ I close the curtains?" Which form offers help politely?',options:['Must','Would','Shall','Can'],ci:2},
+{id:'b1_33',level:'B1',stem:'"The film was ___. I felt ___." Choose the correct adjective pair.',options:['bored / boring','boring / boring','bored / bored','boring / bored'],ci:3},
+{id:'b1_34',level:'B1',stem:'"I need ___ new glasses." Choose the correct option.',options:['buy','buying','bought','to buy'],ci:3},
+{id:'b1_35',level:'B1',stem:'"She ___ asked about the salary." Choose the correct passive past.',options:['was','is','has','were'],ci:0},
+{id:'b1_36',level:'B1',stem:'"It can\'t ___ far now — we\'ve been walking for hours." Choose the correct deduction.',options:['to be','is','been','be'],ci:3},
+{id:'b1_37',level:'B1',stem:'"She ___ been here for a long time." Choose the correct present perfect.',options:['is','was','did','has'],ci:3},
+{id:'b1_38',level:'B1',stem:'"He asked me where I ___." Choose the correct reported question form.',options:['live','am living','have lived','lived'],ci:3},
+{id:'b1_39',level:'B1',stem:'"I suggest ___ a taxi — it\'s quicker." Choose the correct form after "suggest".',options:['to take','take','taking','taken'],ci:2},
+{id:'b1_40',level:'B1',stem:'"She ___ in Australia in 2010." Choose the correct past progressive for context.',options:['lived','has lived','was living','had living'],ci:2},
+{id:'b1_41',level:'B1',stem:'"As long as you ___ hard, you will pass." Choose the correct option.',options:['will study','studied','have studied','study'],ci:3},
+{id:'b1_42',level:'B1',stem:'"May I ___ here?" Choose the correct polite request.',options:['to sit','sitting','sat','sit'],ci:3},
+{id:'b1_43',level:'B1',stem:'"She ___ finish the project before midnight." Choose the correct option for ability.',options:['could to','was able','can to','was able to'],ci:3},
+{id:'b1_44',level:'B1',stem:'"I enjoy ___ long walks at the weekend." Choose the correct form.',options:['to take','take','taking','taken'],ci:2},
+{id:'b1_45',level:'B1',stem:'"He is nearly as tall ___ his father now." Choose the correct word.',options:['than','that','like','as'],ci:3},
+{id:'b1_46',level:'B1',stem:'"___ could it be? It\'s probably Tom." Which word begins the question?',options:['What','Whose','Which','Who'],ci:3},
+{id:'b1_47',level:'B1',stem:'"The window ___ broken last night." Choose the correct passive.',options:['is','has','were','was'],ci:3},
+{id:'b1_48',level:'B1',stem:'"I hadn\'t ___ the book before the exam." Choose the correct past perfect.',options:['reading','to read','reads','read'],ci:3},
+
+/* ── B2 (40) ──────────────────────────────────────── */
+{id:'b2_01',level:'B2',stem:'"If I ___ you, I would apply for that job." Choose the correct second conditional.',options:['am','be','was','were'],ci:3},
+{id:'b2_02',level:'B2',stem:'"She ___ have left already — her coat isn\'t here." Choose the correct deduction.',options:['can','should','must','would'],ci:2},
+{id:'b2_03',level:'B2',stem:'"If I had studied medicine, I ___ a doctor now." Choose the mixed conditional.',options:['will be','would have been','had been','would be'],ci:3},
+{id:'b2_04',level:'B2',stem:'"I ___ my hair cut last week." Choose the causative form.',options:['made','got','did','had'],ci:3},
+{id:'b2_05',level:'B2',stem:'"She ___ be exhausted — she\'s been working non-stop." Choose the correct deduction.',options:['can','might','should','must'],ci:3},
+{id:'b2_06',level:'B2',stem:'"They should ___ called us when the flight was delayed." Choose correctly.',options:['has','had','be','have'],ci:3},
+{id:'b2_07',level:'B2',stem:'"By next year, I ___ in this city for a decade." Choose the correct tense.',options:['will be living','have been living','will have been living','will have lived'],ci:3},
+{id:'b2_08',level:'B2',stem:'"She ___ used to living in a small town after years in a city." Choose the correct option.',options:['gets','got','is used','is getting'],ci:3},
+{id:'b2_09',level:'B2',stem:'"I would rather you ___ smoke indoors." Choose the correct form.',options:["don't","won't","hadn't","didn't"],ci:3},
+{id:'b2_10',level:'B2',stem:'"If only I ___ him before the meeting!" Choose the correct form of regret.',options:['called','would call','have called','had called'],ci:3},
+{id:'b2_11',level:'B2',stem:'Which sentence uses a non-defining relative clause correctly?',options:['The film that I saw last night was brilliant.','My sister, who lives in Tokyo, is a vet.','The man who called is waiting outside.','The book that she wrote became a bestseller.'],ci:1},
+{id:'b2_12',level:'B2',stem:'"You ___ have bothered — we already had everything." Choose the correct modal.',options:["shouldn't","mustn't","couldn't","needn't"],ci:3},
+{id:'b2_13',level:'B2',stem:'"The report ___ by the manager every Monday." Choose the correct passive.',options:['is writing','writes','was writing','is written'],ci:3},
+{id:'b2_14',level:'B2',stem:'"My father ___ read me stories every evening when I was small." Choose correctly.',options:['used to','would','could','should'],ci:1},
+{id:'b2_15',level:'B2',stem:'"She can\'t ___ the answer — it\'s a secret." Choose the correct deduction.',options:['know','have known','had known','knows'],ci:1},
+{id:'b2_16',level:'B2',stem:'"They ___ been waiting for hours by the time the bus arrived." Choose correctly.',options:['were','have','has','had'],ci:3},
+{id:'b2_17',level:'B2',stem:'"You had ___ leave now if you want to catch the train." Choose the modal.',options:['rather','sooner','better','rather than'],ci:2},
+{id:'b2_18',level:'B2',stem:'"She is used to ___ long hours." Choose the correct form.',options:['work','worked','working','be working'],ci:2},
+{id:'b2_19',level:'B2',stem:'"The contract ___ signed before the deadline." Choose the future passive.',options:['is being','would be','has been','will be'],ci:3},
+{id:'b2_20',level:'B2',stem:'"She asked me ___ I had finished the report." Choose correctly.',options:['that','which','what','if'],ci:3},
+{id:'b2_21',level:'B2',stem:'"He ___ have been driving — his car was in the garage all day." Choose correctly.',options:["shouldn't","mustn't","needn't","couldn't"],ci:3},
+{id:'b2_22',level:'B2',stem:'"They got ___ to working night shifts after a few weeks." Choose correctly.',options:['use','using','uses','used'],ci:3},
+{id:'b2_23',level:'B2',stem:'"I look forward ___ you at the conference." Choose the correct form.',options:['to see','seeing','to seeing','see'],ci:2},
+{id:'b2_24',level:'B2',stem:'"I wish I ___ that — now she\'s upset." Choose the form expressing regret.',options:["didn't say","wouldn't say","haven't said","hadn't said"],ci:3},
+{id:'b2_25',level:'B2',stem:'"The presentation ___ been prepared by the intern." Choose the passive correctly.',options:['has','was','is','had'],ci:3},
+{id:'b2_26',level:'B2',stem:'"___ I known about the traffic, I would have left earlier." Choose the inversion.',options:['If','Should','Were','Had'],ci:3},
+{id:'b2_27',level:'B2',stem:'"She ___ have forgotten — she never forgets anything." Choose the deduction.',options:["mustn't","shouldn't","wouldn't","can't"],ci:3},
+{id:'b2_28',level:'B2',stem:'"He had his car ___." Choose the causative.',options:['to service','servicing','service','serviced'],ci:3},
+{id:'b2_29',level:'B2',stem:'"I would sooner ___ by train than by bus." Choose the correct form.',options:['to travel','travelling','have travelled','travel'],ci:3},
+{id:'b2_30',level:'B2',stem:'"Despite ___ hard, she failed the exam." Choose the correct form after "despite".',options:['study','to study','studied','studying'],ci:3},
+{id:'b2_31',level:'B2',stem:'"___ than arrived, he started complaining." Choose the correct formal expression.',options:['Hardly he had','Scarcely he','No sooner he had','No sooner had he'],ci:3},
+{id:'b2_32',level:'B2',stem:'"She was ___ a great singer in her youth." Choose the correct option.',options:['used to being','used to','use to be','used to be'],ci:3},
+{id:'b2_33',level:'B2',stem:'"Provided that you ___ on time, you will be allowed in." Choose the correct form.',options:['arrived','will arrive','have arrived','arrive'],ci:3},
+{id:'b2_34',level:'B2',stem:'"They said they ___ the package the following day." Choose the correct reported speech.',options:['will deliver','deliver','had delivered','would deliver'],ci:3},
+{id:'b2_35',level:'B2',stem:'"She could ___ told me she was leaving!" Choose the correct form.',options:['has','had','be','have'],ci:3},
+{id:'b2_36',level:'B2',stem:'"The suspect ___ seen leaving the building at midnight." Choose the passive correctly.',options:['has been','is','had been','was'],ci:3},
+{id:'b2_37',level:'B2',stem:'"Neither the manager ___ the staff were informed." Choose the correct conjunction.',options:['or','and','but','nor'],ci:3},
+{id:'b2_38',level:'B2',stem:'"By the time she graduates, she ___ studying for six years." Choose the future perfect progressive.',options:['will be','is going to be','has been','will have been'],ci:3},
+{id:'b2_39',level:'B2',stem:'"She got her dress ___ for the wedding." Choose the causative correctly.',options:['alter','to alter','altering','altered'],ci:3},
+{id:'b2_40',level:'B2',stem:'"___ he to resign, the board would face a serious crisis." Choose the correct formal conditional.',options:['If','Had','Should','Were'],ci:3},
+
+/* ── C1 (16) ──────────────────────────────────────── */
+{id:'c1_01',level:'C1',stem:'"Under no circumstances ___ leave the building without permission." Choose the correct inversion.',options:['you should','are you to','you are to','should you'],ci:3},
+{id:'c1_02',level:'C1',stem:'"She ___ have been more careful — the accident could have been avoided." Choose the correct modal for criticism.',options:['must','could','would','should'],ci:3},
+{id:'c1_03',level:'C1',stem:'"___ I known you were coming, I would have baked a cake." Which word begins this inversion?',options:['If','Were','Should','Had'],ci:3},
+{id:'c1_04',level:'C1',stem:'"Not until the door closed ___ she begin to cry." Choose the correct inversion.',options:['she did','had','she had','did'],ci:3},
+{id:'c1_05',level:'C1',stem:'"He ___ have been the one who called — he was abroad." Choose the correct negative deduction.',options:["mustn't","shouldn't","couldn't","can't"],ci:3},
+{id:'c1_06',level:'C1',stem:'"___ he known what was in the letter, he would never have opened it." Choose correctly.',options:['If','Were','Should','Had'],ci:3},
+{id:'c1_07',level:'C1',stem:'"Only after the meeting ___ the truth come out." Choose the correct inversion.',options:['has','did','could','would'],ci:3},
+{id:'c1_08',level:'C1',stem:'"She managed to persuade the board, ___ was quite unexpected." Choose the correct relative pronoun.',options:['that','who','what','which'],ci:3},
+{id:'c1_09',level:'C1',stem:'"Never before ___ such a difficult case." Choose the correct inversion.',options:['I had seen','had I seen','I have seen','have I seen'],ci:3},
+{id:'c1_10',level:'C1',stem:'"She turned ___ the offer." Choose the correct phrasal verb for refusing.',options:['up','out','away','down'],ci:3},
+{id:'c1_11',level:'C1',stem:'"___ she to resign, the board would face a serious crisis." Choose the correct formal conditional.',options:['If','Had','Should','Were'],ci:3},
+{id:'c1_12',level:'C1',stem:'"I wish I ___ told her the truth back then." Choose the correct form of regret.',options:['have','would have','could','had'],ci:3},
+{id:'c1_13',level:'C1',stem:'"Rarely ___ behaviour like that in a professional setting." Choose the inversion.',options:['I had witnessed','had I witnessed','I witness','do I witness'],ci:3},
+{id:'c1_14',level:'C1',stem:'"If only they ___ argued that night, things might have been different." Choose the correct form.',options:["didn't","wouldn't have","don't","hadn't"],ci:3},
+{id:'c1_15',level:'C1',stem:'"No sooner ___ arrived than the power cut out." Choose the correct inversion.',options:['we had','we have','have we','had we'],ci:3},
+{id:'c1_16',level:'C1',stem:'"Little ___ that this decision would change his life." Choose the inversion.',options:['he realised','he did realise','had he realise','did he realise'],ci:3},
+
+/* ── C2 (8) ───────────────────────────────────────── */
+{id:'c2_01',level:'C2',stem:'"___ he have taken a different path, his life might have unfolded very differently." Choose the most appropriate form.',options:['If','Were','Should','Had'],ci:3},
+{id:'c2_02',level:'C2',stem:'"Not for one moment ___ that the venture would fail." Choose the correct inversion.',options:['I suspected','I did suspect','had I suspected','did I suspect'],ci:3},
+{id:'c2_03',level:'C2',stem:'"The legislation is long overdue, ___ many commentators had been arguing for years." Choose the correct relative.',options:['which','that','what','as'],ci:3},
+{id:'c2_04',level:'C2',stem:'"So ___ her argument that even her opponents were persuaded." Choose correctly.',options:['was compelling','compelling had been','had been compelling','compelling was'],ci:3},
+{id:'c2_05',level:'C2',stem:'"___ to have anticipated such an outcome would have been unreasonable." Choose correctly.',options:['Expect','Expected','Having expected','To expect'],ci:3},
+{id:'c2_06',level:'C2',stem:'"The committee rejected all proposals, ___ a source of considerable frustration." Choose correctly.',options:['which was','that was','it was','this being'],ci:3},
+{id:'c2_07',level:'C2',stem:'"On no account ___ the client\'s personal data without written consent." Choose the correct inversion.',options:['you should share','do you share','you are to share','should you share'],ci:3},
+{id:'c2_08',level:'C2',stem:'"She spoke with such clarity ___ the most sceptical members were won over." Choose correctly.',options:['which','so','as','that'],ci:3},
+];
+
+/* ═══════════════════════════════════════════════════════
+   ANSWER BALANCING
+   Given an array of selected questions (each with .ci = correct index 0-3),
+   we permute each question's options so that across the 40 questions, exactly
+   10 have their correct answer at position 0 (A), 10 at 1 (B), 10 at 2 (C),
+   10 at 3 (D). We build a target assignment then rotate each question's options
+   accordingly.
+═══════════════════════════════════════════════════════ */
+
+function balanceAnswers(questions) {
+  // Build target answer positions: 10 each of 0,1,2,3, shuffled
+  const targets = shuffle([...Array(10).fill(0),...Array(10).fill(1),...Array(10).fill(2),...Array(10).fill(3)]);
+
+  return questions.map((q, i) => {
+    const target = targets[i];      // where we want the correct answer
+    const shift = (target - q.ci + 4) % 4;   // how many positions to rotate
+
+    // Rotate options array by `shift` positions to the right
+    const opts = q.options;
+    const rotated = [...opts.slice(opts.length - shift), ...opts.slice(0, opts.length - shift)];
+
+    return { ...q, options: rotated, answer: target };
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════ */
+const LEVELS     = ['A1','A2','B1','B2','C1','C2'];
+const LEVEL_NAMES = {A1:'Beginner',A2:'Elementary',B1:'Intermediate',B2:'Upper-Intermediate',C1:'Advanced',C2:'Proficiency'};
+const CEFR_GROUP  = {A1:'Basic User',A2:'Basic User',B1:'Independent User',B2:'Independent User',C1:'Proficient User',C2:'Proficient User'};
+const CEFR_OFFICIAL = {
+  A1:{desc:'Can understand and use familiar everyday expressions and very basic phrases aimed at the satisfaction of needs of a concrete type. Can introduce themselves and others and can ask and answer questions about personal details such as where they live, people they know and things they have. Can interact in a simple way provided the other person talks slowly and clearly and is prepared to help.',skills:['Introduce yourself and ask simple questions about people and places','Understand very short, simple texts and familiar names and words','Write a short, simple postcard or fill in a form with personal details','Follow very slow, clear speech on familiar topics']},
+  A2:{desc:'Can understand sentences and frequently used expressions related to areas of most immediate relevance (e.g. very basic personal and family information, shopping, local geography, employment). Can communicate in simple and routine tasks requiring a simple and direct exchange of information on familiar and routine matters. Can describe in simple terms aspects of their background, immediate environment and matters in areas of immediate need.',skills:['Handle simple transactions and short social exchanges','Understand short, simple texts containing high-frequency vocabulary','Write short, simple notes and messages relating to immediate needs','Describe past activities and personal experiences in simple terms']},
+  B1:{desc:'Can understand the main points of clear standard input on familiar matters regularly encountered in work, school, leisure, etc. Can deal with most situations likely to arise whilst travelling in an area where the language is spoken. Can produce simple connected text on topics that are familiar or of personal interest. Can describe experiences and events, dreams, hopes and ambitions and briefly give reasons and explanations for opinions and plans.',skills:['Follow the main points of extended discussions on familiar topics','Read straightforward factual texts on subjects related to their field','Write simple connected texts on familiar or personally interesting topics','Handle most travel situations and everyday social exchanges']},
+  B2:{desc:'Can understand the main ideas of complex text on both concrete and abstract topics, including technical discussions in their field of specialisation. Can interact with a degree of fluency and spontaneity that makes regular interaction with native speakers quite possible without strain for either party. Can produce clear, detailed text on a wide range of subjects and explain a viewpoint on a topical issue giving the advantages and disadvantages of various options.',skills:['Understand extended speech and lectures on complex topics','Read articles and reports concerned with contemporary problems','Write clear, detailed essays and reports on a wide range of subjects','Interact fluently and spontaneously with native speakers']},
+  C1:{desc:'Can understand a wide range of demanding, longer texts and recognise implicit meaning. Can express themselves fluently and spontaneously without much obvious searching for expressions. Can use language flexibly and effectively for social, academic and professional purposes. Can produce clear, well-structured, detailed text on complex subjects, showing controlled use of organisational patterns, connectors and cohesive devices.',skills:['Understand virtually all forms of spoken language, including abstract topics','Read long and complex factual and literary texts, appreciating distinctions of style','Express ideas fluently and spontaneously without obvious effort','Write clear, well-structured and detailed texts on complex subjects']},
+  C2:{desc:'Can understand with ease virtually everything heard or read. Can summarise information from different spoken and written sources, reconstructing arguments and accounts in a coherent presentation. Can express themselves spontaneously, very fluently and precisely, differentiating finer shades of meaning even in the most complex situations.',skills:['Understand any kind of spoken language, whether live or broadcast','Read with ease virtually all forms of written language, including abstract texts','Summarise and reconstruct information and arguments from multiple sources','Express themselves spontaneously, very fluently and with precise meaning']}
+};
+
+let testQuestions   = [];   // the 40 balanced questions for this run
+let currentQ        = 0;
+let currentLevel    = null;
+let correctThisLevel = 0;
+let wrongThisLevel  = 0;
+let levelHistory    = {};   // level -> {correct, wrong}
+let answers         = [];   // {q, chosen, isCorrect} per question
+let totalCorrect    = 0;
+let timerInterval   = null;
+let secondsLeft     = 30 * 60;
+let usedIds         = new Set();
+let pool            = {};
+
+/* ── helpers ── */
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length-1; i>0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function buildPool() {
+  pool = {};
+  LEVELS.forEach(l => { pool[l] = shuffle(BANK_RAW.filter(q => q.level === l)); });
+}
+
+/* Draw 40 questions adaptively starting from startLevel,
+   then pass them through balanceAnswers() */
+function drawAdaptiveRaw(startLevel) {
+  buildPool();
+  usedIds.clear();
+
+  // Simple pre-draw: take 40 questions weighted toward startLevel
+  // We just draw 40 in order of level proximity to startLevel
+  const idx = LEVELS.indexOf(startLevel);
+  const order = [];
+  // interleave: start level, ±1, ±2 etc
+  for (let d=0; d<=5; d++) {
+    if (idx+d < LEVELS.length) order.push(LEVELS[idx+d]);
+    if (d>0 && idx-d >= 0) order.push(LEVELS[idx-d]);
+  }
+
+  const raw = [];
+  let oi = 0;
+  while (raw.length < 40) {
+    const lvl = order[oi % order.length];
+    const avail = (pool[lvl]||[]).filter(q => !usedIds.has(q.id));
+    if (avail.length > 0) {
+      usedIds.add(avail[0].id);
+      raw.push(avail[0]);
+    }
+    oi++;
+    if (oi > 1000) break; // safety
+  }
+  return raw;
+}
+
+/* ── Start test ── */
+function beginTest(startLevel) {
+  currentLevel    = startLevel;
+  currentQ        = 0;
+  totalCorrect    = 0;
+  correctThisLevel = 0;
+  wrongThisLevel  = 0;
+  levelHistory    = {};
+  answers         = [];
+
+  const rawSelected = drawAdaptiveRaw(startLevel);
+  testQuestions     = balanceAnswers(rawSelected);   // ← answer balancing happens here
+
+  showScreen('test');
+  startTimer();
+  renderQuestion();
+}
+
+/* ── Timer ── */
+function startTimer() {
+  secondsLeft = 30 * 60;
+  updateTimer();
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    updateTimer();
+    if (secondsLeft <= 0) { clearInterval(timerInterval); finishTest(); }
+  }, 1000);
+}
+
+function updateTimer() {
+  const m = Math.floor(secondsLeft/60), s = secondsLeft%60;
+  const el = document.getElementById('timerDisplay');
+  el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.classList.toggle('warning', secondsLeft <= 5*60);
+}
+
+/* ── Render question ── */
+function renderQuestion() {
+  if (currentQ >= 40) { finishTest(); return; }
+
+  const q = testQuestions[currentQ];
+  const letters = ['A','B','C','D'];
+
+  document.getElementById('qCounter').textContent = `${currentQ+1} / 40`;
+  document.getElementById('progressFill').style.width = `${(currentQ/40)*100}%`;
+
+  const html = `
+    <div class="q-number">Question ${currentQ+1} of 40</div>
+    <div class="q-stem">${q.stem}</div>
+    <div class="options" id="opts">
+      ${q.options.map((opt,i) => `
+        <div class="option" id="opt_${i}" onclick="selectAnswer(${i})">
+          <div class="option-letter">${letters[i]}</div>
+          <span>${opt}</span>
+        </div>
+      `).join('')}
+    </div>
+    <div class="q-actions">
+      <button class="btn-primary" id="nextBtn" onclick="nextQuestion()">
+        ${currentQ >= 39 ? 'Complete Test' : 'Next Question'}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  `;
+
+  const wrap = document.getElementById('questionWrap');
+  wrap.style.opacity = 0;
+  wrap.innerHTML = html;
+  setTimeout(() => { wrap.style.transition='opacity 0.25s'; wrap.style.opacity=1; }, 10);
+}
+
+let chosenIdx = null;
+
+function selectAnswer(idx) {
+  // Highlight chosen; allow changing before Next
+  document.querySelectorAll('.option').forEach((o,i) => {
+    o.classList.toggle('chosen', i===idx);
+  });
+  chosenIdx = idx;
+  document.getElementById('nextBtn').classList.add('visible');
+}
+
+function nextQuestion() {
+  if (chosenIdx === null) return;
+
+  const q = testQuestions[currentQ];
+  const isCorrect = chosenIdx === q.answer;
+
+  answers.push({ q, chosen: chosenIdx, isCorrect });
+
+  // Adaptive tracking
+  if (isCorrect) { correctThisLevel++; totalCorrect++; }
+  else { wrongThisLevel++; }
+  adaptLevel();
+
+  chosenIdx = null;
+  currentQ++;
+  if (currentQ >= 40) { finishTest(); return; }
+  renderQuestion();
+}
+
+function adaptLevel() {
+  const idx = LEVELS.indexOf(currentLevel);
+  if (correctThisLevel >= 3 && wrongThisLevel === 0) {
+    flushLevel(); if (idx < LEVELS.length-1) currentLevel = LEVELS[idx+1];
+  } else if (wrongThisLevel >= 3) {
+    flushLevel(); if (idx > 0) currentLevel = LEVELS[idx-1];
+  } else if (wrongThisLevel >= 6) {
+    flushLevel(); if (idx > 0) currentLevel = LEVELS[idx-1];
+  }
+}
+
+function flushLevel() {
+  if (!levelHistory[currentLevel]) levelHistory[currentLevel]={correct:0,wrong:0};
+  levelHistory[currentLevel].correct += correctThisLevel;
+  levelHistory[currentLevel].wrong   += wrongThisLevel;
+  correctThisLevel = 0; wrongThisLevel = 0;
+}
+
+/* ── Finish test ── */
+function finishTest() {
+  clearInterval(timerInterval);
+  flushLevel();
+
+  const timeUsed = 30*60 - secondsLeft;
+  const mu = Math.floor(timeUsed/60), ms = timeUsed%60;
+
+  // Determine result level
+  let result = 'A1';
+  for (const lvl of LEVELS) {
+    const s = levelHistory[lvl]||{correct:0,wrong:0};
+    if (s.correct > 0 && s.correct >= s.wrong) result = lvl;
+  }
+
+  // Build review page
+  const reviewList = document.getElementById('reviewList');
+  const letters = ['A','B','C','D'];
+  reviewList.innerHTML = answers.map((a,i) => {
+    const correctLetter = letters[a.q.answer];
+    const chosenLetter  = letters[a.chosen];
+    const correctText   = a.q.options[a.q.answer];
+    const chosenText    = a.q.options[a.chosen];
+    const icon          = a.isCorrect ? '✓' : '✗';
+    return `
+      <div class="review-item">
+        <div class="review-qnum">Q${i+1}</div>
+        <div>
+          <div class="review-stem">${a.q.stem}</div>
+          <div class="review-answers">
+            ${a.isCorrect
+              ? `<span class="ra-chip correct-answer"><span class="ra-label">${correctLetter}</span> ${correctText} ${icon}</span>`
+              : `<span class="ra-chip wrong-answer"><span class="ra-label">${chosenLetter}</span> ${chosenText} ${icon}</span>
+                 <span class="ra-chip correct-answer"><span class="ra-label">${correctLetter}</span> ${correctText} ✓</span>`
+            }
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('reviewScorePill').textContent = `${totalCorrect} / ${answers.length} correct`;
+
+  // Build result page
+  const cefrData = CEFR_OFFICIAL[result];
+  document.getElementById('resultLevel').textContent     = result;
+  document.getElementById('resultGroup').textContent     = CEFR_GROUP[result];
+  document.getElementById('resultSublabel').textContent  = LEVEL_NAMES[result];
+  document.getElementById('statCorrect').textContent     = totalCorrect;
+  document.getElementById('statTotal').textContent       = answers.length;
+  document.getElementById('statTime').textContent        = `${mu}:${String(ms).padStart(2,'0')}`;
+  document.getElementById('levelDescTag').textContent    = result;
+  document.getElementById('levelDescTitle').textContent  = `What ${result} means`;
+  document.getElementById('levelDescSubtitle').textContent = `CEFR ${CEFR_GROUP[result]}`;
+  document.getElementById('levelDescOfficial').textContent = cefrData.desc;
+  document.getElementById('levelSkills').innerHTML = cefrData.skills.map(s =>
+    `<div class="skill-row"><span class="skill-dot"></span><span>${s}</span></div>`
+  ).join('');
+
+  showScreen('review');
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function restartTest() {
+  showScreen('landing');
+}
+
+function exitTest() {
+  // Close the tab/window, or fallback to a blank page
+  window.close();
+  window.location.href = 'about:blank';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Negotiation Language — Vocabulary Exercise</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --paper: #f7f4ef;
+    --cream: #ede9e1;
+    --accent: #c0392b;
+    --accent-light: #f9e8e6;
+    --gold: #b5820a;
+    --gold-light: #fdf6e3;
+    --muted: #6b6660;
+    --border: #d9d3c8;
+    --success-bg: #eaf6ef;
+    --success: #1e7e45;
+    --error-bg: #fcecea;
+    --error: #c0392b;
+    --card-bg: #ffffff;
+    --shadow: 0 2px 20px rgba(26,26,46,0.07);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ─── Header ─── */
+  header {
+    background: var(--ink);
+    color: #fff;
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 24px,
+      rgba(255,255,255,0.025) 24px,
+      rgba(255,255,255,0.025) 25px
+    );
+  }
+  .header-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(181,130,10,0.4);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+  }
+  header p {
+    font-size: 15px;
+    color: rgba(255,255,255,0.55);
+    font-weight: 300;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  /* ─── Progress bar ─── */
+  .progress-strip {
+    display: flex;
+    background: var(--cream);
+    border-bottom: 1px solid var(--border);
+  }
+  .progress-item {
+    flex: 1;
+    padding: 0.9rem 1rem;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    border-right: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .progress-item:last-child { border-right: none; }
+  .progress-item.active { background: var(--ink); color: #fff; }
+  .progress-item .p-num {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: inherit;
+    line-height: 1.2;
+    margin-bottom: 2px;
+  }
+
+  /* ─── Main layout ─── */
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 4rem;
+  }
+
+  /* ─── Section card ─── */
+  .section-panel {
+    display: none;
+    animation: fadeUp 0.4s ease;
+  }
+  .section-panel.visible { display: block; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.4rem;
+  }
+  .section-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 600;
+    color: var(--border);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .section-meta { flex: 1; }
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .section-desc {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0.75rem 0 1.75rem;
+    padding: 0.75rem 1rem;
+    border-left: 3px solid var(--border);
+    line-height: 1.6;
+  }
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.5rem 0;
+  }
+
+  /* ─── Questions ─── */
+  .question {
+    margin-bottom: 2rem;
+  }
+  .question-text {
+    font-size: 15px;
+    color: var(--ink);
+    margin-bottom: 0.9rem;
+    line-height: 1.65;
+  }
+  .q-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: var(--ink);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 50%;
+    margin-right: 8px;
+    flex-shrink: 0;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+  }
+
+  /* ─── Options ─── */
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--card-bg);
+    transition: border-color 0.15s, background 0.15s;
+    user-select: none;
+  }
+  .opt:hover { border-color: #b0a898; background: var(--cream); }
+  .opt input[type="radio"] { display: none; }
+  .opt-letter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.15s;
+  }
+  .opt.selected .opt-letter { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .opt.selected { border-color: var(--ink); }
+  .opt.correct { background: var(--success-bg); border-color: var(--success); }
+  .opt.correct .opt-letter { background: var(--success); border-color: var(--success); color: #fff; }
+  .opt.wrong { background: var(--error-bg); border-color: var(--error); }
+  .opt.wrong .opt-letter { background: var(--error); border-color: var(--error); color: #fff; }
+
+  /* ─── Word bank ─── */
+  .wordbank-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+  }
+  .wordbank {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 1rem;
+    background: var(--gold-light);
+    border: 1px solid #e8d9a0;
+    border-radius: 10px;
+    margin-bottom: 1.75rem;
+  }
+  .chip {
+    font-size: 13px;
+    padding: 5px 12px;
+    background: #fff;
+    border: 1px solid #e0d4a8;
+    border-radius: 20px;
+    color: var(--ink);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    font-weight: 400;
+  }
+  .chip:hover { background: var(--gold-light); border-color: var(--gold); transform: translateY(-1px); }
+
+  /* ─── Gap inputs ─── */
+  .gap-line {
+    font-size: 15px;
+    color: var(--ink);
+    margin-bottom: 0.75rem;
+    line-height: 1.9;
+  }
+  .gap-input {
+    border: none;
+    border-bottom: 2px solid var(--ink);
+    background: transparent;
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    padding: 0 4px 2px;
+    min-width: 210px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .gap-input:focus { border-color: var(--accent); }
+  .gap-input.correct { border-color: var(--success); color: var(--success); background: var(--success-bg); border-radius: 4px 4px 0 0; padding: 0 6px 2px; }
+  .gap-input.wrong { border-color: var(--error); color: var(--error); }
+
+  /* ─── Dialogue ─── */
+  .dialogue-scene {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .dia-head {
+    padding: 0.7rem 1.25rem;
+    background: var(--ink);
+    color: rgba(255,255,255,0.7);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .dialogue-body { padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+  .turn {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .turn.sam { flex-direction: row-reverse; }
+  .avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .avatar.alex { background: var(--ink); color: #fff; }
+  .avatar.sam { background: var(--accent); color: #fff; }
+  .bubble {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--ink);
+    max-width: calc(100% - 50px);
+    line-height: 1.65;
+  }
+  .turn.sam .bubble { background: var(--accent-light); border-color: #f0c0bb; }
+  .bubble .spk-name {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .dia-input {
+    border: none;
+    border-bottom: 2px solid var(--ink);
+    background: transparent;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    padding: 0 4px 2px;
+    min-width: 200px;
+    max-width: 100%;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .dia-input:focus { border-color: var(--accent); }
+  .dia-input.correct { border-color: var(--success); color: var(--success); }
+  .dia-input.wrong { border-color: var(--error); color: var(--error); }
+
+  /* ─── Buttons & score ─── */
+  .actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }
+  .btn-check {
+    padding: 11px 28px;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn-check:hover { background: #2d2d4e; }
+  .btn-check:active { transform: scale(0.98); }
+  .btn-next {
+    padding: 11px 28px;
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .btn-next:hover { background: var(--cream); border-color: #b0a898; }
+  .score-pill {
+    display: none;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    background: var(--gold-light);
+    border: 1px solid #e8d9a0;
+    color: var(--gold);
+  }
+  .score-pill.visible { display: inline-flex; align-items: center; gap: 6px; }
+
+  /* ─── Final screen ─── */
+  #final-panel {
+    display: none;
+    text-align: center;
+    padding: 3rem 1rem;
+    animation: fadeUp 0.5s ease;
+  }
+  #final-panel.visible { display: block; }
+  .final-trophy {
+    font-size: 64px;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .final-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .final-sub { font-size: 15px; color: var(--muted); margin-bottom: 2rem; }
+  .final-scores {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+  .final-score-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.75rem;
+    min-width: 140px;
+  }
+  .fsc-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+  .fsc-num { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 600; color: var(--accent); line-height: 1.1; }
+  .fsc-denom { font-size: 14px; color: var(--muted); }
+  .btn-restart {
+    padding: 12px 32px;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-restart:hover { background: #2d2d4e; }
+
+  @media (max-width: 520px) {
+    .progress-item .p-num { font-size: 16px; }
+    .section-num { font-size: 2rem; }
+    .gap-input, .dia-input { min-width: 140px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-tag">Vocabulary Exercise</div>
+  <h1>Negotiation Language</h1>
+  <p>Twelve key expressions for professional discussions — three sections, twenty-four questions.</p>
+</header>
+
+<div class="progress-strip">
+  <div class="progress-item active" id="tab-1" onclick="goTo(1)">
+    <span class="p-num">1</span>Multiple Choice
+  </div>
+  <div class="progress-item" id="tab-2" onclick="goTo(2)">
+    <span class="p-num">2</span>Fill the Gap
+  </div>
+  <div class="progress-item" id="tab-3" onclick="goTo(3)">
+    <span class="p-num">3</span>Dialogue
+  </div>
+</div>
+
+<main>
+
+<!-- ══════════ PART 1 ══════════ -->
+<div class="section-panel visible" id="panel-1">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <div class="section-meta">
+      <div class="section-label">Part One</div>
+      <div class="section-title">Multiple choice — checking understanding</div>
+    </div>
+  </div>
+  <p class="section-desc">Choose the answer (A, B, or C) that best shows you understand the meaning or use of each expression.</p>
+
+  <div id="p1-container"></div>
+
+  <div class="actions">
+    <button class="btn-check" onclick="checkP1()">Check answers</button>
+    <button class="btn-next" onclick="goTo(2)">Next section →</button>
+    <div class="score-pill" id="p1-score"></div>
+  </div>
+</div>
+
+<!-- ══════════ PART 2 ══════════ -->
+<div class="section-panel" id="panel-2">
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <div class="section-meta">
+      <div class="section-label">Part Two</div>
+      <div class="section-title">Fill the gap</div>
+    </div>
+  </div>
+  <p class="section-desc">Use an expression from the word bank to complete each sentence. There are twelve expressions but only eight gaps — four are not needed. Click a chip to insert it into a focused blank, or type directly.</p>
+
+  <div class="wordbank-label">Word bank</div>
+  <div class="wordbank" id="p2-wordbank"></div>
+
+  <div id="p2-container"></div>
+
+  <div class="actions">
+    <button class="btn-check" onclick="checkP2()">Check answers</button>
+    <button class="btn-next" onclick="goTo(3)">Next section →</button>
+    <div class="score-pill" id="p2-score"></div>
+  </div>
+</div>
+
+<!-- ══════════ PART 3 ══════════ -->
+<div class="section-panel" id="panel-3">
+  <div class="section-header">
+    <div class="section-num">03</div>
+    <div class="section-meta">
+      <div class="section-label">Part Three</div>
+      <div class="section-title">Complete the dialogue</div>
+    </div>
+  </div>
+  <p class="section-desc">Alex and Sam are two managers discussing a joint project. Fill in the missing expressions to complete their conversation naturally.</p>
+
+  <div class="dialogue-scene">
+    <div class="dia-head">🗂 Project meeting — Alex &amp; Sam</div>
+    <div class="dialogue-body" id="p3-container"></div>
+  </div>
+
+  <div class="actions">
+    <button class="btn-check" onclick="checkP3()">Check answers</button>
+    <button class="btn-next" onclick="showFinal()">See results →</button>
+    <div class="score-pill" id="p3-score"></div>
+  </div>
+</div>
+
+<!-- ══════════ FINAL ══════════ -->
+<div id="final-panel">
+  <span class="final-trophy">🎓</span>
+  <div class="final-title">Exercise complete!</div>
+  <div class="final-sub">Here's how you did across all three sections.</div>
+  <div class="final-scores">
+    <div class="final-score-card">
+      <div class="fsc-label">Part 1</div>
+      <div class="fsc-num" id="fs1">—</div>
+      <div class="fsc-denom">out of 8</div>
+    </div>
+    <div class="final-score-card">
+      <div class="fsc-label">Part 2</div>
+      <div class="fsc-num" id="fs2">—</div>
+      <div class="fsc-denom">out of 8</div>
+    </div>
+    <div class="final-score-card">
+      <div class="fsc-label">Part 3</div>
+      <div class="fsc-num" id="fs3">—</div>
+      <div class="fsc-denom">out of 7</div>
+    </div>
+  </div>
+  <button class="btn-restart" onclick="restart()">Start again</button>
+</div>
+
+</main>
+
+<script>
+/* ─── DATA ─── */
+const p1 = [
+  {
+    q: 'Your colleague says: <em>"I\'d like to raise the issue of staff overtime."</em> What is she doing?',
+    opts: ["Closing a discussion that has gone on too long", "Introducing a topic she wants to discuss", "Asking who is responsible for overtime pay"],
+    ans: 1
+  },
+  {
+    q: 'A manager says: <em>"What\'s your main concern about the new system?"</em> What does she want?',
+    opts: ["To explain the advantages of the new system", "To end the conversation quickly", "To understand what the other person is most worried about"],
+    ans: 2
+  },
+  {
+    q: 'Someone says: <em>"I\'ll agree to extending the deadline if you reduce the scope."</em> What does this mean?',
+    opts: ["She is refusing to accept the proposed change", "She is asking for more time to think", "She accepts one thing on condition that something else changes"],
+    ans: 2
+  },
+  {
+    q: '<em>"The potential problem I see is the budget."</em> The speaker is...',
+    opts: ["Congratulating the team on managing costs", "Identifying something that could go wrong", "Refusing to work on the project"],
+    ans: 1
+  },
+  {
+    q: 'Someone tells you: <em>"Get straight to the point."</em> What are they asking you to do?',
+    opts: ["Say what you mean without a long introduction", "Write your ideas down instead of speaking", "Leave the room and come back later"],
+    ans: 0
+  },
+  {
+    q: '<em>"We\'re agreed on that"</em> is used when...',
+    opts: ["One person is trying to change the other's mind", "A decision needs to be postponed", "Two people confirm they share the same view"],
+    ans: 2
+  },
+  {
+    q: 'A colleague says: <em>"What most concerns me is the timeline."</em> Which situation fits this best?',
+    opts: ["She is praising the team for finishing on time", "She is assigning tasks to team members", "She is saying the schedule is her biggest worry"],
+    ans: 2
+  },
+  {
+    q: '<em>"Let\'s figure out how to share the workload."</em> What is the speaker suggesting?',
+    opts: ["Asking one person to take on all responsibilities", "Working together to find a practical solution", "Stopping the project until new staff are hired"],
+    ans: 1
+  }
+];
+
+const p2 = [
+  { before: "We don't have much time, so please", after: "and tell us exactly what you need.", ans: "get straight to the point" },
+  { before: "", after: "the tight delivery deadline - I'm not sure we can keep our promises.", ans: "the potential problem I see is" },
+  { before: "", after: "sharing the project management role for the second phase?", ans: "how would you feel about collaborating" },
+  { before: "Neither side is getting everything it wants, so we need to", after: "that works for both teams.", ans: "reach a compromise" },
+  { before: "", after: "the lack of communication between departments before we go any further.", ans: "I'd like to raise the issue of" },
+  { before: "", after: "covering the extra travel costs if we extend the trip by one day?", ans: "would you be prepared to" },
+  { before: "", after: "the marketing budget - I don't want to overspend this quarter.", ans: "what most concerns me is" },
+  { before: "", after: "a way to meet the client's expectations without burning out the team.", ans: "let's figure out" }
+];
+
+const wordBankList = [
+  "get straight to the point", "what if we were to", "the potential problem I see is",
+  "what most concerns me is", "would you be prepared to", "I'll agree to",
+  "I'd like to raise the issue of", "what's your main concern", "we're agreed on that",
+  "how would you feel about collaborating", "reach a compromise", "let's figure out"
+];
+
+const p3 = [
+  { spk: "Alex", side: "alex", blank: true,  after: "the revised proposal. We need to discuss it before the board meeting.", ans: "I'd like to raise the issue of" },
+  { spk: "Sam",  side: "sam",  blank: true,  after: "? Is it the cost, or the staffing?", ans: "what's your main concern" },
+  { spk: "Alex", side: "alex", blank: true,  after: "the timeline. Six weeks isn't enough to do this properly.", ans: "what most concerns me is" },
+  { spk: "Sam",  side: "sam",  blank: true,  after: "splitting the project into two phases? That might ease the pressure.", ans: "what if we were to" },
+  { spk: "Alex", side: "alex", blank: true,  after: "on the first phase? I think joint ownership makes sense.", ans: "would you be prepared to" },
+  { spk: "Sam",  side: "sam",  blank: false, text: "Yes, absolutely. That sounds fair." },
+  { spk: "Alex", side: "alex", blank: true,  after: "a plan we can both present to the board.", ans: "let's figure out" },
+  { spk: "Sam",  side: "sam",  blank: true,  after: ", then. Let's get into the details.", ans: "we're agreed on that" }
+];
+
+/* ─── State ─── */
+let scores = { p1: null, p2: null, p3: null };
+let currentSection = 1;
+
+/* ─── Normalize for comparison ─── */
+function norm(s) { return s.trim().toLowerCase().replace(/['']/g,"'").replace(/\s+/g,' '); }
+
+/* ─── RENDER P1 ─── */
+function renderP1() {
+  const c = document.getElementById('p1-container');
+  const letters = ['A','B','C'];
+  p1.forEach((q, qi) => {
+    const div = document.createElement('div');
+    div.className = 'question';
+    div.innerHTML = `<div class="question-text"><span class="q-num">${qi+1}</span>${q.q}</div>
+      <div class="options" id="p1-opts-${qi}">
+        ${q.opts.map((o,oi) => `
+          <label class="opt" id="p1-opt-${qi}-${oi}" onclick="selectOpt(${qi},${oi})">
+            <input type="radio" name="p1-${qi}" value="${oi}">
+            <span class="opt-letter">${letters[oi]}</span>
+            <span>${o}</span>
+          </label>`).join('')}
+      </div>`;
+    c.appendChild(div);
+  });
+}
+
+function selectOpt(qi, oi) {
+  for (let j = 0; j < 3; j++) {
+    document.getElementById(`p1-opt-${qi}-${j}`).classList.remove('selected');
+  }
+  document.getElementById(`p1-opt-${qi}-${oi}`).classList.add('selected');
+  document.querySelector(`input[name="p1-${qi}"][value="${oi}"]`).checked = true;
+}
+
+function checkP1() {
+  let score = 0;
+  p1.forEach((q, qi) => {
+    const sel = document.querySelector(`input[name="p1-${qi}"]:checked`);
+    const chosen = sel ? parseInt(sel.value) : -1;
+    for (let j = 0; j < 3; j++) {
+      const el = document.getElementById(`p1-opt-${qi}-${j}`);
+      el.classList.remove('correct','wrong','selected');
+      if (j === q.ans) el.classList.add('correct');
+      else if (j === chosen) el.classList.add('wrong');
+    }
+    if (chosen === q.ans) score++;
+  });
+  scores.p1 = score;
+  const pill = document.getElementById('p1-score');
+  pill.textContent = `✦ ${score} / 8`;
+  pill.classList.add('visible');
+}
+
+/* ─── RENDER P2 ─── */
+function renderP2() {
+  const wb = document.getElementById('p2-wordbank');
+  wordBankList.forEach(w => {
+    const chip = document.createElement('span');
+    chip.className = 'chip';
+    chip.textContent = w;
+    chip.onclick = () => {
+      const focused = document.querySelector('.gap-input:focus');
+      if (focused) { focused.value = w; }
+    };
+    wb.appendChild(chip);
+  });
+
+  const c = document.getElementById('p2-container');
+  p2.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'question';
+    div.innerHTML = `<div class="gap-line">
+      <span class="q-num">${i+1}</span>
+      ${item.before ? item.before + ' ' : ''}
+      <input class="gap-input" id="p2-inp-${i}" type="text" placeholder="…" autocomplete="off">
+      ${item.after}
+    </div>`;
+    c.appendChild(div);
+  });
+}
+
+function checkP2() {
+  let score = 0;
+  p2.forEach((item, i) => {
+    const inp = document.getElementById(`p2-inp-${i}`);
+    inp.classList.remove('correct','wrong');
+    if (norm(inp.value) === norm(item.ans)) { inp.classList.add('correct'); score++; }
+    else inp.classList.add('wrong');
+  });
+  scores.p2 = score;
+  const pill = document.getElementById('p2-score');
+  pill.textContent = `✦ ${score} / 8`;
+  pill.classList.add('visible');
+}
+
+/* ─── RENDER P3 ─── */
+function renderP3() {
+  const c = document.getElementById('p3-container');
+  p3.forEach((turn, i) => {
+    const div = document.createElement('div');
+    div.className = `turn ${turn.side}`;
+    let bubbleContent;
+    if (turn.blank) {
+      bubbleContent = `<input class="dia-input" id="p3-inp-${i}" type="text" placeholder="…" autocomplete="off"> ${turn.after}`;
+    } else {
+      bubbleContent = turn.text;
+    }
+    div.innerHTML = `
+      <div class="avatar ${turn.side}">${turn.spk[0]}</div>
+      <div class="bubble"><span class="spk-name">${turn.spk}</span>${bubbleContent}</div>`;
+    c.appendChild(div);
+  });
+}
+
+function checkP3() {
+  let score = 0; let total = 0;
+  p3.forEach((turn, i) => {
+    if (!turn.blank) return;
+    total++;
+    const inp = document.getElementById(`p3-inp-${i}`);
+    inp.classList.remove('correct','wrong');
+    if (norm(inp.value) === norm(turn.ans)) { inp.classList.add('correct'); score++; }
+    else inp.classList.add('wrong');
+  });
+  scores.p3 = score;
+  const pill = document.getElementById('p3-score');
+  pill.textContent = `✦ ${score} / ${total}`;
+  pill.classList.add('visible');
+}
+
+/* ─── Navigation ─── */
+function goTo(n) {
+  for (let i = 1; i <= 3; i++) {
+    document.getElementById(`panel-${i}`).classList.toggle('visible', i === n);
+    document.getElementById(`tab-${i}`).classList.toggle('active', i === n);
+  }
+  document.getElementById('final-panel').classList.remove('visible');
+  currentSection = n;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showFinal() {
+  for (let i = 1; i <= 3; i++) {
+    document.getElementById(`panel-${i}`).classList.remove('visible');
+    document.getElementById(`tab-${i}`).classList.remove('active');
+  }
+  document.getElementById('fs1').textContent = scores.p1 !== null ? scores.p1 : '—';
+  document.getElementById('fs2').textContent = scores.p2 !== null ? scores.p2 : '—';
+  document.getElementById('fs3').textContent = scores.p3 !== null ? scores.p3 : '—';
+  document.getElementById('final-panel').classList.add('visible');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function restart() {
+  scores = { p1: null, p2: null, p3: null };
+  ['p1-container','p2-container','p3-container','p2-wordbank'].forEach(id => {
+    document.getElementById(id).innerHTML = '';
+  });
+  ['p1-score','p2-score','p3-score'].forEach(id => {
+    const el = document.getElementById(id);
+    el.textContent = '';
+    el.classList.remove('visible');
+  });
+  document.getElementById('final-panel').classList.remove('visible');
+  renderP1(); renderP2(); renderP3();
+  goTo(1);
+}
+
+/* ─── Init ─── */
+renderP1();
+renderP2();
+renderP3();
+</script>
+</body>
+</html>

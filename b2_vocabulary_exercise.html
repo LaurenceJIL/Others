@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B2 Vocabulary Exercise — Professional English</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f5f0;
+  --surface: #ffffff;
+  --surface2: #f0ede6;
+  --ink: #1a1714;
+  --ink2: #5a554e;
+  --ink3: #9a9188;
+  --accent: #2d6a4f;
+  --accent-light: #d8f3dc;
+  --accent-mid: #52b788;
+  --danger: #c1121f;
+  --danger-light: #fce4e4;
+  --warning: #c77b06;
+  --warning-light: #fef3cd;
+  --border: #e0dbd2;
+  --border-strong: #c8c2b8;
+  --radius: 10px;
+  --radius-lg: 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* HEADER */
+.header {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.header-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px;
+  letter-spacing: -0.3px;
+  color: #fff;
+}
+.header-sub {
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+  font-weight: 300;
+}
+
+/* LAYOUT */
+.container {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* PROGRESS */
+.progress-wrap {
+  margin-bottom: 2rem;
+}
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--ink3);
+  margin-bottom: 6px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.progress-track {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+.step-dots {
+  display: flex;
+  gap: 5px;
+  margin-top: 8px;
+}
+.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.3s;
+}
+.dot.done { background: var(--accent-mid); }
+.dot.active { background: var(--accent); }
+
+/* SECTION HEADING */
+.section-head {
+  margin-bottom: 1.5rem;
+}
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.section-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 26px;
+  color: var(--ink);
+  margin-bottom: 6px;
+  letter-spacing: -0.3px;
+}
+.section-desc {
+  font-size: 14px;
+  color: var(--ink2);
+  font-weight: 300;
+  max-width: 580px;
+}
+
+/* CARD */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+/* MATCH EXERCISE */
+.match-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.match-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.col-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 4px;
+}
+
+.word-chip {
+  padding: 10px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--surface);
+  color: var(--ink);
+  user-select: none;
+}
+.word-chip:hover:not(.matched):not(.selected) {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+.word-chip.selected {
+  border: 2px solid var(--accent);
+  background: var(--accent-light);
+  color: var(--accent);
+}
+.word-chip.matched {
+  border: 1.5px solid var(--accent-mid);
+  background: #edf7f0;
+  color: var(--accent);
+  cursor: default;
+  opacity: 0.8;
+}
+.word-chip.wrong-flash {
+  border-color: var(--danger);
+  background: var(--danger-light);
+  animation: shake 0.35s ease;
+}
+
+.def-chip {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 13px;
+  color: var(--ink2);
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--surface2);
+  line-height: 1.5;
+  user-select: none;
+}
+.def-chip:hover:not(.matched):not(.selected) {
+  border-color: var(--warning);
+  background: var(--warning-light);
+}
+.def-chip.selected {
+  border: 2px solid var(--warning);
+  background: var(--warning-light);
+}
+.def-chip.matched {
+  border: 1.5px solid var(--accent-mid);
+  background: #edf7f0;
+  color: var(--accent);
+  cursor: default;
+  opacity: 0.8;
+}
+
+@keyframes shake {
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-5px)}
+  75%{transform:translateX(5px)}
+}
+
+/* MATCH COUNTER */
+.match-counter {
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink3);
+  margin: 1rem 0 0.5rem;
+}
+.match-counter strong { color: var(--accent); }
+
+/* GAP FILL */
+.gap-text {
+  font-size: 15px;
+  line-height: 2.2;
+  color: var(--ink);
+}
+.gap-text br + br { display: none; }
+
+.gap-select {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 3px;
+}
+.gap-select select {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 4px 28px 4px 10px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239a9188'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  transition: all 0.15s;
+  max-width: 200px;
+}
+.gap-select select:hover:not(:disabled) { border-color: var(--accent); }
+.gap-select select.correct { border-color: var(--accent-mid); background-color: #edf7f0; color: var(--accent); }
+.gap-select select.wrong { border-color: var(--danger); background-color: var(--danger-light); color: var(--danger); }
+
+/* FEEDBACK BOX */
+.feedback-box {
+  margin-top: 1rem;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  display: none;
+}
+.feedback-box.show { display: block; }
+.feedback-box.good { background: var(--accent-light); color: var(--accent); border-left: 3px solid var(--accent-mid); }
+.feedback-box.bad { background: var(--danger-light); color: var(--danger); border-left: 3px solid var(--danger); }
+
+/* BUTTONS */
+.nav-bar {
+  display: flex;
+  gap: 10px;
+  margin-top: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 22px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1.5px solid var(--border-strong);
+  background: transparent;
+  color: var(--ink2);
+}
+.btn:hover { background: var(--surface2); border-color: var(--ink3); }
+.btn:active { transform: scale(0.98); }
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.btn-primary:hover { background: #235a40; border-color: #235a40; }
+.btn-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.nav-hint {
+  font-size: 12px;
+  color: var(--ink3);
+}
+
+/* FINAL SCREEN */
+.final-wrap {
+  text-align: center;
+  padding: 2rem 1rem 3rem;
+}
+.final-score-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+.final-score-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 64px;
+  letter-spacing: -2px;
+  color: var(--ink);
+  line-height: 1;
+}
+.final-pct {
+  font-size: 18px;
+  color: var(--ink3);
+  margin: 6px 0 1.5rem;
+}
+.final-msg {
+  font-size: 15px;
+  color: var(--ink2);
+  max-width: 420px;
+  margin: 0 auto 2rem;
+  line-height: 1.7;
+}
+.score-breakdown {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  max-width: 500px;
+  margin: 0 auto 2rem;
+}
+.score-cell {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 12px;
+}
+.score-cell-label {
+  font-size: 11px;
+  color: var(--ink3);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.score-cell-val {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* RESPONSIVE */
+@media(max-width: 560px) {
+  .match-grid { grid-template-columns: 1fr; }
+  .gap-select select { max-width: 160px; font-size: 12px; }
+  .section-title { font-size: 22px; }
+  .final-score-num { font-size: 48px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-title">B2 Vocabulary Exercise</span>
+  <span class="header-sub">Professional English &nbsp;·&nbsp; ~30 minutes &nbsp;·&nbsp; 20 questions</span>
+</div>
+
+<div class="container">
+  <div id="app"></div>
+</div>
+
+<script>
+const MATCH_ITEMS = [
+  {word:"carry out tests", def:"To perform or conduct experiments or examinations"},
+  {word:"check substances", def:"To verify or examine the composition of materials or chemicals"},
+  {word:"record an event", def:"To document or register something that happens"},
+  {word:"feedback from doctors and patients", def:"Reactions and opinions received from medical professionals and those in their care"},
+  {word:"It depends on…", def:"A phrase showing the answer changes according to certain conditions"},
+  {word:"go over old ground", def:"To discuss something that has already been covered before"},
+  {word:"on sick leave", def:"Officially absent from work because of illness"},
+  {word:"short-staffed", def:"Not having enough employees to do the work required"},
+  {word:"replaced temporarily", def:"Substituted for a limited period of time"},
+  {word:"a sandwich-course", def:"A study programme alternating periods in college with work experience"},
+  {word:"a positive outcome", def:"A result or consequence that is favourable"},
+  {word:"a risky situation", def:"A circumstance that involves potential danger or uncertainty"},
+  {word:"room for improvement", def:"Space or potential to get better or make progress"},
+  {word:"fasten your seat belt", def:"To secure the safety strap across your body in a vehicle"},
+  {word:"if I understand correctly", def:"A phrase used to check or confirm your interpretation of something"},
+];
+
+const GAP_TEXTS = [
+  {
+    title: "Text 1 — A team meeting",
+    label: "Gap-fill exercise",
+    intro: "Read this extract from a team meeting and choose the correct expression for each gap.",
+    segments: [
+      {type:"text", val:"Our department is currently "},
+      {type:"gap", key:"short-staffed", opts:["short-staffed","on sick leave","replaced temporarily","go over old ground"]},
+      {type:"text", val:" because two colleagues are "},
+      {type:"gap", key:"on sick leave", opts:["short-staffed","on sick leave","replaced temporarily","a positive outcome"]},
+      {type:"text", val:". They will be "},
+      {type:"gap", key:"replaced temporarily", opts:["replaced temporarily","short-staffed","on sick leave","fasten your seat belt"]},
+      {type:"text", val:" by agency workers starting next week. I don't want to "},
+      {type:"gap", key:"go over old ground", opts:["go over old ground","if I understand correctly","room for improvement","carry out tests"]},
+      {type:"text", val:", but I think "},
+      {type:"gap", key:"It depends on…", opts:["It depends on…","Most of the time","feedback from doctors and patients","a risky situation"]},
+      {type:"text", val:" whether we can deliver the report on time."},
+    ]
+  },
+  {
+    title: "Text 2 — A training context",
+    label: "Gap-fill exercise",
+    intro: "Fill in the gaps with the correct expressions from the dropdown menus.",
+    segments: [
+      {type:"text", val:"The new "},
+      {type:"gap", key:"trainee", opts:["trainee","team member","part-time employee","leadership"]},
+      {type:"text", val:" joined us last month. She is doing "},
+      {type:"gap", key:"a sandwich-course", opts:["a sandwich-course","a risky situation","a positive outcome","room for improvement"]},
+      {type:"text", val:" at the local university. As a "},
+      {type:"gap", key:"part-time employee", opts:["part-time employee","trainee","team member","leadership"]},
+      {type:"text", val:", she only works three days a week. She has already shown strong "},
+      {type:"gap", key:"leadership", opts:["leadership","strength","delay","schedule"]},
+      {type:"text", val:" skills, and we expect "},
+      {type:"gap", key:"a positive outcome", opts:["a positive outcome","a risky situation","room for improvement","on sick leave"]},
+      {type:"text", val:" from her placement review."},
+    ]
+  },
+  {
+    title: "Text 3 — Clinical research",
+    label: "Gap-fill exercise",
+    intro: "Complete the text about clinical research with the correct expressions.",
+    segments: [
+      {type:"text", val:"The team needs to "},
+      {type:"gap", key:"carry out tests", opts:["carry out tests","record an event","check substances","fasten your seat belt"]},
+      {type:"text", val:" on the new compound and carefully "},
+      {type:"gap", key:"check substances", opts:["check substances","carry out tests","record an event","go over old ground"]},
+      {type:"text", val:" before proceeding. It is vital to "},
+      {type:"gap", key:"record an event", opts:["record an event","check substances","carry out tests","on sick leave"]},
+      {type:"text", val:" accurately in the trial log. The complication "},
+      {type:"gap", key:"It can be due to…", opts:["It can be due to…","It depends on…","Most of the time","room for improvement"]},
+      {type:"text", val:" an unexpected reaction. We rely heavily on "},
+      {type:"gap", key:"feedback from doctors and patients", opts:["feedback from doctors and patients","a positive outcome","leadership","schedule"]},
+      {type:"text", val:" to improve our protocols."},
+    ]
+  },
+  {
+    title: "Text 4 — A workplace dialogue",
+    label: "Gap-fill exercise",
+    intro: "Choose the best expression to complete each gap in this dialogue extract.",
+    segments: [
+      {type:"text", val:"— "},
+      {type:"gap", key:"If I understand correctly", opts:["If I understand correctly","It depends on…","Most of the time","Go over old ground"]},
+      {type:"text", val:", you are suggesting we "},
+      {type:"gap", key:"discuss a topic", opts:["discuss a topic","make a suggestion","show solidarity","participate in a meeting"]},
+      {type:"text", val:" at the next meeting?\n— Exactly. And "},
+      {type:"gap", key:"Most of the time", opts:["Most of the time","It depends on…","room for improvement","on sick leave"]},
+      {type:"text", val:", our team is happy to "},
+      {type:"gap", key:"participate in a meeting", opts:["participate in a meeting","show solidarity","discuss a topic","make a suggestion"]},
+      {type:"text", val:" and "},
+      {type:"gap", key:"make a suggestion", opts:["make a suggestion","show solidarity","discuss a topic","participate in a meeting"]},
+      {type:"text", val:". There is definitely still "},
+      {type:"gap", key:"room for improvement", opts:["room for improvement","a positive outcome","a risky situation","short-staffed"]},
+      {type:"text", val:" in how we communicate."},
+    ]
+  }
+];
+
+// State
+let currentSection = 0; // 0=match, 1-4=gaps, 5=final
+let matchScore = 0;
+let gapScores = [0, 0, 0, 0];
+let selectedWordIdx = null;
+let selectedDefIdx = null;
+let matchedWordIdxs = new Set();
+let shuffledDefs = [];
+let checkedGaps = [false, false, false, false];
+let gapSelections = [{}, {}, {}, {}];
+
+const totalSections = 6; // match + 4 gaps + final
+
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function renderProgress() {
+  const pct = Math.round((currentSection / (totalSections - 1)) * 100);
+  const labels = ['Match', 'Text 1', 'Text 2', 'Text 3', 'Text 4', 'Results'];
+  return `
+    <div class="progress-wrap">
+      <div class="progress-meta">
+        <span>${labels[currentSection]}</span>
+        <span>${pct}% complete</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="step-dots">
+        ${labels.map((_, i) => `<div class="dot ${i < currentSection ? 'done' : i === currentSection ? 'active' : ''}"></div>`).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderMatch() {
+  const items = MATCH_ITEMS;
+  let wordCol = '';
+  let defCol = '';
+
+  items.forEach((item, i) => {
+    const isMatched = matchedWordIdxs.has(i);
+    const isSelected = selectedWordIdx === i;
+    let cls = 'word-chip';
+    if (isMatched) cls += ' matched';
+    else if (isSelected) cls += ' selected';
+    wordCol += `<div class="${cls}" id="wc${i}" onclick="clickWord(${i})">${item.word}</div>`;
+  });
+
+  shuffledDefs.forEach((def, j) => {
+    const wordIdx = items.findIndex(it => it.def === def.def);
+    const isMatched = matchedWordIdxs.has(wordIdx);
+    const isSelected = selectedDefIdx === j;
+    let cls = 'def-chip';
+    if (isMatched) cls += ' matched';
+    else if (isSelected) cls += ' selected';
+    defCol += `<div class="${cls}" id="dc${j}" onclick="clickDef(${j})">${def.def}</div>`;
+  });
+
+  const allDone = matchedWordIdxs.size === items.length;
+
+  return `
+    ${renderProgress()}
+    <div class="section-head">
+      <div class="section-label">Part 1 of 5 — Vocabulary matching</div>
+      <div class="section-title">Match each expression to its definition</div>
+      <div class="section-desc">Click a word or phrase on the left, then click its matching definition on the right.</div>
+    </div>
+    <div class="card">
+      <div class="match-grid">
+        <div class="match-col">
+          <div class="col-label">Words &amp; expressions</div>
+          ${wordCol}
+        </div>
+        <div class="match-col">
+          <div class="col-label">Definitions</div>
+          ${defCol}
+        </div>
+      </div>
+      <div class="match-counter"><strong>${matchedWordIdxs.size}</strong> / ${items.length} matched</div>
+      <div class="feedback-box ${allDone ? 'show good' : ''}" id="match-fb">
+        ✓ Well done! You matched all ${items.length} expressions correctly.
+      </div>
+    </div>
+    <div class="nav-bar">
+      <button class="btn btn-primary ${allDone ? '' : 'btn-disabled'}" onclick="goNext()">Continue to gap-fill texts →</button>
+      ${!allDone ? '<span class="nav-hint">Match all pairs to continue.</span>' : ''}
+    </div>
+  `;
+}
+
+function clickWord(i) {
+  if (matchedWordIdxs.has(i)) return;
+  selectedWordIdx = (selectedWordIdx === i) ? null : i;
+  tryPair();
+  render();
+}
+
+function clickDef(j) {
+  const wordIdx = MATCH_ITEMS.findIndex(it => it.def === shuffledDefs[j].def);
+  if (matchedWordIdxs.has(wordIdx)) return;
+  selectedDefIdx = (selectedDefIdx === j) ? null : j;
+  tryPair();
+  render();
+}
+
+function tryPair() {
+  if (selectedWordIdx !== null && selectedDefIdx !== null) {
+    const correctDef = MATCH_ITEMS[selectedWordIdx].def;
+    const chosenDef = shuffledDefs[selectedDefIdx].def;
+    if (correctDef === chosenDef) {
+      matchedWordIdxs.add(selectedWordIdx);
+      matchScore++;
+      selectedWordIdx = null;
+      selectedDefIdx = null;
+    } else {
+      const wi = selectedWordIdx, di = selectedDefIdx;
+      setTimeout(() => {
+        const wEl = document.getElementById('wc' + wi);
+        const dEl = document.getElementById('dc' + di);
+        if (wEl) { wEl.classList.add('wrong-flash'); setTimeout(() => wEl.classList.remove('wrong-flash'), 400); }
+        if (dEl) { dEl.classList.add('wrong-flash'); setTimeout(() => dEl.classList.remove('wrong-flash'), 400); }
+      }, 10);
+      selectedWordIdx = null;
+      selectedDefIdx = null;
+    }
+  }
+}
+
+function renderGap(gapIdx) {
+  const g = GAP_TEXTS[gapIdx];
+  const checked = checkedGaps[gapIdx];
+  let gapCount = 0;
+
+  let html = '<div class="gap-text">';
+  g.segments.forEach((seg, si) => {
+    if (seg.type === 'text') {
+      html += seg.val.replace(/\n/g, '<br>');
+    } else {
+      const id = `gs_${gapIdx}_${si}`;
+      const shuffOpts = shuffleArray(seg.opts);
+      const saved = gapSelections[gapIdx][si] || '';
+      let selCls = '';
+      if (checked) {
+        selCls = (saved === seg.key) ? 'correct' : 'wrong';
+      }
+      html += `<span class="gap-select"><select id="${id}" data-correct="${seg.key}" data-gapidx="${gapIdx}" data-segidx="${si}" class="${selCls}" ${checked ? 'disabled' : ''} onchange="saveGap(${gapIdx},${si},this.value)">
+        <option value="">— choose —</option>
+        ${shuffOpts.map(o => `<option value="${o}" ${saved === o ? 'selected' : ''}>${o}</option>`).join('')}
+      </select></span>`;
+      gapCount++;
+    }
+  });
+  html += '</div>';
+
+  let correct = 0;
+  if (checked) {
+    g.segments.forEach((seg, si) => {
+      if (seg.type === 'gap') {
+        if (gapSelections[gapIdx][si] === seg.key) correct++;
+      }
+    });
+  }
+
+  const total = gapCount;
+  const partNum = gapIdx + 2;
+
+  return `
+    ${renderProgress()}
+    <div class="section-head">
+      <div class="section-label">Part ${partNum} of 5 — ${g.label}</div>
+      <div class="section-title">${g.title}</div>
+      <div class="section-desc">${g.intro}</div>
+    </div>
+    <div class="card">
+      ${html}
+      <div class="feedback-box ${checked ? 'show ' + (correct === total ? 'good' : 'bad') : ''}" id="gfb${gapIdx}">
+        ${checked ? (correct === total ? `✓ Perfect! You got all ${total} correct.` : `You got ${correct} out of ${total} correct. The incorrect answers are highlighted in red.`) : ''}
+      </div>
+    </div>
+    <div class="nav-bar">
+      ${!checked
+        ? `<button class="btn btn-primary" onclick="checkGap(${gapIdx})">Check my answers</button>`
+        : `<button class="btn btn-primary" onclick="goNext()">${gapIdx < 3 ? 'Next text →' : 'See results →'}</button>`
+      }
+      <button class="btn" onclick="goPrev()">← Back</button>
+    </div>
+  `;
+}
+
+function saveGap(gapIdx, segIdx, val) {
+  gapSelections[gapIdx][segIdx] = val;
+}
+
+function checkGap(gapIdx) {
+  const g = GAP_TEXTS[gapIdx];
+  let correct = 0, total = 0;
+  g.segments.forEach((seg, si) => {
+    if (seg.type === 'gap') {
+      total++;
+      const val = gapSelections[gapIdx][si] || '';
+      if (val === seg.key) correct++;
+    }
+  });
+  gapScores[gapIdx] = correct;
+  checkedGaps[gapIdx] = true;
+  render();
+}
+
+function renderFinal() {
+  const gapTotals = GAP_TEXTS.map(g => g.segments.filter(s => s.type === 'gap').length);
+  const gapTotalAll = gapTotals.reduce((a, b) => a + b, 0);
+  const gapCorrect = gapScores.reduce((a, b) => a + b, 0);
+  const total = MATCH_ITEMS.length + gapTotalAll;
+  const grand = matchScore + gapCorrect;
+  const pct = Math.round((grand / total) * 100);
+  const msg = pct >= 85
+    ? 'Excellent! Your B2 professional vocabulary is very strong. You are ready for the workplace!'
+    : pct >= 65
+    ? 'Good work! Review the expressions you missed, particularly in the gap-fill texts.'
+    : 'Keep practising! Focus on the multi-word expressions — try reading them in context again.';
+
+  return `
+    ${renderProgress()}
+    <div class="final-wrap">
+      <div class="final-score-label">Your total score</div>
+      <div class="final-score-num">${grand}<span style="font-size:32px;color:var(--ink3)">/${total}</span></div>
+      <div class="final-pct">${pct}% correct</div>
+      <div class="final-msg">${msg}</div>
+      <div class="score-breakdown">
+        <div class="score-cell">
+          <div class="score-cell-label">Vocabulary match</div>
+          <div class="score-cell-val">${matchScore}/${MATCH_ITEMS.length}</div>
+        </div>
+        ${GAP_TEXTS.map((g, i) => `
+          <div class="score-cell">
+            <div class="score-cell-label">Text ${i + 1}</div>
+            <div class="score-cell-val">${gapScores[i]}/${gapTotals[i]}</div>
+          </div>
+        `).join('')}
+      </div>
+      <button class="btn btn-primary" onclick="restart()">Start again</button>
+    </div>
+  `;
+}
+
+function goNext() { currentSection++; render(); window.scrollTo(0, 0); }
+function goPrev() { if (currentSection > 0) { currentSection--; render(); window.scrollTo(0, 0); } }
+
+function restart() {
+  currentSection = 0;
+  matchScore = 0;
+  gapScores = [0, 0, 0, 0];
+  selectedWordIdx = null;
+  selectedDefIdx = null;
+  matchedWordIdxs = new Set();
+  checkedGaps = [false, false, false, false];
+  gapSelections = [{}, {}, {}, {}];
+  shuffledDefs = shuffleArray(MATCH_ITEMS);
+  render();
+  window.scrollTo(0, 0);
+}
+
+function render() {
+  const app = document.getElementById('app');
+  if (currentSection === 0) app.innerHTML = renderMatch();
+  else if (currentSection >= 1 && currentSection <= 4) app.innerHTML = renderGap(currentSection - 1);
+  else app.innerHTML = renderFinal();
+}
+
+// Init
+shuffledDefs = shuffleArray(MATCH_ITEMS);
+render();
+</script>
+</body>
+</html>

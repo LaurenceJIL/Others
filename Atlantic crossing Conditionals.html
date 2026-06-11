@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conditional Quest: Master Edition</title>
+    <style>
+        :root {
+            --sky-blue: #a1c4fd;
+            --btn-green: #27ae60;
+            --btn-red: #c0392b;
+            --btn-blue: #3498db;
+            --cabin-gold: #d4af37;
+            --jet-silver: #bdc3c7;
+            --warning-red: #e74c3c;
+            --upgrade-green: #2ecc71;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #game-container {
+            width: 850px;
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            text-align: center;
+            position: relative;
+        }
+
+        .screen { display: none; }
+        .active { display: block; }
+
+        /* Status Alerts */
+        #alert-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            font-weight: 900;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .animate-alert { animation: alertPop 1.5s ease-out; }
+        @keyframes alertPop {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            20% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+            80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
+        }
+
+        #sky-view {
+            position: relative;
+            height: 180px;
+            background: linear-gradient(to bottom, #1e3c72 0%, #2a5298 100%);
+            margin: 20px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid #ecf0f1;
+        }
+
+        .city {
+            position: absolute;
+            bottom: 15px;
+            padding: 5px 12px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 11px;
+            z-index: 5;
+        }
+
+        #city-start { left: 20px; }
+        #city-end { right: 20px; }
+
+        #plane {
+            position: absolute;
+            bottom: 80px;
+            left: 50px;
+            width: 90px;
+            height: 25px;
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10;
+        }
+
+        .jet-body { width: 100%; height: 100%; background: var(--jet-silver); border-radius: 20% 80% 60% 30%; position: relative; border-bottom: 3px solid #7f8c8d; }
+        .jet-wing { position: absolute; width: 40px; height: 15px; background: #ecf0f1; top: 15px; left: 20px; transform: skewX(-30deg); border-radius: 2px; }
+        .jet-tail { position: absolute; width: 20px; height: 20px; background: var(--jet-silver); top: -12px; left: 0; clip-path: polygon(0 0, 100% 100%, 0 100%); }
+
+        .cabin-status {
+            font-weight: bold;
+            color: #2c3e50;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--cabin-gold);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #sentence-display { font-size: 1.3rem; margin: 20px 0; min-height: 60px; padding: 0 40px; color: #2c3e50; }
+
+        #feedback-area { display: none; margin: 15px 0; padding: 15px; border-radius: 10px; font-weight: bold; }
+        .feedback-correct { background: #d4edda; color: #155724; }
+        .feedback-wrong { background: #f8d7da; color: #721c24; }
+
+        .btn { padding: 15px 40px; margin: 0 12px; font-weight: 800; border: none; border-radius: 50px; cursor: pointer; transition: 0.3s; }
+        .btn:hover { transform: scale(1.05); }
+        .correct-btn { background: var(--btn-green); color: white; }
+        .incorrect-btn { background: var(--btn-red); color: white; }
+        .next-btn { background: var(--btn-blue); color: white; margin-top: 10px; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
+
+        #lounge-pass-display {
+            display: none;
+            color: var(--cabin-gold);
+            font-size: 0.8rem;
+            border: 1px solid var(--cabin-gold);
+            padding: 2px 8px;
+            border-radius: 5px;
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 2px var(--cabin-gold); }
+            to { box-shadow: 0 0 10px var(--cabin-gold); }
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <div id="alert-overlay"></div>
+
+    <div id="screen-start" class="screen active">
+        <h1>✈️ Conditional Quest: Master Edition</h1>
+        <p>Complete the journey. Each question is unique!</p>
+        <button class="btn correct-btn" onclick="initGame()">START JOURNEY</button>
+    </div>
+
+    <div id="screen-game" class="screen">
+        <div class="stats-grid">
+            <div>📍 <b><span id="stat-route"></span></b></div>
+            <div>⛽ Fuel: <b><span id="stat-chances"></span></b></div>
+            <div>⭐ Progress: <b><span id="stat-score"></span>/10</b></div>
+        </div>
+
+        <div class="cabin-status">
+            <span>💺 CLASS: <span id="stat-cabin">Business Class</span></span>
+            <span id="lounge-pass-display">🏆 GOLD LOUNGE MEMBER</span>
+        </div>
+
+        <div id="sky-view">
+            <div id="city-start" class="city"></div>
+            <div id="city-end" class="city"></div>
+            <div id="plane"><div class="jet-tail"></div><div class="jet-wing"></div><div class="jet-body"></div></div>
+        </div>
+
+        <div id="sentence-display"></div>
+        <div id="feedback-area"></div>
+
+        <div id="choice-buttons">
+            <button class="btn correct-btn" onclick="handleChoice(true)">NO MISTAKES :)</button>
+            <button class="btn incorrect-btn" onclick="handleChoice(false)">THERE'S A MISTAKE :(</button>
+        </div>
+
+        <div id="review-buttons" style="display:none;">
+            <button class="btn next-btn" onclick="proceedAfterReview()">CONTINUE ➔</button>
+        </div>
+    </div>
+
+    <div id="screen-end" class="screen">
+        <h1 id="end-title"></h1>
+        <p id="end-msg"></p>
+        <button class="btn correct-btn" onclick="location.reload()">RESTART</button>
+    </div>
+</div>
+
+<script>
+    const masterPool = {
+        r1: [
+            { s: "If the manager approves the budget, we will hire two new employees.", c: true },
+            { s: "If the client doesn’t responds today, we will send a reminder email.", c: false, fix: "If the client doesn’t respond today..." },
+            { s: "Will you attend the meeting if it starts earlier?", c: true },
+            { s: "If the company will expand, it will create more job opportunities.", c: false, fix: "If the company expands..." },
+            { s: "If employees work overtime, they will receive extra pay.", c: true },
+            { s: "If the report isn’t finished on time, the project will delayed.", c: false, fix: "the project will BE delayed." },
+            { s: "Will the team succeed if they follow the new strategy?", c: true },
+            { s: "If the system crash, we will contact IT support immediately.", c: false, fix: "If the system crashes..." },
+            { s: "If she improves her communication skills, she will become a better leader.", c: true },
+            { s: "If we reduces costs, we will increase profits.", c: false, fix: "If we reduce costs..." },
+            { s: "If the supplier doesn’t deliver on time, production will stop.", c: true },
+            { s: "Will you accept the offer if they will increase the salary?", c: false, fix: "if they increase the salary?" },
+            { s: "If he attends the training, he will learn new skills.", c: true },
+            { s: "If the meeting is cancel, we will reschedule it.", c: false, fix: "If the meeting is canceled..." },
+            { s: "If they don’t meet the deadline, the client will complain.", c: true },
+            { s: "Will the company grow if it invest in technology?", c: false, fix: "if it invests in technology?" },
+            { s: "If we hire more staff, productivity will improve.", c: true },
+            { s: "If the product fails, the company will loses money.", c: false, fix: "the company will lose money." },
+            { s: "If she doesn’t follow the guidelines, she will make mistakes.", c: true },
+            { s: "Will they finish the project if they gets more resources?", c: false, fix: "if they get more resources?" }
+        ],
+        r2: [
+            { s: "If I were the manager, I would improve team communication.", c: true },
+            { s: "If the company invested more in training, employees will be more skilled.", c: false, fix: "employees WOULD be more skilled." },
+            { s: "Would you accept the job if the salary were higher?", c: true },
+            { s: "If we have better tools, we would complete tasks faster.", c: false, fix: "If we HAD better tools..." },
+            { s: "If she were more organized, she would meet all deadlines.", c: true },
+            { s: "If the company didn’t has financial problems, it would expand.", c: false, fix: "didn’t HAVE financial problems..." },
+            { s: "Would they hire more staff if they had a bigger budget?", c: true },
+            { s: "If he spoke English fluently, he will get a promotion.", c: false, fix: "he WOULD get a promotion." },
+            { s: "If we reduced working hours, employees would feel less stressed.", c: true },
+            { s: "If the manager were more supportive, the team perform better.", c: false, fix: "the team WOULD perform better." },
+            { s: "If I were in your position, I would negotiate the contract.", c: true },
+            { s: "If they practiced more, they would win.", c: true }
+        ],
+        r3: [
+            { s: "If I was the manager, I would improve team communication.", c: false, fix: "If I WERE the manager..." },
+            { s: "If he spoke English fluently, he would get a promotion.", c: true },
+            { s: "If the company expands, it would create more job opportunities.", c: false, fix: "If the company EXPANDED..." },
+            { s: "Would you invest in the company if you had enough money?", c: true },
+            { s: "If she doesn’t follow the guidelines, she would make mistakes.", c: false, fix: "If she DIDN'T follow..." }
+        ]
+    };
+
+    const cabins = ["Business Class", "Premium Economy", "Economy", "Luggage Hold"];
+
+    let state = {
+        round: 1,
+        points: 0,
+        chances: 16,
+        mistakesInRound: 0,
+        currentQ: null,
+        isGameOver: false,
+        usedIds: new Set(),
+        cabinIndex: 0, 
+        streak: 0,
+        hasLoungePass: false
+    };
+
+    function initGame() {
+        state.round = 1;
+        state.isGameOver = false;
+        state.usedIds.clear();
+        state.cabinIndex = 0;
+        state.hasLoungePass = false;
+        showScreen('screen-game');
+        setupRound();
+    }
+
+    function setupRound() {
+        state.points = 0;
+        state.mistakesInRound = 0;
+        state.streak = 0;
+        if (state.round === 1) { state.chances = 16; setRoute("Paris", "London"); }
+        else if (state.round === 2) { state.chances = 14; setRoute("London", "New York"); }
+        else { state.chances = 12; setRoute("New York", "LA"); }
+        nextQuestion();
+    }
+
+    function setRoute(start, end) {
+        document.getElementById('stat-route').innerText = start + " to " + end;
+        document.getElementById('city-start').innerText = start;
+        document.getElementById('city-end').innerText = end;
+    }
+
+    function triggerAlert(text, color) {
+        const overlay = document.getElementById('alert-overlay');
+        overlay.innerText = text;
+        overlay.style.color = color;
+        overlay.classList.remove('animate-alert');
+        void overlay.offsetWidth; 
+        overlay.classList.add('animate-alert');
+    }
+
+    function handleChoice(val) {
+        const feedback = document.getElementById('feedback-area');
+        document.getElementById('choice-buttons').style.display = 'none';
+        document.getElementById('review-buttons').style.display = 'block';
+        feedback.style.display = 'block';
+
+        if (val === state.currentQ.c) {
+            state.points++;
+            state.streak++;
+            feedback.className = 'feedback-correct';
+            
+            // LOGIC UPDATE: Show the fix even if they are correct about identifying a mistake
+            let msg = "✅ Correct! Great job.";
+            if (val === false && state.currentQ.fix) {
+                msg = `✅ Correct! The fix: "${state.currentQ.fix}"`;
+            }
+            feedback.innerText = msg;
+            
+            if (state.streak === 3 && state.cabinIndex > 0) {
+                state.cabinIndex--;
+                state.streak = 0;
+                triggerAlert("UPGRADED! 🔼", "var(--upgrade-green)");
+            }
+        } else {
+            state.streak = 0;
+            state.mistakesInRound++;
+            state.chances--;
+            
+            if (state.cabinIndex < 3) {
+                state.cabinIndex++;
+                triggerAlert("DOWNGRADED! 🔽", "var(--warning-red)");
+            }
+
+            feedback.className = 'feedback-wrong';
+            let correctionText = state.currentQ.c ? "Actually, this sentence was Correct." : `Incorrect. Correction: ${state.currentQ.fix}`;
+            feedback.innerText = `❌ ${correctionText}`;
+
+            if (state.mistakesInRound > 3) {
+                state.isGameOver = true;
+                alert("⚠️ RETURN TO BASE!");
+            }
+        }
+        refreshDisplay();
+    }
+
+    function proceedAfterReview() {
+        if (state.isGameOver || state.chances <= 0) {
+            endGame(false);
+        } else if (state.points >= 10) {
+            if (state.mistakesInRound === 0) {
+                state.hasLoungePass = true;
+                triggerAlert("✨ GOLD LOUNGE PASS EARNED ✨", "var(--cabin-gold)");
+                setTimeout(() => { advanceRound(); }, 1600);
+            } else {
+                advanceRound();
+            }
+        } else {
+            nextQuestion();
+        }
+    }
+
+    function advanceRound() {
+        if (state.round < 3) { 
+            state.round++; 
+            setupRound(); 
+        } else { 
+            endGame(true); 
+        }
+    }
+
+    function nextQuestion() {
+        let pool = state.round === 1 ? masterPool.r1 : (state.round === 2 ? masterPool.r2 : masterPool.r3);
+        let available = pool.filter(q => !state.usedIds.has(q.s));
+        
+        if (available.length === 0) {
+            alert("Fuel shortage: No more unique questions!");
+            endGame(false);
+            return;
+        }
+
+        state.currentQ = available[Math.floor(Math.random() * available.length)];
+        state.usedIds.add(state.currentQ.s);
+        
+        document.getElementById('sentence-display').innerText = state.currentQ.s;
+        document.getElementById('feedback-area').style.display = 'none';
+        document.getElementById('choice-buttons').style.display = 'block';
+        document.getElementById('review-buttons').style.display = 'none';
+        refreshDisplay();
+    }
+
+    function refreshDisplay() {
+        document.getElementById('stat-chances').innerText = state.chances;
+        document.getElementById('stat-score').innerText = state.points;
+        document.getElementById('stat-cabin').innerText = cabins[state.cabinIndex];
+        document.getElementById('lounge-pass-display').style.display = state.hasLoungePass ? 'block' : 'none';
+        
+        if (!state.isGameOver) {
+            document.getElementById('plane').style.left = (50 + (700 * (state.points / 10))) + "px";
+        }
+    }
+
+    function endGame(win) {
+        showScreen('screen-end');
+        document.getElementById('end-title').innerText = win ? "🏆 MISSION SUCCESS" : "🛬 GROUNDED";
+        let msg = win ? "You navigated the globe safely!" : "Journey terminated. Review the grammar and try again.";
+        if (win && state.hasLoungePass) msg += " You ended as a VIP Gold Member!";
+        document.getElementById('end-msg').innerText = msg;
+    }
+
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+</script>
+
+</body>
+</html>

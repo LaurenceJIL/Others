@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electrical Motor Sales Proposal - Drag & Drop Exercise</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .instructions {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid #3498db;
+        }
+
+        .word-bank {
+            background: #f8f9fa;
+            border: 2px dashed #6c757d;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            min-height: 80px;
+        }
+
+        .word-bank h3 {
+            margin-top: 0;
+            color: #495057;
+            text-align: center;
+        }
+
+        .words-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .draggable-word {
+            background: #007bff;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: grab;
+            user-select: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .draggable-word:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .draggable-word:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        .text-content {
+            line-height: 1.8;
+            font-size: 16px;
+            color: #2c3e50;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #dee2e6;
+        }
+
+        .drop-zone {
+            background: #fff3cd;
+            border: 2px dashed #ffc107;
+            border-radius: 4px;
+            padding: 4px 8px;
+            min-width: 60px;
+            min-height: 24px;
+            display: inline-block;
+            margin: 0 2px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .drop-zone:hover {
+            background: #fff8db;
+            border-color: #e0a800;
+        }
+
+        .drop-zone.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .drop-zone.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .dropped-word {
+            background: transparent;
+            color: inherit;
+            border: none;
+            padding: 0;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .completion-message {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            display: none;
+            animation: slideIn 0.8s ease-out;
+            box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #007bff, #0056b3);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .company-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #007bff;
+        }
+
+        .company-name {
+            color: #007bff;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .proposal-title {
+            color: #6c757d;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔌 Electrical Motor Sales Proposal - Drag & Drop Exercise</h1>
+        
+        <div class="instructions">
+            <strong>Instructions:</strong> Drag the words from the word bank below and drop them into the correct blank spaces in the sales proposal. Words will turn green and chime when correct, or turn red and buzz when incorrect. You have unlimited attempts!
+        </div>
+
+        <div class="stats">
+            <span>Progress: <span id="correct-count">0</span>/20</span>
+            <span>Attempts: <span id="attempt-count">0</span></span>
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <div class="word-bank">
+            <h3>📝 Word Bank - Drag these words to the correct positions</h3>
+            <div class="words-container" id="word-bank">
+                <div class="draggable-word" draggable="true" data-word="efficiency">efficiency</div>
+                <div class="draggable-word" draggable="true" data-word="specifications">specifications</div>
+                <div class="draggable-word" draggable="true" data-word="competitive">competitive</div>
+                <div class="draggable-word" draggable="true" data-word="installation">installation</div>
+                <div class="draggable-word" draggable="true" data-word="maintenance">maintenance</div>
+                <div class="draggable-word" draggable="true" data-word="voltage">voltage</div>
+                <div class="draggable-word" draggable="true" data-word="torque">torque</div>
+                <div class="draggable-word" draggable="true" data-word="consumption">consumption</div>
+                <div class="draggable-word" draggable="true" data-word="partnership">partnership</div>
+                <div class="draggable-word" draggable="true" data-word="warranty">warranty</div>
+                <div class="draggable-word" draggable="true" data-word="requirements">requirements</div>
+                <div class="draggable-word" draggable="true" data-word="performance">performance</div>
+                <div class="draggable-word" draggable="true" data-word="operations">operations</div>
+                <div class="draggable-word" draggable="true" data-word="investment">investment</div>
+                <div class="draggable-word" draggable="true" data-word="industrial">industrial</div>
+                <div class="draggable-word" draggable="true" data-word="proposal">proposal</div>
+                <div class="draggable-word" draggable="true" data-word="reliable">reliable</div>
+                <div class="draggable-word" draggable="true" data-word="technical">technical</div>
+                <div class="draggable-word" draggable="true" data-word="solution">solution</div>
+                <div class="draggable-word" draggable="true" data-word="upgrade">upgrade</div>
+            </div>
+        </div>
+
+        <div class="text-content">
+            <div class="company-header">
+                <div class="company-name">PowerTech Motors Ltd.</div>
+                <div class="proposal-title">Sales Proposal for Motor Upgrade Project</div>
+            </div>
+
+            <p>Dear Valued Customer,</p>
+
+            <p>We are pleased to present this <span class="drop-zone" data-answer="proposal"></span> for upgrading your current motor systems. Based on our long-standing <span class="drop-zone" data-answer="partnership"></span> and thorough analysis of your <span class="drop-zone" data-answer="requirements"></span>, we recommend our latest <span class="drop-zone" data-answer="industrial"></span> motor series.</p>
+
+            <p>Our new motors offer superior <span class="drop-zone" data-answer="efficiency"></span> compared to your existing equipment, reducing energy <span class="drop-zone" data-answer="consumption"></span> by up to 25%. The <span class="drop-zone" data-answer="technical"></span> <span class="drop-zone" data-answer="specifications"></span> include 480V <span class="drop-zone" data-answer="voltage"></span> rating and enhanced <span class="drop-zone" data-answer="torque"></span> capabilities that will significantly improve your production <span class="drop-zone" data-answer="performance"></span>.</p>
+
+            <p>This <span class="drop-zone" data-answer="upgrade"></span> represents an excellent <span class="drop-zone" data-answer="solution"></span> for modernizing your <span class="drop-zone" data-answer="operations"></span>. Our pricing remains highly <span class="drop-zone" data-answer="competitive"></span> in the market, and we include comprehensive <span class="drop-zone" data-answer="installation"></span> services with every purchase.</p>
+
+            <p>All motors come with our standard 3-year <span class="drop-zone" data-answer="warranty"></span> and include scheduled <span class="drop-zone" data-answer="maintenance"></span> support. We believe this <span class="drop-zone" data-answer="investment"></span> will prove both <span class="drop-zone" data-answer="reliable"></span> and cost-effective for your facility.</p>
+
+            <p>We look forward to discussing this opportunity further.</p>
+
+            <p>Best regards,<br>PowerTech Motors Sales Team</p>
+        </div>
+
+        <div class="completion-message" id="completion-message">
+            🎉 Congratulations! You have successfully completed the exercise! 🎉<br>
+            <div style="margin-top: 10px; font-size: 16px;">
+                Excellent work on mastering this technical vocabulary. Your English skills are improving!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let correctAnswers = 0;
+        let totalAnswers = 20;
+        let attemptCount = 0;
+        
+        // Audio context for sounds
+        let audioContext;
+        
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+        
+        function playChime() {
+            initAudio();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.frequency.setValueAtTime(1000, audioContext.currentTime + 0.1);
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        }
+        
+        function playBuzz() {
+            initAudio();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+            oscillator.type = 'sawtooth';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.4);
+        }
+        
+        function updateProgress() {
+            document.getElementById('correct-count').textContent = correctAnswers;
+            document.getElementById('attempt-count').textContent = attemptCount;
+            document.getElementById('progress-bar').style.width = (correctAnswers / totalAnswers * 100) + '%';
+            
+            if (correctAnswers === totalAnswers) {
+                document.getElementById('completion-message').style.display = 'block';
+                document.getElementById('completion-message').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        
+        // Drag and drop functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const draggableWords = document.querySelectorAll('.draggable-word');
+            const dropZones = document.querySelectorAll('.drop-zone');
+            
+            draggableWords.forEach(word => {
+                word.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('text/plain', this.dataset.word);
+                    this.style.opacity = '0.5';
+                });
+                
+                word.addEventListener('dragend', function(e) {
+                    this.style.opacity = '1';
+                });
+            });
+            
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.style.backgroundColor = '#fff8db';
+                });
+                
+                zone.addEventListener('dragleave', function(e) {
+                    if (!this.classList.contains('correct')) {
+                        this.style.backgroundColor = '#fff3cd';
+                    }
+                });
+                
+                zone.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    attemptCount++;
+                    
+                    const droppedWord = e.dataTransfer.getData('text/plain');
+                    const correctAnswer = this.dataset.answer;
+                    
+                    // Remove any existing word in this zone
+                    this.innerHTML = '';
+                    this.className = 'drop-zone';
+                    
+                    if (droppedWord === correctAnswer) {
+                        // Correct answer
+                        this.classList.add('correct');
+                        this.innerHTML = `<span class="dropped-word">${droppedWord}</span>`;
+                        this.style.backgroundColor = '#d4edda';
+                        
+                        // Remove the word from word bank
+                        const wordElement = document.querySelector(`[data-word="${droppedWord}"]`);
+                        if (wordElement) {
+                            wordElement.remove();
+                        }
+                        
+                        if (!this.dataset.wasCorrect) {
+                            correctAnswers++;
+                            this.dataset.wasCorrect = 'true';
+                        }
+                        
+                        playChime();
+                    } else {
+                        // Incorrect answer
+                        this.classList.add('incorrect');
+                        this.innerHTML = `<span class="dropped-word">${droppedWord}</span>`;
+                        this.style.backgroundColor = '#f8d7da';
+                        
+                        playBuzz();
+                        
+                        // Return word to bank after animation
+                        setTimeout(() => {
+                            this.innerHTML = '';
+                            this.className = 'drop-zone';
+                            this.style.backgroundColor = '#fff3cd';
+                            
+                            // Return word to bank
+                            const wordBank = document.getElementById('word-bank');
+                            const newWord = document.createElement('div');
+                            newWord.className = 'draggable-word';
+                            newWord.draggable = true;
+                            newWord.dataset.word = droppedWord;
+                            newWord.textContent = droppedWord;
+                            
+                            // Re-add event listeners
+                            newWord.addEventListener('dragstart', function(e) {
+                                e.dataTransfer.setData('text/plain', this.dataset.word);
+                                this.style.opacity = '0.5';
+                            });
+                            
+                            newWord.addEventListener('dragend', function(e) {
+                                this.style.opacity = '1';
+                            });
+                            
+                            wordBank.appendChild(newWord);
+                        }, 1000);
+                    }
+                    
+                    updateProgress();
+                });
+                
+                // Allow clicking on dropped words to return them to the bank
+                zone.addEventListener('click', function(e) {
+                    if (this.classList.contains('correct') && this.innerHTML) {
+                        const word = this.querySelector('.dropped-word').textContent;
+                        
+                        // Reset the zone
+                        this.innerHTML = '';
+                        this.className = 'drop-zone';
+                        this.style.backgroundColor = '#fff3cd';
+                        this.dataset.wasCorrect = 'false';
+                        correctAnswers--;
+                        
+                        // Return word to bank
+                        const wordBank = document.getElementById('word-bank');
+                        const newWord = document.createElement('div');
+                        newWord.className = 'draggable-word';
+                        newWord.draggable = true;
+                        newWord.dataset.word = word;
+                        newWord.textContent = word;
+                        
+                        // Re-add event listeners
+                        newWord.addEventListener('dragstart', function(e) {
+                            e.dataTransfer.setData('text/plain', this.dataset.word);
+                            this.style.opacity = '0.5';
+                        });
+                        
+                        newWord.addEventListener('dragend', function(e) {
+                            this.style.opacity = '1';
+                        });
+                        
+                        wordBank.appendChild(newWord);
+                        updateProgress();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

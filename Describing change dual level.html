@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Trend Report — A2/B1 Mastery</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0b2239;
+  --navy-mid: #1e3a5a;
+  --navy-light: #f0f4f8;
+  --gold: #b58921;
+  --gold-light: #fdf6e3;
+  --green: #27ae60;
+  --red: #e74c3c;
+  --ink: #2c3e50;
+  --white: #ffffff;
+  --rule: #d1d9e1;
+  --radius: 8px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'IBM Plex Sans',sans-serif;color:var(--ink);background:#f8f9fa;line-height:1.6;}
+
+.site-header {
+  background: var(--navy);
+  color: #fff;
+  padding: 2rem;
+  text-align: center;
+  border-bottom: 4px solid var(--gold);
+}
+.level-picker {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.level-btn {
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: 2px solid rgba(255,255,255,0.3);
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+.level-btn.active { background: var(--gold); border-color: var(--gold); }
+
+.tab-nav { display: flex; justify-content: center; background: var(--navy-mid); overflow-x: auto; position: sticky; top: 0; z-index: 100; }
+.tab-btn { padding: 1rem 1.5rem; color: rgba(255,255,255,0.7); border: none; background: none; cursor: pointer; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+.tab-btn.active { color: #fff; box-shadow: inset 0 -3px 0 var(--gold); }
+
+.container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+.card { background: #fff; border-radius: var(--radius); padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 2rem; }
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+.chart-box { background: #fff; border: 1px solid var(--rule); border-radius: var(--radius); padding: 1.5rem; }
+.chart-box h4 { font-size: 16px; margin-bottom: 1rem; color: var(--navy); border-bottom: 1px solid var(--navy-light); padding-bottom: 5px; }
+svg { width: 100%; height: 150px; background: #fafafa; border-radius: 4px; }
+.axis-label { font-size: 8px; fill: #888; }
+
+.q-block { margin-bottom: 1.5rem; padding: 1rem; border-radius: 8px; background: #fff; border: 1px solid #eee; }
+.mc-opt { display: block; padding: 12px; border: 1px solid var(--rule); margin-top: 8px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-size: 14px; }
+.mc-opt:hover { background: var(--navy-light); border-color: var(--navy-mid); }
+.correct { background: #d4edda !important; border-color: #27ae60 !important; color: #155724; }
+.wrong { background: #f8d7da !important; border-color: #e74c3c !important; color: #721c24; }
+
+.drop-zone { display: inline-block; min-width: 80px; height: 28px; border-bottom: 2px solid var(--navy); color: var(--gold); font-weight: 600; padding: 0 10px; vertical-align: middle; text-align: center; cursor: pointer; }
+.token-bank { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem; background: var(--navy-light); padding: 15px; border-radius: 8px; border: 1px dashed var(--navy); }
+.token { padding: 6px 14px; background: var(--white); border: 1px solid var(--navy); border-radius: 4px; cursor: grab; font-size: 13px; font-weight: 600; box-shadow: 2px 2px 0 var(--navy); }
+
+.btn-check { background: var(--navy); color: #fff; padding: 12px 30px; border: none; border-radius: 50px; cursor: pointer; font-weight: 600; margin-top: 1rem; display: block; width: 100%; max-width: 250px; transition: 0.3s; }
+.btn-check:hover { background: var(--gold); transform: translateY(-2px); }
+
+.feedback-msg { margin-top: 10px; font-weight: 600; text-align: center; display: none; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <h1>Performance Review 2024–2025</h1>
+  <p>Interactive Data & Trend Analysis Workshop</p>
+  <div class="level-picker">
+    <button class="level-btn active" id="btn-A2" onclick="setLevel('A2')">A2 Pre-Intermediate</button>
+    <button class="level-btn" id="btn-B1" onclick="setLevel('B1')">B1 Intermediate</button>
+  </div>
+</header>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('vocab', event)">1. Vocabulary Quiz</button>
+  <button class="tab-btn" onclick="showTab('charts', event)">2. Visual Analysis</button>
+  <button class="tab-btn" onclick="showTab('gapfill', event)">3. Trend Report</button>
+  <button class="tab-btn" onclick="showTab('text', event)">4. Executive Summary</button>
+</nav>
+
+<main class="container">
+
+  <section id="vocab" class="tab-content active">
+    <div class="card">
+      <h3>Business Vocabulary Challenge</h3>
+      <p style="margin-bottom:1.5rem">Select the term that matches the definition (12 questions).</p>
+      <div id="vocab-questions"></div>
+      <button class="btn-check" onclick="checkVocab()">Check Definitions</button>
+      <p id="vocab-feedback" class="feedback-msg"></p>
+    </div>
+  </section>
+
+  <section id="charts" class="tab-content">
+    <div class="card">
+      <h3>Financial Dashboard (Q1-24 to Q2-25)</h3>
+      <div class="charts-grid">
+        <div class="chart-box"><h4>Gross Revenue</h4><svg viewBox="0 0 240 120" id="svg-revenue"></svg></div>
+        <div class="chart-box"><h4>Operating Costs</h4><svg viewBox="0 0 240 120" id="svg-costs"></svg></div>
+        <div class="chart-box"><h4>Market Share</h4><svg viewBox="0 0 240 120" id="svg-market"></svg></div>
+        <div class="chart-box"><h4>Logistics Fees</h4><svg viewBox="0 0 240 120" id="svg-logistics"></svg></div>
+      </div>
+      <div id="chart-questions"></div>
+      <button class="btn-check" onclick="checkCharts()">Validate Analysis</button>
+      <p id="charts-feedback" class="feedback-msg"></p>
+    </div>
+  </section>
+
+  <section id="gapfill" class="tab-content">
+    <div class="card">
+      <h3>Internal Memo: Performance Breakdown</h3>
+      <p>Drag the words into the correct gaps (12 gaps).</p>
+      <div class="token-bank" id="token-bank"></div>
+      <div style="line-height:2.8; background:#fff; padding:25px; border:1px solid #ddd; border-radius:8px" id="memo-text"></div>
+      <button class="btn-check" onclick="checkGapFill()">Verify Memo</button>
+      <p id="gapfill-feedback" class="feedback-msg"></p>
+    </div>
+  </section>
+
+  <section id="text" class="tab-content">
+    <div class="card">
+      <h3>The CFO's Annual Statement</h3>
+      <div id="reading-passage" style="margin-bottom:2rem; font-family:'IBM Plex Serif', serif; font-size:1.1rem; line-height:1.8; color:#444; border-left:4px solid var(--gold); padding-left:1.5rem;"></div>
+      <div id="reading-questions"></div>
+      <button class="btn-check" onclick="checkReading()">Submit Comprehension</button>
+      <p id="reading-feedback" class="feedback-msg"></p>
+    </div>
+  </section>
+
+</main>
+
+<script>
+let currentLevel = 'A2';
+const QUARTERS = ['Q1-24', 'Q2-24', 'Q3-24', 'Q4-24', 'Q1-25', 'Q2-25'];
+
+const DB = {
+  vocab: [
+    { term: "Rocket", a2: "To go up very fast.", b1: "To rise extremely quickly to a high level.", ans: "To go up very fast." },
+    { term: "Plummet", a2: "To fall a long way very quickly.", b1: "To decrease rapidly in value or amount.", ans: "To fall a long way very quickly." },
+    { term: "Fluctuate", a2: "To go up and down many times.", b1: "To change level or strength frequently.", ans: "To go up and down many times." },
+    { term: "Stable", a2: "Staying the same; not changing.", b1: "Firmly fixed; not likely to move or change.", ans: "Staying the same; not changing." },
+    { term: "Slightly", a2: "A very small amount.", b1: "To a small degree or extent.", ans: "A very small amount." },
+    { term: "Sharply", a2: "A big, sudden change.", b1: "Changing in a sudden and very noticeable way.", ans: "A big, sudden change." },
+    { term: "Gradually", a2: "Changing slowly over time.", b1: "Happening slowly over a long period.", ans: "Changing slowly over time." },
+    { term: "Peak", a2: "The highest point on a graph.", b1: "The point of highest value or intensity.", ans: "The highest point on a graph." },
+    { term: "Dip", a2: "A small, short fall.", b1: "A brief downward trend before a recovery.", ans: "A small, short fall." },
+    { term: "Recover", a2: "To go up again after a fall.", b1: "To return to a normal state of strength.", ans: "To go up again after a fall." },
+    { term: "Bottom out", a2: "The lowest point before rising.", b1: "To reach the lowest level before an upturn.", ans: "The lowest point before rising." },
+    { term: "Significant", a2: "Large or important.", b1: "Great enough to be worthy of attention.", ans: "Large or important." }
+  ],
+  charts: {
+    A2: [
+      { q: "Revenue: What happened between Q1-24 and Q2-24?", o: ["It went up", "It stayed the same", "It went down"], a: "It went up" },
+      { q: "Revenue: What is the trend at the very end (Q2-25)?", o: ["Falling", "Rising", "Level"], a: "Rising" },
+      { q: "Revenue: Which quarter was the lowest point?", o: ["Q1-24", "Q3-24", "Q1-25"], a: "Q3-24" },
+      { q: "Costs: What is the general trend from Q1-24 to Q2-25?", o: ["Going up", "Going down", "Staying same"], a: "Going down" },
+      { q: "Costs: Was there a big change between Q2-24 and Q3-24?", o: ["Yes, a big rise", "No, it was steady", "Yes, a big fall"], a: "No, it was steady" },
+      { q: "Costs: Is the company spending more or less in 2025 than 2024?", o: ["More", "Less", "The same"], a: "Less" },
+      { q: "Market Share: How many times did it go up and down?", o: ["Zero", "One", "Many times"], a: "Many times" },
+      { q: "Market Share: Did it end higher or lower than it started?", o: ["Higher", "Lower", "Same"], a: "Higher" },
+      { q: "Market Share: What happened in Q4-24?", o: ["A sharp fall", "A small rise", "It stayed steady"], a: "A sharp fall" },
+      { q: "Logistics: Describe the first three quarters.", o: ["Steady", "Rising", "Fluctuating"], a: "Steady" },
+      { q: "Logistics: What happened in Q1-25?", o: ["It fell", "It shot up", "It stayed the same"], a: "It shot up" },
+      { q: "Logistics: Where is the peak value?", o: ["Q2-24", "Q4-24", "Q2-25"], a: "Q2-25" }
+    ],
+    B1: [
+      { q: "Revenue: Describe the movement from Q2-24 to Q3-24.", o: ["A significant surge", "A dramatic plummet", "A slight dip"], a: "A dramatic plummet" },
+      { q: "Revenue: What characterizes the 2025 performance?", o: ["A steady recovery", "Total stagnation", "Continued decline"], a: "A steady recovery" },
+      { q: "Revenue: How would you describe the overall volatility?", o: ["High", "Low", "Non-existent"], a: "High" },
+      { q: "Costs: Which phrase best describes the Operating Costs?", o: ["A steady decline", "Exponential growth", "Erratic fluctuation"], a: "A steady decline" },
+      { q: "Costs: What happened during the Q2-Q3 period in 2024?", o: ["Costs peaked", "Costs leveled off", "Costs bottomed out"], a: "Costs leveled off" },
+      { q: "Costs: Compare Q1-24 to Q2-25.", o: ["Costs have halved", "Costs have slightly risen", "Costs are significantly lower"], a: "Costs are significantly lower" },
+      { q: "Market Share: How would you define this chart?", o: ["Static", "Volatile", "Predictable"], a: "Volatile" },
+      { q: "Market Share: What happened after the Q4-24 slump?", o: ["It stagnated", "It rebounded sharply", "It fell further"], a: "It rebounded sharply" },
+      { q: "Market Share: What was the result of the Q2-25 period?", o: ["A new peak", "A temporary dip", "A plateau"], a: "A new peak" },
+      { q: "Logistics: Describe the trend prior to Q1-25.", o: ["Remarkably stable", "Highly erratic", "Gradually declining"], a: "Remarkably stable" },
+      { q: "Logistics: What occurred at the start of 2025?", o: ["A marginal increase", "A sudden spike", "A sharp contraction"], a: "A sudden spike" },
+      { q: "Logistics: What is the trend for the final quarter shown?", o: ["Costs are rising", "Costs are stabilizing", "Costs are falling"], a: "Costs are rising" }
+    ]
+  },
+  gapfill: {
+    A2: {
+      text: "Last year, profit <span class='drop-zone' data-ans='increased'></span> in Q1, but it <span class='drop-zone' data-ans='fell'></span> in Q2. By Q3, sales were <span class='drop-zone' data-ans='steady'></span>. In Q4, prices <span class='drop-zone' data-ans='shot up'></span> quickly. We need to <span class='drop-zone' data-ans='decrease'></span> our spending. We saw a <span class='drop-zone' data-ans='slight'></span> change in May. The market <span class='drop-zone' data-ans='recovered'></span> in June. Our goal is to <span class='drop-zone' data-ans='stay'></span> at the top. We must <span class='drop-zone' data-ans='watch'></span> the numbers. If they <span class='drop-zone' data-ans='drop'></span> again, we will be in trouble. Last week, production <span class='drop-zone' data-ans='slowed'></span> down. Finally, the graph <span class='drop-zone' data-ans='leveled'></span> off.",
+      tokens: ["increased", "fell", "steady", "shot up", "decrease", "slight", "recovered", "stay", "watch", "drop", "slowed", "leveled"]
+    },
+    B1: {
+      text: "Our revenue <span class='drop-zone' data-ans='fluctuated'></span> significantly throughout the fiscal year. While overheads <span class='drop-zone' data-ans='gradually'></span> diminished, the energy crisis caused rates to <span class='drop-zone' data-ans='skyrocket'></span>. We witnessed a <span class='drop-zone' data-ans='dramatic'></span> improvement after we <span class='drop-zone' data-ans='stabilized'></span> production. The market <span class='drop-zone' data-ans='bottomed out'></span> in August before a <span class='drop-zone' data-ans='significant'></span> rally. We must <span class='drop-zone' data-ans='anticipate'></span> future shifts. If performance <span class='drop-zone' data-ans='deteriorates'></span>, we may need to restructure. The Q4 figures <span class='drop-zone' data-ans='surpassed'></span> our expectations. We aim to <span class='drop-zone' data-ans='maintain'></span> this momentum. Experts suggest the trend will <span class='drop-zone' data-ans='plateau'></span> by next year.",
+      tokens: ["fluctuated", "gradually", "skyrocket", "dramatic", "stabilized", "bottomed out", "significant", "anticipate", "deteriorates", "surpassed", "maintain", "plateau"]
+    }
+  },
+  reading: {
+    A2: {
+      text: "The year started well for our shop. In Q1-24, we sold many items and the graph went up. In Q2-24, we had fewer customers, so sales fell. Q3-24 was quiet and steady. However, in Q1-25, we opened a new website and our sales shot up! We are happy because profit is rising now. We want to keep costs low and sales high next year.",
+      qs: [
+        { q: "When did they sell many items?", o: ["Q1-24", "Q2-24", "Q3-24"], a: "Q1-24" },
+        { q: "Why did sales fall in Q2-24?", o: ["New website", "Fewer customers", "High prices"], a: "Fewer customers" },
+        { q: "What was Q3-24 like?", o: ["Busy", "Steady", "Angry"], a: "Steady" },
+        { q: "What happened in Q1-25?", o: ["Sales shot up", "Sales fell", "The shop closed"], a: "Sales shot up" },
+        { q: "What helped the sales in 2025?", o: ["A new website", "Lower prices", "A new manager"], a: "A new website" },
+        { q: "How is the profit now?", o: ["Falling", "The same", "Rising"], a: "Rising" },
+        { q: "What is their goal for costs?", o: ["To keep them high", "To keep them low", "To stop them"], a: "To keep them low" },
+        { q: "Was the start of the year good or bad?", o: ["Good", "Bad", "Very bad"], a: "Good" },
+        { q: "Is the shop closed now?", o: ["Yes", "No"], a: "No" },
+        { q: "How many quarters are mentioned?", o: ["Two", "Four", "Five"], a: "Four" },
+        { q: "Is the owner happy?", o: ["Yes", "No"], a: "Yes" },
+        { q: "What does the text focus on?", o: ["Sales and profit", "Hiring staff", "Buying a car"], a: "Sales and profit" }
+      ]
+    },
+    B1: {
+      text: "The fiscal cycle of 2024–2025 was defined by extreme volatility. While the first quarter showed promise, supply chain disruptions in Q2-24 caused production to plummet. We spent Q3-24 stabilizing our logistics, which allowed the figures to remain steady. The real turning point was Q1-25, where our expansion into Asian markets caused a significant surge in exports. Despite rising energy costs, our net profit has recovered and is currently peaking. Management advises a cautious but optimistic strategy for the remainder of 2025, focusing on staff retention and cost-cutting in non-essential areas.",
+      qs: [
+        { q: "How is the 2024-2025 cycle described?", o: ["Predictable", "Volatile", "Declining"], a: "Volatile" },
+        { q: "What caused the Q2-24 plummet?", o: ["Low demand", "Supply chain issues", "High taxes"], a: "Supply chain issues" },
+        { q: "What was the focus of Q3-24?", o: ["Expansion", "Stabilizing logistics", "Marketing"], a: "Stabilizing logistics" },
+        { q: "What happened in Q1-25?", o: ["A sharp fall", "A significant surge", "No change"], a: "A significant surge" },
+        { q: "Which market drove the 2025 growth?", o: ["European", "Domestic", "Asian"], a: "Asian" },
+        { q: "What is the current status of net profit?", o: ["Bottoming out", "Peaking", "Dipping"], a: "Peaking" },
+        { q: "What is the CFO's stance for the future?", o: ["Aggressive", "Cautious but optimistic", "Pessimistic"], a: "Cautious but optimistic" },
+        { q: "Which cost is specifically mentioned as 'rising'?", o: ["Labor", "Energy", "Rent"], a: "Energy" },
+        { q: "What is a key priority for management now?", o: ["Staff retention", "Closing offices", "Higher prices"], a: "Staff retention" },
+        { q: "When did production experience its worst fall?", o: ["Q1-24", "Q2-24", "Q1-25"], a: "Q2-24" },
+        { q: "How would you describe the Q3-24 period?", o: ["A period of recovery", "A period of stability", "A period of decline"], a: "A period of stability" },
+        { q: "What should be cut according to the text?", o: ["Essential costs", "Non-essential costs", "All salaries"], a: "Non-essential costs" }
+      ]
+    }
+  }
+};
+
+const CHART_DATA = {
+  revenue: [40, 80, 20, 30, 60, 90],
+  costs: [90, 70, 70, 50, 40, 25],
+  market: [30, 60, 50, 10, 80, 95],
+  logistics: [50, 50, 50, 55, 90, 100]
+};
+
+function setLevel(lvl) {
+  currentLevel = lvl;
+  document.querySelectorAll('.level-btn').forEach(b => b.classList.toggle('active', b.id === `btn-${lvl}`));
+  renderAll();
+}
+
+function drawCharts() {
+  const draw = (id, data, color) => {
+    const svg = document.getElementById(id);
+    svg.innerHTML = '';
+    const points = data.map((d, i) => `${(i * 45) + 10},${110 - d}`).join(' ');
+    for(let i=0; i<=5; i++) {
+        const x = (i * 45) + 10;
+        svg.innerHTML += `<line x1="${x}" y1="10" x2="${x}" y2="110" stroke="#eee" />`;
+        svg.innerHTML += `<text x="${x-12}" y="118" class="axis-label">${QUARTERS[i]}</text>`;
+    }
+    svg.innerHTML += `<polyline points="${points}" fill="none" stroke="${color}" stroke-width="3" stroke-linejoin="round" />`;
+    data.forEach((d, i) => { svg.innerHTML += `<circle cx="${(i * 45) + 10}" cy="${110 - d}" r="4" fill="${color}" />`; });
+  };
+  draw('svg-revenue', CHART_DATA.revenue, '#27ae60');
+  draw('svg-costs', CHART_DATA.costs, '#e74c3c');
+  draw('svg-market', CHART_DATA.market, '#3498db');
+  draw('svg-logistics', CHART_DATA.logistics, '#f39c12');
+}
+
+function renderAll() {
+  const vQ = document.getElementById('vocab-questions');
+  vQ.innerHTML = DB.vocab.map((v, i) => `
+    <div class="q-block">
+      <p><strong>${i+1}. Which word matches: "${currentLevel === 'A2' ? v.a2 : v.b1}"</strong></p>
+      <div class="opt-grid">
+        ${[v.term, DB.vocab[(i+1)%12].term, DB.vocab[(i+2)%12].term].sort().map(opt => `
+          <label class="mc-opt"><input type="radio" name="vq${i}" value="${opt}"> ${opt}</label>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  drawCharts();
+  const cQ = document.getElementById('chart-questions');
+  cQ.innerHTML = DB.charts[currentLevel].map((item, i) => `
+    <div class="q-block">
+      <p><strong>${i+1}. ${item.q}</strong></p>
+      ${item.o.map(opt => `<label class="mc-opt"><input type="radio" name="cq${i}" value="${opt}"> ${opt}</label>`).join('')}
+    </div>
+  `).join('');
+
+  const gBank = document.getElementById('token-bank');
+  const gText = document.getElementById('memo-text');
+  const lvlD = DB.gapfill[currentLevel];
+  gBank.innerHTML = [...lvlD.tokens].sort(() => Math.random() - 0.5).map(t => `<div class="token" draggable="true" ondragstart="event.dataTransfer.setData('text', event.target.innerText)">${t}</div>`).join('');
+  gText.innerHTML = lvlD.text;
+  
+  const rPass = document.getElementById('reading-passage');
+  const rQs = document.getElementById('reading-questions');
+  rPass.innerText = DB.reading[currentLevel].text;
+  rQs.innerHTML = DB.reading[currentLevel].qs.map((item, i) => `
+    <div class="q-block">
+      <p><strong>${i+1}. ${item.q}</strong></p>
+      ${item.o.map(opt => `<label class="mc-opt"><input type="radio" name="rq${i}" value="${opt}"> ${opt}</label>`).join('')}
+    </div>
+  `).join('');
+  setupDragDrop();
+}
+
+function setupDragDrop() {
+  document.querySelectorAll('.drop-zone').forEach(dz => {
+    dz.addEventListener('dragover', e => e.preventDefault());
+    dz.addEventListener('drop', e => { e.preventDefault(); dz.innerText = e.dataTransfer.getData('text'); });
+    dz.onclick = () => { dz.innerText = ''; dz.classList.remove('correct', 'wrong'); };
+  });
+}
+
+function showFeedback(id, score, total) {
+    const el = document.getElementById(id);
+    el.style.display = 'block';
+    el.innerHTML = `Score: ${score}/${total}. ${score === total ? '🏆 Perfect!' : 'Try again!'}`;
+    el.style.color = score === total ? 'var(--green)' : 'var(--navy)';
+}
+
+function checkVocab() {
+  let s = 0;
+  DB.vocab.forEach((it, i) => {
+    const sel = document.querySelector(`input[name="vq${i}"]:checked`);
+    document.querySelectorAll(`input[name="vq${i}"]`).forEach(o => {
+      o.parentElement.classList.remove('correct', 'wrong');
+      if(o.value === it.term) o.parentElement.classList.add('correct');
+      if(sel && o.value === sel.value && o.value !== it.term) o.parentElement.classList.add('wrong');
+    });
+    if(sel && sel.value === it.term) s++;
+  });
+  showFeedback('vocab-feedback', s, 12);
+}
+
+function checkCharts() {
+  let s = 0;
+  DB.charts[currentLevel].forEach((it, i) => {
+    const sel = document.querySelector(`input[name="cq${i}"]:checked`);
+    document.querySelectorAll(`input[name="cq${i}"]`).forEach(o => {
+        o.parentElement.classList.remove('correct', 'wrong');
+        if(o.value === it.a) o.parentElement.classList.add('correct');
+        else if(sel && o.value === sel.value) o.parentElement.classList.add('wrong');
+    });
+    if(sel && sel.value === it.a) s++;
+  });
+  showFeedback('charts-feedback', s, 12);
+}
+
+function checkGapFill() {
+  let s = 0;
+  document.querySelectorAll('.drop-zone').forEach(dz => {
+    dz.classList.remove('correct', 'wrong');
+    if(dz.innerText.trim() === dz.dataset.ans) { dz.classList.add('correct'); s++; }
+    else { dz.classList.add('wrong'); }
+  });
+  showFeedback('gapfill-feedback', s, 12);
+}
+
+function checkReading() {
+  let s = 0;
+  DB.reading[currentLevel].qs.forEach((it, i) => {
+    const sel = document.querySelector(`input[name="rq${i}"]:checked`);
+    document.querySelectorAll(`input[name="rq${i}"]`).forEach(o => {
+        o.parentElement.classList.remove('correct', 'wrong');
+        if(o.value === it.a) o.parentElement.classList.add('correct');
+        else if(sel && o.value === sel.value) o.parentElement.classList.add('wrong');
+    });
+    if(sel && sel.value === it.a) s++;
+  });
+  showFeedback('reading-feedback', s, 12);
+}
+
+function showTab(id, e) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(e) e.target.classList.add('active');
+}
+
+renderAll();
+</script>
+</body>
+</html>

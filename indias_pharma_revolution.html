@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>India's Pharma Revolution</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --saffron: #FF9933;
+    --saffron-light: #FFE0B2;
+    --saffron-pale: #FFF8F0;
+    --navy: #0A1F44;
+    --navy-mid: #1A3A6B;
+    --teal: #138D75;
+    --teal-light: #A9DFBF;
+    --white: #FAFAF8;
+    --ink: #1C1C1C;
+    --muted: #6B7280;
+    --correct: #1A7A4A;
+    --correct-bg: #D4EFDF;
+    --wrong: #B03A2E;
+    --wrong-bg: #FADBD8;
+    --border: #E5D9CC;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    background-color: var(--saffron-pale);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--navy);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 56px 40px 48px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .header-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--saffron);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .header-label::after {
+    content: '';
+    display: block;
+    height: 1px;
+    width: 40px;
+    background: var(--saffron);
+    opacity: 0.5;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(38px, 6vw, 68px);
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.05;
+    letter-spacing: -1px;
+    margin-bottom: 0;
+  }
+
+  h1 span {
+    color: var(--saffron);
+  }
+
+  .header-deco {
+    position: absolute;
+    right: -60px;
+    top: -60px;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,153,51,0.12);
+    z-index: 1;
+  }
+
+  .header-deco::after {
+    content: '';
+    position: absolute;
+    inset: 30px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,153,51,0.08);
+  }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 40px 80px;
+  }
+
+  /* ── VIDEO SECTION ── */
+  .video-section {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--saffron);
+    padding: 32px 36px;
+    margin: 40px 0 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .video-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--saffron);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .video-icon svg { width: 18px; height: 18px; fill: white; margin-left: 2px; }
+
+  .video-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .video-link {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--navy-mid);
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--saffron);
+    transition: color 0.2s, border-color 0.2s;
+    word-break: break-all;
+  }
+
+  .video-link:hover { color: var(--saffron); border-color: transparent; }
+
+  /* ── READING TEXT ── */
+  .reading-section {
+    background: var(--white);
+    border: 1px solid var(--border);
+    padding: 40px 44px;
+    margin-top: 2px;
+    position: relative;
+  }
+
+  .reading-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .reading-header-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .reading-section p {
+    font-size: 15.5px;
+    line-height: 1.8;
+    color: #2C2C2C;
+    font-weight: 300;
+  }
+
+  .reading-section p strong {
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  /* ── QUIZ SECTION ── */
+  .quiz-section {
+    margin-top: 48px;
+  }
+
+  .quiz-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .quiz-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  .score-display {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    background: var(--white);
+    border: 1px solid var(--border);
+    padding: 6px 16px;
+    border-radius: 20px;
+  }
+
+  .score-display span {
+    color: var(--navy);
+    font-size: 16px;
+  }
+
+  /* ── QUESTION CARD ── */
+  .question-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    margin-bottom: 4px;
+    transition: border-color 0.3s;
+    position: relative;
+  }
+
+  .question-card.answered { border-left: 4px solid var(--border); }
+  .question-card.correct  { border-left: 4px solid var(--correct); }
+  .question-card.wrong    { border-left: 4px solid var(--wrong); }
+
+  .question-inner { padding: 28px 32px 28px 28px; }
+
+  .question-number {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--saffron);
+    margin-bottom: 8px;
+  }
+
+  .question-text {
+    font-family: 'Source Serif 4', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  @media (max-width: 560px) {
+    .options-grid { grid-template-columns: 1fr; }
+    main { padding: 0 20px 60px; }
+    .header-inner { padding: 40px 20px 36px; }
+    .reading-section { padding: 28px 24px; }
+    .question-inner { padding: 22px 20px; }
+  }
+
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--saffron-pale);
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    line-height: 1.45;
+    color: var(--ink);
+    transition: background 0.15s, border-color 0.15s;
+    border-radius: 2px;
+  }
+
+  .option-btn:hover:not(:disabled) {
+    background: var(--saffron-light);
+    border-color: var(--saffron);
+  }
+
+  .option-btn:disabled { cursor: default; }
+
+  .option-letter {
+    font-weight: 700;
+    font-size: 11px;
+    color: var(--saffron);
+    letter-spacing: 1px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .option-btn.correct-answer {
+    background: var(--correct-bg);
+    border-color: var(--correct);
+  }
+
+  .option-btn.correct-answer .option-letter { color: var(--correct); }
+
+  .option-btn.wrong-answer {
+    background: var(--wrong-bg);
+    border-color: var(--wrong);
+  }
+
+  .option-btn.wrong-answer .option-letter { color: var(--wrong); }
+
+  .option-btn.missed-answer {
+    background: var(--correct-bg);
+    border-color: var(--correct);
+    opacity: 0.7;
+  }
+
+  /* ── FEEDBACK ── */
+  .feedback {
+    margin-top: 14px;
+    padding: 10px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 2px;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.25s, transform 0.25s;
+  }
+
+  .feedback.show { opacity: 1; transform: translateY(0); }
+  .feedback.correct-fb { background: var(--correct-bg); color: var(--correct); }
+  .feedback.wrong-fb   { background: var(--wrong-bg); color: var(--wrong); }
+
+  /* ── RESULTS PANEL ── */
+  .results-panel {
+    background: var(--navy);
+    padding: 48px 44px;
+    margin-top: 40px;
+    display: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .results-panel.show { display: block; animation: fadeUp 0.5s ease forwards; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .results-deco {
+    position: absolute;
+    right: -40px; bottom: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,153,51,0.15);
+  }
+
+  .results-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--saffron);
+    margin-bottom: 12px;
+  }
+
+  .results-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 64px;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .results-score span { color: var(--saffron); }
+  .results-sub {
+    font-family: 'Source Serif 4', serif;
+    font-size: 16px;
+    font-weight: 300;
+    font-style: italic;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 28px;
+  }
+
+  .retry-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    background: var(--saffron);
+    color: var(--navy);
+    border: none;
+    padding: 14px 32px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .retry-btn:hover { background: #e8891e; }
+  .retry-btn:active { transform: scale(0.98); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0;
+  }
+
+  /* ── DISCUSSION SECTION ── */
+  .discussion-section {
+    background: var(--navy);
+    padding: 36px 44px 40px;
+    margin-top: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .discussion-section::before {
+    content: '';
+    position: absolute;
+    left: -60px; top: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,153,51,0.1);
+    pointer-events: none;
+  }
+
+  .discussion-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .discussion-icon {
+    width: 36px; height: 36px;
+    background: rgba(255,153,51,0.15);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .discussion-icon svg { width: 16px; height: 16px; fill: var(--saffron); }
+
+  .discussion-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--saffron);
+  }
+
+  .discussion-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .discussion-list li {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .dq-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--saffron);
+    line-height: 1.2;
+    flex-shrink: 0;
+    width: 24px;
+    opacity: 0.6;
+  }
+
+  .dq-text {
+    font-family: 'Source Serif 4', serif;
+    font-size: 15px;
+    font-weight: 300;
+    font-style: italic;
+    color: rgba(255,255,255,0.88);
+    line-height: 1.65;
+    padding-top: 3px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-deco"></div>
+  <div class="header-inner">
+    <div class="header-label">Reading &amp; Comprehension Exercise</div>
+    <h1>India's Pharma<br><span>Revolution</span></h1>
+  </div>
+</header>
+
+<main>
+
+  <!-- Video Link -->
+  <div class="video-section">
+    <div class="video-icon">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </div>
+    <div>
+      <div class="video-label">Watch the video</div>
+      <a class="video-link" href="https://www.youtube.com/watch?v=n4x63PJe620" target="_blank" rel="noopener">
+        https://www.youtube.com/watch?v=n4x63PJe620
+      </a>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Reading Text -->
+  <div class="reading-section">
+    <div class="reading-header">
+      <div class="reading-header-label">Reading passage</div>
+    </div>
+    <p>
+      India's <strong>pharmaceutical industry</strong> has emerged as a global leader in healthcare, providing a significant portion of the world's <strong>generic medications</strong> and <strong>vaccines</strong>. Through strategic government initiatives like the <strong>Production Linked Incentive (PLI) schemes</strong>, the nation has boosted the domestic manufacture of <strong>raw materials</strong>, high-end drugs, and <strong>medical devices</strong>. These policies, alongside increased <strong>foreign investment</strong>, have driven massive growth, making essential treatments up to <strong>80% more affordable</strong> for the public. The establishment of specialised <strong>drug parks</strong> and modernised <strong>laboratories</strong> ensures that the sector remains competitive and innovative on an international scale. Ultimately, these advancements have successfully bridged the gap between urban <strong>manufacturing hubs</strong> and rural <strong>accessibility</strong>, fostering both <strong>economic development</strong> and improved <strong>medical outcomes</strong>. This transformation solidifies India's role as a vital supplier of <strong>high-quality, low-cost medicine</strong> for both its own citizens and the global population.
+    </p>
+  </div>
+
+  <!-- Discussion Questions -->
+  <div class="discussion-section">
+    <div class="discussion-header">
+      <div class="discussion-icon">
+        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+      </div>
+      <div class="discussion-title">Discussion Questions</div>
+    </div>
+    <ul class="discussion-list">
+      <li>
+        <span class="dq-num">1</span>
+        <span class="dq-text">India supplies a large share of the world's generic medicines and vaccines. Do you think wealthy countries should rely on a single nation for so much of their medicine supply? What are the potential risks?</span>
+      </li>
+      <li>
+        <span class="dq-num">2</span>
+        <span class="dq-text">The Production Linked Incentive (PLI) scheme encourages companies to manufacture more within India by offering financial rewards. What are the advantages and disadvantages of governments using financial incentives to shape industry?</span>
+      </li>
+      <li>
+        <span class="dq-num">3</span>
+        <span class="dq-text">The text mentions that India's pharmaceutical growth has improved rural accessibility to medicines. In your experience or opinion, what other barriers — beyond cost — prevent people in rural areas from accessing healthcare?</span>
+      </li>
+      <li>
+        <span class="dq-num">4</span>
+        <span class="dq-text">India is described as a "vital supplier of high-quality, low-cost medicine" for the global population. How important is it for low- and middle-income countries to develop their own pharmaceutical industries rather than importing medicines from abroad?</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Quiz -->
+  <div class="quiz-section">
+    <div class="quiz-header">
+      <div class="quiz-title">Comprehension Quiz</div>
+      <div class="score-display">Score: <span id="scoreVal">0</span> / <span id="totalVal">12</span></div>
+    </div>
+
+    <div id="quizContainer"></div>
+
+    <div class="results-panel" id="resultsPanel">
+      <div class="results-deco"></div>
+      <div class="results-label">Final result</div>
+      <div class="results-score" id="finalScore">0 <span>/ 12</span></div>
+      <div class="results-sub" id="finalMessage">Well done!</div>
+      <button class="retry-btn" onclick="resetQuiz()">Try Again</button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+const questions = [
+  {
+    q: "What term describes medicines that are copies of brand-name drugs and are central to India's pharmaceutical exports?",
+    options: ["Prescription drugs", "Generic medications", "Experimental compounds", "Patented treatments"],
+    answer: 1
+  },
+  {
+    q: "Which government initiative was specifically designed to boost domestic manufacturing in India's pharmaceutical sector?",
+    options: ["Foreign Direct Investment Policy", "National Health Mission", "Production Linked Incentive (PLI) scheme", "Make in India Pharmaceutical Act"],
+    answer: 2
+  },
+  {
+    q: "According to the text, by approximately how much have the government policies made essential treatments more affordable?",
+    options: ["40%", "60%", "90%", "80%"],
+    answer: 3
+  },
+  {
+    q: "Which of the following does the text identify as something India's PLI scheme helped increase the domestic manufacture of?",
+    options: ["Raw materials", "Surgical equipment", "Hospital infrastructure", "Medical training programmes"],
+    answer: 0
+  },
+  {
+    q: "What specialised facilities does the text mention were established to keep India's pharmaceutical sector competitive?",
+    options: ["Export processing zones", "Research universities", "Drug parks", "International trade centres"],
+    answer: 2
+  },
+  {
+    q: "What type of external funding, alongside government policies, has driven growth in India's pharmaceutical industry?",
+    options: ["World Bank grants", "Foreign investment", "International aid", "Bilateral trade agreements"],
+    answer: 1
+  },
+  {
+    q: "The text states that modernised laboratories ensure the sector remains competitive on what scale?",
+    options: ["Regional", "National", "Continental", "International"],
+    answer: 3
+  },
+  {
+    q: "According to the text, what gap has India's pharmaceutical growth successfully bridged?",
+    options: ["Between public and private hospitals", "Between urban manufacturing hubs and rural accessibility", "Between domestic and export markets", "Between traditional and modern medicine"],
+    answer: 1
+  },
+  {
+    q: "Which of the following best describes the overall outcome of India's pharmaceutical transformation, according to the text?",
+    options: ["Increased reliance on imported medicines", "Greater regulation of foreign companies", "Improved medical outcomes and economic development", "Reduced competition from Western pharmaceutical firms"],
+    answer: 2
+  },
+  {
+    q: "What role does the text say India has solidified through its pharmaceutical advancements?",
+    options: ["Leading producer of patented medicines", "Primary regulator of global drug standards", "Vital supplier of high-quality, low-cost medicine", "Principal developer of new vaccines"],
+    answer: 2
+  },
+  {
+    q: "In addition to generic medications, which other essential healthcare product does the text mention India supplies globally?",
+    options: ["Medical devices", "Vaccines", "Surgical instruments", "Diagnostic equipment"],
+    answer: 1
+  },
+  {
+    q: "Which two broad outcomes does the text say have been fostered by bridging the urban–rural gap in pharmaceutical access?",
+    options: ["Urbanisation and population growth", "Technological innovation and export revenue", "Economic development and improved medical outcomes", "Infrastructure investment and job creation"],
+    answer: 2
+  }
+];
+
+let score = 0;
+let answered = 0;
+const letters = ['A', 'B', 'C', 'D'];
+
+function buildQuiz() {
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = '';
+  score = 0;
+  answered = 0;
+  document.getElementById('scoreVal').textContent = '0';
+  document.getElementById('resultsPanel').classList.remove('show');
+
+  questions.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = `card-${qi}`;
+
+    let optHtml = '';
+    q.options.forEach((opt, oi) => {
+      optHtml += `<button class="option-btn" onclick="selectAnswer(${qi}, ${oi})" id="opt-${qi}-${oi}">
+        <span class="option-letter">${letters[oi]}</span>
+        <span>${opt}</span>
+      </button>`;
+    });
+
+    card.innerHTML = `
+      <div class="question-inner">
+        <div class="question-number">Question ${qi + 1} of ${questions.length}</div>
+        <div class="question-text">${q.q}</div>
+        <div class="options-grid">${optHtml}</div>
+        <div class="feedback" id="fb-${qi}"></div>
+      </div>`;
+    container.appendChild(card);
+  });
+}
+
+function selectAnswer(qi, oi) {
+  const q = questions[qi];
+  const card = document.getElementById(`card-${qi}`);
+  const fb = document.getElementById(`fb-${qi}`);
+
+  // Disable all buttons for this question
+  for (let i = 0; i < 4; i++) {
+    const btn = document.getElementById(`opt-${qi}-${i}`);
+    btn.disabled = true;
+  }
+
+  const chosen = document.getElementById(`opt-${qi}-${oi}`);
+  const correct = document.getElementById(`opt-${qi}-${q.answer}`);
+
+  if (oi === q.answer) {
+    chosen.classList.add('correct-answer');
+    card.classList.add('answered', 'correct');
+    fb.textContent = '✓ Correct!';
+    fb.className = 'feedback correct-fb show';
+    score++;
+    document.getElementById('scoreVal').textContent = score;
+  } else {
+    chosen.classList.add('wrong-answer');
+    correct.classList.add('missed-answer');
+    card.classList.add('answered', 'wrong');
+    fb.textContent = `✗ The correct answer is ${letters[q.answer]}: ${q.options[q.answer]}`;
+    fb.className = 'feedback wrong-fb show';
+  }
+
+  answered++;
+  if (answered === questions.length) showResults();
+}
+
+function showResults() {
+  const panel = document.getElementById('resultsPanel');
+  document.getElementById('finalScore').innerHTML = `${score} <span>/ ${questions.length}</span>`;
+  const pct = Math.round((score / questions.length) * 100);
+  let msg;
+  if (pct === 100) msg = 'Perfect score — excellent work!';
+  else if (pct >= 75) msg = 'Well done — strong understanding of the text.';
+  else if (pct >= 50) msg = 'Good effort — review the passage and try again.';
+  else msg = 'Keep practising — re-read the text carefully.';
+  document.getElementById('finalMessage').textContent = msg;
+  panel.classList.add('show');
+  setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+}
+
+function resetQuiz() {
+  buildQuiz();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildQuiz();
+</script>
+</body>
+</html>

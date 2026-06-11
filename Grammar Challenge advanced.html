@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Grammar Test - B1/B2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .instructions {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .question {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .question:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            border-color: #667eea;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .sentence {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .choice-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .choice-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+
+        .choice-btn.correct {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+        }
+
+        .choice-btn.incorrect {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            color: white;
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .choice-btn.selected {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            border: 3px solid #fff;
+            position: relative;
+        }
+
+        .choice-btn.selected::after {
+            content: '✓';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #fff;
+            color: #333;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .wager-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .wager-label {
+            font-weight: bold;
+            color: #4a5568;
+        }
+
+        .wager-input {
+            width: 60px;
+            padding: 8px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1em;
+        }
+
+        .wager-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 30px auto;
+            display: block;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-top: 30px;
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+        }
+
+        .results h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .result-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .result-item.correct {
+            border-left: 4px solid #48bb78;
+        }
+
+        .result-item.incorrect {
+            border-left: 4px solid #f56565;
+        }
+
+        .total-score {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .reset-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 25px;
+            border: 2px solid white;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 20px auto;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        @media (max-width: 600px) {
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .choice-buttons {
+                justify-content: center;
+            }
+            
+            .wager-section {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Advanced Grammar Challenge</h1>
+        <p class="subtitle">B1/B2 Level • Interactive Test</p>
+        
+        <div class="instructions">
+            <strong>Instructions:</strong> Read each sentence carefully and decide if it's grammatically correct or incorrect. These sentences test more advanced grammar structures. Wager 1-10 points on your confidence level. You win your wagered points if you're right, lose them if you're wrong!
+        </div>
+
+        <div id="questions-container"></div>
+        
+        <button id="submit-btn" class="submit-btn" disabled>Submit Test</button>
+        
+        <div id="results" class="results" style="display: none;"></div>
+    </div>
+
+    <script>
+        const sentences = [
+            { text: "Having finished his presentation, the manager left the meeting room.", correct: true },
+            { text: "I wish I would have more time to spend with my family.", correct: false, error: "Should be 'I wish I had more time' (present unreal wish)" },
+            { text: "The research suggests that climate change affects global weather patterns.", correct: true },
+            { text: "Despite of the heavy rain, we decided to go hiking.", correct: false, error: "Should be 'Despite the heavy rain' (no 'of' after 'despite')" },
+            { text: "She's been working on this project for three months now.", correct: true },
+            { text: "The more you practice, the more better you become.", correct: false, error: "Should be 'the better you become' (no 'more' with comparative)" },
+            { text: "By the time we arrive, they will have already started the presentation.", correct: true },
+            { text: "I would rather you didn't smoke in the house.", correct: true },
+            { text: "The company is investing in new technologies to remain competitive.", correct: true },
+            { text: "If I would have known about the meeting, I would have attended.", correct: false, error: "Should be 'If I had known' (third conditional)" },
+            { text: "The proposal was rejected due to lack of funding.", correct: true },
+            { text: "She apologized for being late and explained that her car had broken down.", correct: true },
+            { text: "Neither of the candidates were qualified for the position.", correct: false, error: "Should be 'was qualified' (neither is singular)" },
+            { text: "Having been delayed by traffic, we missed the beginning of the concert.", correct: true },
+            { text: "The government should have taken more stricter measures earlier.", correct: false, error: "Should be 'stricter measures' (no 'more' with comparative)" },
+            { text: "It's essential that everyone understands the new safety procedures.", correct: true },
+            { text: "The exhibition, which opened last month, has attracted thousands of visitors.", correct: true },
+            { text: "I'd prefer you to not mention this to anyone else.", correct: false, error: "Should be 'prefer you not to mention' or 'prefer that you don't mention'" },
+            { text: "She succeeded in convincing the board to approve her proposal.", correct: true },
+            { text: "Hardly had we arrived when it started raining heavily.", correct: true }
+        ];
+
+        let userAnswers = [];
+        let userWagers = [];
+
+        function initializeTest() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+            
+            sentences.forEach((sentence, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <div class="question-header">
+                        <span class="question-number">Question ${index + 1}</span>
+                    </div>
+                    <div class="sentence">${sentence.text}</div>
+                    <div class="controls">
+                        <div class="choice-buttons">
+                            <button class="choice-btn correct" onclick="selectChoice(${index}, true)">Correct</button>
+                            <button class="choice-btn incorrect" onclick="selectChoice(${index}, false)">Incorrect</button>
+                        </div>
+                        <div class="wager-section">
+                            <span class="wager-label">Wager:</span>
+                            <input type="number" min="1" max="10" value="5" class="wager-input" id="wager-${index}" onchange="updateWager(${index})">
+                            <span>points</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+            
+            userAnswers = new Array(sentences.length).fill(null);
+            userWagers = new Array(sentences.length).fill(5);
+            updateSubmitButton();
+        }
+
+        function selectChoice(questionIndex, isCorrect) {
+            userAnswers[questionIndex] = isCorrect;
+            
+            const questionDiv = document.querySelectorAll('.question')[questionIndex];
+            const buttons = questionDiv.querySelectorAll('.choice-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('selected'));
+            
+            if (isCorrect) {
+                buttons[0].classList.add('selected');
+            } else {
+                buttons[1].classList.add('selected');
+            }
+            
+            updateSubmitButton();
+        }
+
+        function updateWager(questionIndex) {
+            const wagerInput = document.getElementById(`wager-${questionIndex}`);
+            let value = parseInt(wagerInput.value);
+            
+            if (value < 1) value = 1;
+            if (value > 10) value = 10;
+            
+            wagerInput.value = value;
+            userWagers[questionIndex] = value;
+        }
+
+        function updateSubmitButton() {
+            const submitBtn = document.getElementById('submit-btn');
+            const allAnswered = userAnswers.every(answer => answer !== null);
+            submitBtn.disabled = !allAnswered;
+        }
+
+        function submitTest() {
+            let totalScore = 0;
+            let resultsHTML = '<h2>Your Results</h2>';
+            
+            sentences.forEach((sentence, index) => {
+                const userAnswer = userAnswers[index];
+                const wager = userWagers[index];
+                const isCorrect = userAnswer === sentence.correct;
+                const points = isCorrect ? wager : -wager;
+                totalScore += points;
+                
+                const resultClass = isCorrect ? 'correct' : 'incorrect';
+                const resultIcon = isCorrect ? '✓' : '✗';
+                const pointsText = isCorrect ? `+${wager}` : `-${wager}`;
+                
+                resultsHTML += `
+                    <div class="result-item ${resultClass}">
+                        <div>
+                            <strong>Q${index + 1}:</strong> ${sentence.text}
+                            ${sentence.correct ? '' : `<br><small><em>${sentence.error}</em></small>`}
+                        </div>
+                        <div style="text-align: right;">
+                            <div>${resultIcon} ${pointsText} points</div>
+                            <small>Your answer: ${userAnswer ? 'Correct' : 'Incorrect'}</small>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultsHTML += `
+                <div class="total-score">
+                    Final Score: ${totalScore} points
+                </div>
+                <button class="reset-btn" onclick="resetTest()">Take Test Again</button>
+            `;
+            
+            document.getElementById('results').innerHTML = resultsHTML;
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('submit-btn').style.display = 'none';
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetTest() {
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('submit-btn').style.display = 'block';
+            initializeTest();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize the test when page loads
+        document.addEventListener('DOMContentLoaded', initializeTest);
+        
+        // Add event listener for submit button
+        document.getElementById('submit-btn').addEventListener('click', submitTest);
+    </script>
+</body>
+</html>

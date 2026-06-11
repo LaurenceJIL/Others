@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1f2937;
+    --border: #30363d;
+    --accent: #00d4aa;
+    --accent2: #0ea5e9;
+    --text: #e6edf3;
+    --muted: #7d8590;
+    --correct: #3fb950;
+    --wrong: #f85149;
+    --warn: #d29922;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .badge {
+    background: var(--accent);
+    color: #000;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.08em;
+  }
+
+  .header-title {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+
+  .header-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-left: auto;
+  }
+
+  .score-bar {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 32px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  .score-stat { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-c { background: var(--correct); }
+  .dot-w { background: var(--wrong); }
+  .dot-n { background: var(--muted); }
+
+  .progress-wrap {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  .theory-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+  }
+
+  .theory-box h2 {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .formula {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px 16px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent2);
+    margin: 8px 0;
+  }
+
+  .theory-box p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-top: 8px;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 32px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .question-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .question-card.correct { border-color: var(--correct); }
+  .question-card.wrong { border-color: var(--wrong); }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 20px;
+  }
+
+  .q-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--surface2);
+    padding: 2px 8px;
+    border-radius: 3px;
+    min-width: 32px;
+    text-align: center;
+    margin-top: 3px;
+    flex-shrink: 0;
+  }
+
+  .q-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .q-text em {
+    font-style: normal;
+    color: var(--warn);
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+
+  /* Multiple choice */
+  .choices {
+    padding: 0 20px 16px 52px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .choice-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 9px 14px;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .choice-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: rgba(0, 212, 170, 0.08);
+  }
+
+  .choice-btn.selected-correct {
+    background: rgba(63, 185, 80, 0.15);
+    border-color: var(--correct);
+    color: var(--correct);
+  }
+
+  .choice-btn.selected-wrong {
+    background: rgba(248, 81, 73, 0.15);
+    border-color: var(--wrong);
+    color: var(--wrong);
+  }
+
+  .choice-btn.reveal-correct {
+    background: rgba(63, 185, 80, 0.08);
+    border-color: var(--correct);
+    color: var(--correct);
+  }
+
+  .choice-btn:disabled { cursor: default; }
+
+  .choice-letter {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    min-width: 14px;
+  }
+
+  .choice-btn.selected-correct .choice-letter,
+  .choice-btn.selected-wrong .choice-letter,
+  .choice-btn.reveal-correct .choice-letter { color: inherit; }
+
+  /* Fill in the blank */
+  .fill-wrap {
+    padding: 4px 20px 16px 52px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .fill-input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 14px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text);
+    min-width: 220px;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .fill-input:focus { border-color: var(--accent2); }
+  .fill-input.correct { border-color: var(--correct); color: var(--correct); }
+  .fill-input.wrong { border-color: var(--wrong); color: var(--wrong); }
+  .fill-input:disabled { opacity: 0.8; }
+
+  .check-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.04em;
+  }
+
+  .check-btn:hover:not(:disabled) {
+    border-color: var(--accent2);
+    color: var(--accent2);
+  }
+
+  .check-btn:disabled { cursor: default; opacity: 0.5; }
+
+  .feedback {
+    padding: 8px 20px 12px 52px;
+    font-family: var(--mono);
+    font-size: 12px;
+    display: none;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .feedback.show { display: flex; }
+  .feedback.correct { color: var(--correct); }
+  .feedback.wrong { color: var(--wrong); }
+
+  /* Results */
+  .results-panel {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 32px;
+    text-align: center;
+    margin-top: 32px;
+  }
+
+  .results-panel.show { display: block; }
+
+  .results-score {
+    font-family: var(--mono);
+    font-size: 52px;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .results-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 8px 0 24px;
+    font-family: var(--mono);
+    letter-spacing: 0.05em;
+  }
+
+  .results-message {
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+
+  .retry-btn {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 28px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: opacity 0.2s;
+  }
+
+  .retry-btn:hover { opacity: 0.85; }
+
+  .submit-wrap {
+    margin-top: 32px;
+    text-align: center;
+  }
+
+  .submit-btn {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    padding: 14px 36px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+
+  .submit-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .submit-btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="badge">A2</div>
+  <div>
+    <div class="header-title">Present Simple Passive Voice</div>
+  </div>
+  <div class="header-sub">Technical English · 20 Questions</div>
+</div>
+
+<div class="score-bar">
+  <span class="score-stat"><span class="dot dot-c"></span><span id="score-correct">0</span> correct</span>
+  <span class="score-stat"><span class="dot dot-w"></span><span id="score-wrong">0</span> wrong</span>
+  <span class="score-stat"><span class="dot dot-n"></span><span id="score-remain">20</span> remaining</span>
+  <div class="progress-wrap"><div class="progress-fill" id="progress"></div></div>
+  <span id="score-pct" style="font-family:var(--mono);font-size:12px;color:var(--muted)">0%</span>
+</div>
+
+<div class="container">
+
+  <div class="theory-box">
+    <h2>// Grammar Reference</h2>
+    <div class="formula">Subject + is/are + past participle (+ by + agent)</div>
+    <p>Use the present simple passive to talk about processes, rules, and facts in technical environments — when the action is more important than the person doing it.</p>
+    <p style="margin-top:6px">Examples: <span style="color:var(--accent2);font-family:var(--mono);font-size:12px">The data <strong>is stored</strong> in the cloud. &nbsp;|&nbsp; Reports <strong>are sent</strong> every Monday.</span></p>
+  </div>
+
+  <!-- SECTION A: Multiple Choice -->
+  <div class="section-label">Section A — Choose the correct option</div>
+  <div id="mc-questions"></div>
+
+  <!-- SECTION B: Fill in the blank -->
+  <div class="section-label">Section B — Complete the sentence</div>
+  <div id="fill-questions"></div>
+
+  <div class="submit-wrap">
+    <button class="submit-btn" id="submit-btn" onclick="submitAll()">Check All Answers</button>
+  </div>
+
+  <div class="results-panel" id="results">
+    <div class="results-score" id="res-score">—</div>
+    <div class="results-label">/ 20 CORRECT</div>
+    <div class="results-message" id="res-msg"></div>
+    <button class="retry-btn" onclick="resetAll()">↺ Try Again</button>
+  </div>
+
+</div>
+
+<script>
+const mcData = [
+  {
+    q: "The software _____ every night to protect user data.",
+    choices: ["a) update", "b) is updated", "c) are updated", "d) updates"],
+    answer: 1,
+    explain: "'software' is singular → is updated"
+  },
+  {
+    q: "New employees _____ a security badge on their first day.",
+    choices: ["a) is given", "b) given", "c) are given", "d) give"],
+    answer: 2,
+    explain: "'employees' is plural → are given"
+  },
+  {
+    q: "The machine _____ before every production run.",
+    choices: ["a) calibrate", "b) are calibrated", "c) is calibrated", "d) calibrates"],
+    answer: 2,
+    explain: "'machine' is singular → is calibrated"
+  },
+  {
+    q: "Maintenance reports _____ by the engineering team each week.",
+    choices: ["a) is written", "b) are written", "c) written", "d) writes"],
+    answer: 1,
+    explain: "'reports' is plural → are written"
+  },
+  {
+    q: "Which sentence is correct?",
+    choices: [
+      "a) The components is tested.",
+      "b) The components are tested.",
+      "c) The components tested.",
+      "d) The components be tested."
+    ],
+    answer: 1,
+    explain: "Plural subject needs 'are' + past participle"
+  },
+  {
+    q: "All chemicals _____ according to safety regulations.",
+    choices: ["a) is stored", "b) store", "c) stored", "d) are stored"],
+    answer: 3,
+    explain: "'chemicals' is plural → are stored"
+  },
+  {
+    q: "The production line _____ twice a year.",
+    choices: ["a) are inspected", "b) is inspected", "c) inspected", "d) inspect"],
+    answer: 1,
+    explain: "'production line' is singular → is inspected"
+  },
+  {
+    q: "Access to the server room _____ to authorised staff only.",
+    choices: ["a) are restricted", "b) restrict", "c) is restricted", "d) restricts"],
+    answer: 2,
+    explain: "'Access' is singular → is restricted"
+  },
+  {
+    q: "The safety manual _____ in three languages.",
+    choices: ["a) are printed", "b) is printed", "c) print", "d) be printed"],
+    answer: 1,
+    explain: "'manual' is singular → is printed"
+  },
+  {
+    q: "Defective parts _____ immediately from the production line.",
+    choices: ["a) is removed", "b) removes", "c) are removed", "d) remove"],
+    answer: 2,
+    explain: "'parts' is plural → are removed"
+  }
+];
+
+const fillData = [
+  {
+    q: "The quality of each product <em>(check)</em> before it leaves the factory.",
+    base: "check",
+    answer: "is checked",
+    explain: "Singular subject + is + checked"
+  },
+  {
+    q: "New software updates <em>(install)</em> automatically on all company computers.",
+    base: "install",
+    answer: "are installed",
+    explain: "Plural subject + are + installed"
+  },
+  {
+    q: "The technical report <em>(send)</em> to the manager every Friday.",
+    base: "send",
+    answer: "is sent",
+    explain: "Singular subject + is + sent"
+  },
+  {
+    q: "Workers <em>(train)</em> on new equipment before they start.",
+    base: "train",
+    answer: "are trained",
+    explain: "Plural subject + are + trained"
+  },
+  {
+    q: "The data <em>(back up)</em> to the cloud server every hour.",
+    base: "back up",
+    answer: "is backed up",
+    explain: "Singular subject + is + backed up"
+  },
+  {
+    q: "Damaged tools <em>(replace)</em> by the maintenance team.",
+    base: "replace",
+    answer: "are replaced",
+    explain: "Plural subject + are + replaced"
+  },
+  {
+    q: "The temperature of the warehouse <em>(monitor)</em> 24 hours a day.",
+    base: "monitor",
+    answer: "is monitored",
+    explain: "Singular subject + is + monitored"
+  },
+  {
+    q: "Invoices <em>(process)</em> by the accounts department.",
+    base: "process",
+    answer: "are processed",
+    explain: "Plural subject + are + processed"
+  },
+  {
+    q: "The fire alarm <em>(test)</em> every six months.",
+    base: "test",
+    answer: "is tested",
+    explain: "Singular subject + is + tested"
+  },
+  {
+    q: "Visitor badges <em>(issue)</em> at the reception desk.",
+    base: "issue",
+    answer: "are issued",
+    explain: "Plural subject + are + issued"
+  }
+];
+
+let mcAnswered = new Array(10).fill(false);
+let fillAnswered = new Array(10).fill(false);
+let mcCorrect = new Array(10).fill(false);
+let fillCorrect = new Array(10).fill(false);
+let submitted = false;
+
+function buildMC() {
+  const container = document.getElementById('mc-questions');
+  mcData.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = `mc-card-${i}`;
+
+    const header = document.createElement('div');
+    header.className = 'q-header';
+    header.innerHTML = `<span class="q-num">${String(i+1).padStart(2,'0')}</span><span class="q-text">${q.q}</span>`;
+    card.appendChild(header);
+
+    const choices = document.createElement('div');
+    choices.className = 'choices';
+
+    q.choices.forEach((ch, ci) => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      btn.id = `mc-${i}-${ci}`;
+      btn.innerHTML = `<span class="choice-letter">${['A','B','C','D'][ci]}</span>${ch.slice(3)}`;
+      btn.onclick = () => selectMC(i, ci);
+      choices.appendChild(btn);
+    });
+    card.appendChild(choices);
+
+    const fb = document.createElement('div');
+    fb.className = 'feedback';
+    fb.id = `mc-fb-${i}`;
+    card.appendChild(fb);
+
+    container.appendChild(card);
+  });
+}
+
+function buildFill() {
+  const container = document.getElementById('fill-questions');
+  fillData.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = `fill-card-${i}`;
+
+    const header = document.createElement('div');
+    header.className = 'q-header';
+    header.innerHTML = `<span class="q-num">${String(i+11).padStart(2,'0')}</span><span class="q-text">${q.q}</span>`;
+    card.appendChild(header);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'fill-wrap';
+
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.className = 'fill-input';
+    inp.id = `fill-inp-${i}`;
+    inp.placeholder = 'Type the verb form...';
+    inp.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') checkFill(i);
+    });
+
+    const btn = document.createElement('button');
+    btn.className = 'check-btn';
+    btn.id = `fill-btn-${i}`;
+    btn.textContent = 'CHECK';
+    btn.onclick = () => checkFill(i);
+
+    wrap.appendChild(inp);
+    wrap.appendChild(btn);
+    card.appendChild(wrap);
+
+    const fb = document.createElement('div');
+    fb.className = 'feedback';
+    fb.id = `fill-fb-${i}`;
+    card.appendChild(fb);
+
+    container.appendChild(card);
+  });
+}
+
+function selectMC(qi, ci) {
+  if (mcAnswered[qi] || submitted) return;
+  mcAnswered[qi] = true;
+
+  const correct = mcData[qi].answer;
+  mcCorrect[qi] = (ci === correct);
+
+  ['A','B','C','D'].forEach((_, idx) => {
+    const btn = document.getElementById(`mc-${qi}-${idx}`);
+    btn.disabled = true;
+    if (idx === correct && ci !== correct) btn.classList.add('reveal-correct');
+    if (idx === ci) btn.classList.add(ci === correct ? 'selected-correct' : 'selected-wrong');
+  });
+
+  const card = document.getElementById(`mc-card-${qi}`);
+  card.classList.add(mcCorrect[qi] ? 'correct' : 'wrong');
+
+  const fb = document.getElementById(`mc-fb-${qi}`);
+  fb.className = `feedback show ${mcCorrect[qi] ? 'correct' : 'wrong'}`;
+  fb.innerHTML = mcCorrect[qi]
+    ? `✓ Correct! ${mcData[qi].explain}`
+    : `✗ Not quite. ${mcData[qi].explain}`;
+
+  updateScore();
+}
+
+function checkFill(qi) {
+  if (fillAnswered[qi] || submitted) return;
+  const inp = document.getElementById(`fill-inp-${qi}`);
+  const val = inp.value.trim().toLowerCase();
+  if (!val) return;
+
+  fillAnswered[qi] = true;
+  const correct = fillData[qi].answer.toLowerCase();
+  fillCorrect[qi] = (val === correct);
+
+  inp.disabled = true;
+  inp.classList.add(fillCorrect[qi] ? 'correct' : 'wrong');
+  document.getElementById(`fill-btn-${qi}`).disabled = true;
+
+  const card = document.getElementById(`fill-card-${qi}`);
+  card.classList.add(fillCorrect[qi] ? 'correct' : 'wrong');
+
+  const fb = document.getElementById(`fill-fb-${qi}`);
+  fb.className = `feedback show ${fillCorrect[qi] ? 'correct' : 'wrong'}`;
+
+  if (fillCorrect[qi]) {
+    fb.innerHTML = `✓ Correct! ${fillData[qi].explain}`;
+  } else {
+    fb.innerHTML = `✗ Answer: <strong style="color:var(--correct);margin-left:6px">${fillData[qi].answer}</strong>&nbsp;— ${fillData[qi].explain}`;
+    if (!inp.value) inp.value = fillData[qi].answer;
+  }
+
+  updateScore();
+}
+
+function updateScore() {
+  const c = mcCorrect.filter(Boolean).length + fillCorrect.filter(Boolean).length;
+  const answered = mcAnswered.filter(Boolean).length + fillAnswered.filter(Boolean).length;
+  const w = answered - c;
+  const remain = 20 - answered;
+
+  document.getElementById('score-correct').textContent = c;
+  document.getElementById('score-wrong').textContent = w;
+  document.getElementById('score-remain').textContent = remain;
+
+  const pct = Math.round((answered / 20) * 100);
+  document.getElementById('progress').style.width = pct + '%';
+  document.getElementById('score-pct').textContent = pct + '%';
+}
+
+function submitAll() {
+  submitted = true;
+  document.getElementById('submit-btn').disabled = true;
+
+  // Reveal unanswered fill-ins
+  fillData.forEach((q, i) => {
+    if (!fillAnswered[i]) {
+      fillAnswered[i] = true;
+      fillCorrect[i] = false;
+      const inp = document.getElementById(`fill-inp-${i}`);
+      inp.value = q.answer;
+      inp.disabled = true;
+      inp.classList.add('wrong');
+      document.getElementById(`fill-btn-${i}`).disabled = true;
+      const card = document.getElementById(`fill-card-${i}`);
+      card.classList.add('wrong');
+      const fb = document.getElementById(`fill-fb-${i}`);
+      fb.className = 'feedback show wrong';
+      fb.innerHTML = `✗ Answer: <strong style="color:var(--correct);margin-left:6px">${q.answer}</strong> — ${q.explain}`;
+    }
+  });
+
+  // Reveal unanswered MC
+  mcData.forEach((q, i) => {
+    if (!mcAnswered[i]) {
+      mcAnswered[i] = true;
+      mcCorrect[i] = false;
+      ['A','B','C','D'].forEach((_, ci) => {
+        const btn = document.getElementById(`mc-${i}-${ci}`);
+        btn.disabled = true;
+        if (ci === q.answer) btn.classList.add('reveal-correct');
+      });
+      const card = document.getElementById(`mc-card-${i}`);
+      card.classList.add('wrong');
+      const fb = document.getElementById(`mc-fb-${i}`);
+      fb.className = 'feedback show wrong';
+      fb.innerHTML = `✗ Unanswered. ${q.explain}`;
+    }
+  });
+
+  updateScore();
+
+  const total = mcCorrect.filter(Boolean).length + fillCorrect.filter(Boolean).length;
+  const panel = document.getElementById('results');
+  panel.classList.add('show');
+  document.getElementById('res-score').textContent = total;
+
+  let msg = '';
+  if (total >= 18) msg = "🏆 Excellent work! You have a strong command of the present passive.";
+  else if (total >= 14) msg = "✅ Good job! Review the questions you missed and try again.";
+  else if (total >= 10) msg = "📖 Keep practising! Focus on is/are + past participle.";
+  else msg = "💡 Keep going! Study the grammar reference at the top and try again.";
+
+  document.getElementById('res-msg').textContent = msg;
+  panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function resetAll() {
+  mcAnswered = new Array(10).fill(false);
+  fillAnswered = new Array(10).fill(false);
+  mcCorrect = new Array(10).fill(false);
+  fillCorrect = new Array(10).fill(false);
+  submitted = false;
+
+  document.getElementById('mc-questions').innerHTML = '';
+  document.getElementById('fill-questions').innerHTML = '';
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('submit-btn').disabled = false;
+  document.getElementById('progress').style.width = '0%';
+  document.getElementById('score-correct').textContent = '0';
+  document.getElementById('score-wrong').textContent = '0';
+  document.getElementById('score-remain').textContent = '20';
+  document.getElementById('score-pct').textContent = '0%';
+
+  buildMC();
+  buildFill();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildMC();
+buildFill();
+</script>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What's it for? – A2 English for Industry</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff; --bg2: #f5f4f0; --bg3: #eceae4;
+    --text: #1a1a18; --text2: #5f5e5a; --text3: #9a9894;
+    --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.22);
+    --success-bg: #eaf3de; --success-border: #639922; --success-text: #3b6d11;
+    --danger-bg: #fcebeb; --danger-border: #e24b4a; --danger-text: #a32d2d;
+    --info-bg: #e6f1fb; --info-border: #378add; --info-text: #185fa5;
+    --radius: 8px; --radius-lg: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1e1e1c; --bg2: #2a2a27; --bg3: #333330;
+      --text: #e8e6df; --text2: #a8a69e; --text3: #6a6864;
+      --border: rgba(255,255,255,0.12); --border2: rgba(255,255,255,0.22);
+      --success-bg: #173404; --success-border: #639922; --success-text: #97c459;
+      --danger-bg: #501313; --danger-border: #e24b4a; --danger-text: #f09595;
+      --info-bg: #042c53; --info-border: #378add; --info-text: #85b7eb;
+    }
+  }
+  body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg3); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+  .page { max-width: 780px; margin: 0 auto; background: var(--bg); border-radius: var(--radius-lg); border: 0.5px solid var(--border); padding: 2rem 1.75rem 3rem; }
+  .sheet-title { font-size: 24px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: var(--text2); margin-bottom: 1.75rem; }
+  .section-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .07em; color: var(--text3); margin-bottom: 10px; }
+  .vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 8px; margin-bottom: 1.75rem; }
+  .vocab-chip { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 7px 12px; font-size: 13px; color: var(--text); text-align: center; cursor: grab; user-select: none; transition: background .15s, border-color .15s; }
+  .vocab-chip:hover { background: var(--bg); border-color: var(--border2); }
+  .vocab-chip.dragging { opacity: .35; }
+  .vocab-chip.used { opacity: .28; cursor: default; pointer-events: none; }
+  hr { border: none; border-top: 0.5px solid var(--border); margin: 1.5rem 0; }
+  .score-bar { display: flex; align-items: center; gap: 14px; margin-bottom: 1.25rem; }
+  .score-num { font-size: 20px; font-weight: 500; color: var(--text); }
+  .score-label { font-size: 13px; color: var(--text2); }
+  .progress-track { flex: 1; height: 6px; background: var(--bg2); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: #1D9E75; border-radius: 3px; transition: width .4s; }
+  .exercise-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.5rem; }
+  .clue-row { display: flex; align-items: center; gap: 8px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 10px 14px; flex-wrap: wrap; }
+  .clue-num { font-size: 12px; font-weight: 500; color: var(--text3); min-width: 18px; }
+  .clue-text { font-size: 14px; color: var(--text2); flex: 1; min-width: 120px; }
+  .drop-zone { min-width: 120px; height: 32px; border: 1.5px dashed var(--border2); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--text3); padding: 0 10px; cursor: pointer; transition: background .15s, border-color .15s; }
+  .drop-zone.over { background: var(--info-bg); border-color: var(--info-border); }
+  .drop-zone.correct { background: var(--success-bg); border-color: var(--success-border); color: var(--success-text); font-weight: 500; pointer-events: none; border-style: solid; }
+  .drop-zone.wrong { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); animation: shake .3s; }
+  @keyframes shake { 0%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} 100%{transform:translateX(0)} }
+  .feedback-msg { font-size: 12px; margin-left: 2px; }
+  .feedback-msg.bad { color: var(--danger-text); }
+  .completed-section { margin-top: 1.75rem; }
+  .completed-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .completed-item { font-size: 13px; color: var(--success-text); background: var(--success-bg); border: 0.5px solid var(--success-border); border-radius: var(--radius); padding: 8px 14px; display: flex; gap: 8px; align-items: flex-start; }
+  .tick { flex-shrink: 0; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+  @media (max-width: 540px) {
+    .page { padding: 1.25rem 1rem 2rem; }
+    .clue-text { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1 class="sr-only">Drag and drop worksheet: What's it for? A2 English for industrial technicians.</h1>
+  <div class="sheet-title">What's it for?</div>
+  <div class="subtitle">A2 English for industry &nbsp;|&nbsp; Drag a word from the list into each answer box.</div>
+
+  <div class="section-label">Materials &amp; tools</div>
+  <div class="vocab-grid" id="vocab-grid"></div>
+
+  <hr>
+
+  <div class="score-bar">
+    <div>
+      <div class="score-num"><span id="score">0</span> / 20</div>
+      <div class="score-label">correct</div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+  </div>
+
+  <div class="section-label">What's it for?</div>
+  <div class="exercise-list" id="exercise-list"></div>
+
+  <div class="completed-section" id="completed-section" style="display:none">
+    <div class="section-label">Completed sentences</div>
+    <ul class="completed-list" id="completed-list"></ul>
+  </div>
+</div>
+
+<script>
+const items = [
+  {word:"a wrench",           use:"tightening or loosening nuts and bolts"},
+  {word:"a drill",            use:"making holes in metal, wood or concrete"},
+  {word:"a hard hat",         use:"protecting your head on a worksite"},
+  {word:"a ladder",           use:"reaching high places safely"},
+  {word:"safety goggles",     use:"protecting your eyes from sparks and dust"},
+  {word:"a grinder",          use:"cutting and smoothing metal surfaces"},
+  {word:"a spirit level",     use:"checking that a surface is perfectly horizontal"},
+  {word:"a tape measure",     use:"measuring lengths and distances accurately"},
+  {word:"lubricating oil",    use:"reducing friction between moving parts"},
+  {word:"a soldering iron",   use:"joining metal parts with melted solder"},
+  {word:"safety gloves",      use:"protecting your hands from heat, cuts and chemicals"},
+  {word:"a wire cutter",      use:"cutting electrical wires and cables"},
+  {word:"a fire extinguisher",use:"putting out small fires quickly"},
+  {word:"a multimeter",       use:"measuring electrical voltage, current and resistance"},
+  {word:"welding rods",       use:"joining metal pieces together with heat"},
+  {word:"a torque wrench",    use:"tightening bolts to a precise force level"},
+  {word:"sandpaper",          use:"smoothing rough surfaces before painting or finishing"},
+  {word:"a circuit breaker",  use:"cutting the electricity supply when there is a fault"},
+  {word:"a scaffold",         use:"supporting workers and materials at height during construction"},
+  {word:"a pressure gauge",   use:"measuring the pressure inside a pipe or vessel"}
+];
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+const clueOrder = shuffle([...items]);
+const vocabOrder = shuffle([...items]);
+
+let dragged = null;
+let score = 0;
+const answered = new Set();
+
+function renderVocab(){
+  const grid = document.getElementById('vocab-grid');
+  vocabOrder.forEach(it => {
+    const chip = document.createElement('div');
+    chip.className = 'vocab-chip';
+    chip.textContent = it.word;
+    chip.draggable = true;
+    chip.dataset.word = it.word;
+    chip.id = 'chip-' + it.word.replace(/[\s]/g,'_');
+    chip.addEventListener('dragstart', () => {
+      dragged = it.word;
+      setTimeout(() => chip.classList.add('dragging'), 0);
+    });
+    chip.addEventListener('dragend', () => chip.classList.remove('dragging'));
+    grid.appendChild(chip);
+  });
+}
+
+function renderClues(){
+  const list = document.getElementById('exercise-list');
+  clueOrder.forEach((it, i) => {
+    const row = document.createElement('div');
+    row.className = 'clue-row';
+    const num = document.createElement('span');
+    num.className = 'clue-num';
+    num.textContent = (i+1) + '.';
+    const txt = document.createElement('span');
+    txt.className = 'clue-text';
+    txt.innerHTML = 'It\'s for <em>' + it.use + '</em>.';
+    const dz = document.createElement('div');
+    dz.className = 'drop-zone';
+    dz.textContent = '?';
+    dz.dataset.answer = it.word;
+    dz.dataset.idx = i;
+    dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
+    dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+    dz.addEventListener('drop', e => {
+      e.preventDefault();
+      dz.classList.remove('over');
+      if (!dragged) return;
+      checkAnswer(dz, dragged, it, i);
+    });
+    const msg = document.createElement('span');
+    msg.className = 'feedback-msg';
+    msg.id = 'msg-' + i;
+    row.appendChild(num);
+    row.appendChild(txt);
+    row.appendChild(dz);
+    row.appendChild(msg);
+    list.appendChild(row);
+  });
+}
+
+function checkAnswer(dz, word, it, idx){
+  if (answered.has(idx)) return;
+  const msg = document.getElementById('msg-' + idx);
+  if (word === it.word){
+    answered.add(idx);
+    dz.textContent = word;
+    dz.classList.add('correct');
+    msg.textContent = '';
+    const chip = document.getElementById('chip-' + word.replace(/[\s]/g,'_'));
+    if (chip) chip.classList.add('used');
+    score++;
+    document.getElementById('score').textContent = score;
+    document.getElementById('prog').style.width = (score / 20 * 100) + '%';
+    addCompleted(idx + 1, word, it.use);
+  } else {
+    dz.classList.add('wrong');
+    msg.className = 'feedback-msg bad';
+    msg.textContent = 'Try again!';
+    setTimeout(() => { dz.classList.remove('wrong'); msg.textContent = ''; }, 900);
+  }
+  dragged = null;
+}
+
+function addCompleted(num, word, use){
+  const sec = document.getElementById('completed-section');
+  sec.style.display = 'block';
+  const ul = document.getElementById('completed-list');
+  const li = document.createElement('li');
+  li.className = 'completed-item';
+  li.innerHTML = '<span class="tick">&#10003;</span><span>' + num + '. <strong>' + word + '</strong> — It\'s for ' + use + '.</span>';
+  ul.appendChild(li);
+}
+
+renderVocab();
+renderClues();
+</script>
+</body>
+</html>

@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grammar Challenge</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #2a7a4b;
+    --green-light: #3da066;
+    --gold: #c8a435;
+    --gold-light: #e8c24a;
+    --cream: #faf7f0;
+    --cream-dark: #f0ead8;
+    --brown: #5a3e1b;
+    --brown-dark: #3a2610;
+    --text: #2c1f0e;
+    --text-muted: #7a6040;
+    --red: #b83232;
+    --red-light: #d94444;
+    --blue: #2455a0;
+    --shadow: 0 4px 24px rgba(60,40,10,0.13);
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── BACKGROUND SVG ── */
+  .bg-scene {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.07;
+    overflow: hidden;
+  }
+  .bg-scene svg { width: 100%; height: 100%; }
+
+  /* ── SCREENS ── */
+  .screen { display: none; position: relative; z-index: 1; }
+  .screen.active { display: block; }
+
+  /* ── LANDING ── */
+  #landing {
+    min-height: 100vh;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+  }
+  #landing.active { display: flex; }
+
+  .badge {
+    font-family: 'Lato', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: var(--brown-dark);
+    padding: 6px 18px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 24px;
+  }
+
+  h1.title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 9vw, 96px);
+    font-weight: 900;
+    line-height: 1;
+    color: var(--brown-dark);
+    margin-bottom: 10px;
+    letter-spacing: -1px;
+  }
+  h1.title span { color: var(--green); font-style: italic; }
+
+  .subtitle {
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    color: var(--text-muted);
+    font-weight: 300;
+    letter-spacing: 1px;
+    margin-bottom: 50px;
+  }
+
+  .divider {
+    width: 60px; height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--green));
+    margin: 0 auto 50px;
+    border-radius: 2px;
+  }
+
+  .level-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 760px;
+    width: 100%;
+    margin-bottom: 40px;
+  }
+
+  .level-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 32px 20px 28px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.22s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .level-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+  }
+  .level-card.lv1::before { background: linear-gradient(90deg, #3da066, #2a7a4b); }
+  .level-card.lv2::before { background: linear-gradient(90deg, var(--gold), #b8861a); }
+  .level-card.lv3::before { background: linear-gradient(90deg, var(--red), #8a1a1a); }
+  .level-card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(60,40,10,0.18); }
+  .level-card.lv1:hover { border-color: var(--green); }
+  .level-card.lv2:hover { border-color: var(--gold); }
+  .level-card.lv3:hover { border-color: var(--red); }
+
+  .level-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 44px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .lv1 .level-num { color: var(--green); }
+  .lv2 .level-num { color: var(--gold); }
+  .lv3 .level-num { color: var(--red); }
+
+  .level-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--brown-dark);
+    margin-bottom: 4px;
+  }
+  .level-cefr {
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+  }
+  .level-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  .btn-play {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    transition: all 0.18s;
+  }
+  .lv1 .btn-play { background: var(--green); color: white; }
+  .lv2 .btn-play { background: var(--gold); color: white; }
+  .lv3 .btn-play { background: var(--red); color: white; }
+  .level-card:hover .btn-play { opacity: 0.85; }
+
+  .how-it-works {
+    max-width: 560px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px 30px;
+    box-shadow: var(--shadow);
+    text-align: left;
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--text-muted);
+    border-left: 4px solid var(--gold);
+  }
+  .how-it-works strong { color: var(--brown-dark); }
+
+  /* ── QUIZ SCREEN ── */
+  #quiz {
+    min-height: 100vh;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px 60px;
+  }
+  #quiz.active { display: flex; }
+
+  .quiz-header {
+    width: 100%;
+    max-width: 700px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+  }
+
+  .back-btn {
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Lato', sans-serif;
+    transition: color 0.15s;
+    padding: 0;
+  }
+  .back-btn:hover { color: var(--brown-dark); }
+
+  .quiz-meta {
+    text-align: center;
+  }
+  .quiz-level-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .quiz-score-box {
+    text-align: right;
+  }
+  .score-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); }
+  .score-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1;
+  }
+  .score-val.pos { color: var(--green); }
+  .score-val.neg { color: var(--red); }
+  .score-val.zero { color: var(--text-muted); }
+
+  .progress-wrap {
+    width: 100%;
+    max-width: 700px;
+    height: 6px;
+    background: var(--cream-dark);
+    border-radius: 3px;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--green), var(--gold));
+    transition: width 0.4s ease;
+  }
+
+  .question-card {
+    width: 100%;
+    max-width: 700px;
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 36px 40px 32px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.35s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-number {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .q-statement {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(18px, 3vw, 24px);
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--brown-dark);
+    border-left: 4px solid var(--cream-dark);
+    padding-left: 20px;
+    margin-bottom: 28px;
+  }
+
+  .choice-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .choice-btn {
+    padding: 16px;
+    border-radius: 10px;
+    border: 2px solid var(--cream-dark);
+    background: var(--cream);
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.18s;
+    color: var(--brown-dark);
+    letter-spacing: 0.5px;
+  }
+  .choice-btn:hover:not(:disabled) { border-color: var(--green); background: #eef7f2; }
+  .choice-btn.selected-correct { background: #e6f7ed; border-color: var(--green); color: var(--green); }
+  .choice-btn.selected-wrong { background: #fdeaea; border-color: var(--red); color: var(--red); }
+  .choice-btn.unselected-reveal { background: var(--cream); border-color: var(--cream-dark); color: var(--text-muted); opacity: 0.5; }
+  .choice-btn:disabled { cursor: default; }
+
+  .bet-section {
+    border-top: 1px solid var(--cream-dark);
+    padding-top: 20px;
+  }
+  .bet-label {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .bet-row {
+    display: flex;
+    gap: 10px;
+  }
+  .bet-btn {
+    flex: 1;
+    padding: 12px 4px;
+    border-radius: 8px;
+    border: 2px solid var(--cream-dark);
+    background: var(--cream);
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.18s;
+    color: var(--brown-dark);
+  }
+  .bet-btn:hover:not(:disabled) { border-color: var(--gold); background: #fdf7e6; }
+  .bet-btn.selected { background: var(--gold-light); border-color: var(--gold); color: var(--brown-dark); }
+  .bet-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 20px;
+    padding: 16px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    display: none;
+    animation: fadeUp 0.25s ease;
+  }
+  .feedback-box.win { background: #e6f7ed; border: 1px solid #a8dfc0; color: #1a6035; }
+  .feedback-box.lose { background: #fdeaea; border: 1px solid #f0b0b0; color: #8a1a1a; }
+
+  .next-btn {
+    width: 100%;
+    max-width: 700px;
+    padding: 18px;
+    border-radius: var(--radius);
+    border: none;
+    background: var(--brown-dark);
+    color: var(--gold-light);
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: none;
+  }
+  .next-btn:hover { background: var(--green); color: white; }
+  .next-btn.visible { display: block; animation: fadeUp 0.25s ease; }
+
+  .submit-btn {
+    width: 100%;
+    max-width: 700px;
+    padding: 18px;
+    border-radius: var(--radius);
+    border: none;
+    background: var(--green);
+    color: white;
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 12px;
+  }
+  .submit-btn:hover { background: var(--green-light); }
+  .submit-btn:disabled { background: var(--cream-dark); color: var(--text-muted); cursor: default; }
+
+  /* ── RESULT SCREEN ── */
+  #result {
+    min-height: 100vh;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+  }
+  #result.active { display: flex; }
+
+  .result-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 40px rgba(60,40,10,0.15);
+    padding: 50px 50px 40px;
+    max-width: 540px;
+    width: 100%;
+    animation: fadeUp 0.5s ease;
+  }
+  .result-icon { font-size: 60px; margin-bottom: 16px; }
+  .result-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--brown-dark);
+    margin-bottom: 8px;
+  }
+  .result-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 72px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .result-score.great { color: var(--green); }
+  .result-score.ok { color: var(--gold); }
+  .result-score.poor { color: var(--red); }
+  .result-out-of { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; letter-spacing: 1px; }
+  .result-feedback {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-muted);
+    margin-bottom: 30px;
+    padding: 0 10px;
+  }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 12px;
+    margin-bottom: 30px;
+  }
+  .stat-box {
+    background: var(--cream);
+    border-radius: 10px;
+    padding: 14px 8px;
+  }
+  .stat-n {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+  }
+  .stat-n.g { color: var(--green); }
+  .stat-n.r { color: var(--red); }
+  .stat-n.b { color: var(--blue); }
+  .stat-l { font-size: 11px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+
+  .btn-again {
+    display: inline-block;
+    padding: 14px 32px;
+    border-radius: 30px;
+    background: var(--brown-dark);
+    color: var(--gold-light);
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    margin: 6px;
+  }
+  .btn-again:hover { background: var(--green); color: white; }
+
+  @media (max-width: 600px) {
+    .level-grid { grid-template-columns: 1fr; }
+    .question-card { padding: 24px 20px; }
+    .result-card { padding: 36px 24px 30px; }
+    .result-stats { grid-template-columns: repeat(3,1fr); }
+    .bet-btn { font-size: 16px; padding: 10px 2px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- BACKGROUND: pencil sketch of a horse racing crowd -->
+<div class="bg-scene">
+<svg viewBox="0 0 1400 800" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+  <!-- grandstand structure -->
+  <rect x="0" y="480" width="1400" height="320" fill="none" stroke="#5a3e1b" stroke-width="1.5"/>
+  <rect x="0" y="400" width="1400" height="80" fill="none" stroke="#5a3e1b" stroke-width="1"/>
+  <!-- roof lines -->
+  <line x1="0" y1="340" x2="1400" y2="340" stroke="#5a3e1b" stroke-width="2"/>
+  <line x1="0" y1="300" x2="1400" y2="300" stroke="#5a3e1b" stroke-width="1"/>
+  <!-- roof supports -->
+  <line x1="120" y1="300" x2="120" y2="480" stroke="#5a3e1b" stroke-width="1.5"/>
+  <line x1="300" y1="300" x2="300" y2="480" stroke="#5a3e1b" stroke-width="1.5"/>
+  <line x1="480" y1="300" x2="480" y2="480" stroke="#5a3e1b" stroke-width="1.5"/>
+  <line x1="660" y1="300" x2="660" y2="480" stroke="#5a3e1b" stroke-width="1.5"/>
+  <line x1="840" y1="300" x2="840" y2="480" stroke="#5a3e1b" stroke-width="1.5"/>
+  <line x1="1020" y1="300" x2="1020" y2="480" stroke="#5a3e1b" stroke-width="1.5"/>
+  <line x1="1200" y1="300" x2="1200" y2="480" stroke="#5a3e1b" stroke-width="1.5"/>
+  <line x1="1380" y1="300" x2="1380" y2="480" stroke="#5a3e1b" stroke-width="1.5"/>
+  <!-- seating rows -->
+  <line x1="0" y1="520" x2="1400" y2="520" stroke="#5a3e1b" stroke-width="0.8"/>
+  <line x1="0" y1="560" x2="1400" y2="560" stroke="#5a3e1b" stroke-width="0.8"/>
+  <line x1="0" y1="600" x2="1400" y2="600" stroke="#5a3e1b" stroke-width="0.8"/>
+  <line x1="0" y1="640" x2="1400" y2="640" stroke="#5a3e1b" stroke-width="0.8"/>
+  <!-- crowd figures row 1 -->
+  <g stroke="#5a3e1b" stroke-width="1" fill="none">
+    <!-- generate many small stick figures for crowd feel -->
+    <!-- row at 500 -->
+    <circle cx="50" cy="498" r="7"/>  <line x1="50" y1="505" x2="50" y2="520"/>
+    <circle cx="90" cy="494" r="6"/>  <line x1="90" y1="500" x2="90" y2="518"/>
+    <circle cx="130" cy="497" r="7"/> <line x1="130" y1="504" x2="130" y2="519"/>
+    <circle cx="165" cy="493" r="6"/> <line x1="165" y1="499" x2="165" y2="517"/>
+    <circle cx="205" cy="496" r="7"/> <line x1="205" y1="503" x2="205" y2="520"/>
+    <circle cx="240" cy="494" r="6"/> <line x1="240" y1="500" x2="240" y2="518"/>
+    <circle cx="275" cy="497" r="7"/> <line x1="275" y1="504" x2="275" y2="520"/>
+    <circle cx="315" cy="493" r="6"/> <line x1="315" y1="499" x2="315" y2="517"/>
+    <circle cx="350" cy="496" r="7"/> <line x1="350" y1="503" x2="350" y2="519"/>
+    <circle cx="390" cy="495" r="6"/> <line x1="390" y1="501" x2="390" y2="518"/>
+    <circle cx="425" cy="497" r="7"/> <line x1="425" y1="504" x2="425" y2="520"/>
+    <circle cx="460" cy="494" r="6"/> <line x1="460" y1="500" x2="460" y2="517"/>
+    <circle cx="500" cy="496" r="7"/> <line x1="500" y1="503" x2="500" y2="519"/>
+    <circle cx="540" cy="493" r="6"/> <line x1="540" y1="499" x2="540" y2="516"/>
+    <circle cx="575" cy="497" r="7"/> <line x1="575" y1="504" x2="575" y2="520"/>
+    <circle cx="615" cy="495" r="6"/> <line x1="615" y1="501" x2="615" y2="518"/>
+    <circle cx="650" cy="496" r="7"/> <line x1="650" y1="503" x2="650" y2="519"/>
+    <circle cx="690" cy="494" r="6"/> <line x1="690" y1="500" x2="690" y2="517"/>
+    <circle cx="730" cy="497" r="7"/> <line x1="730" y1="504" x2="730" y2="520"/>
+    <circle cx="770" cy="493" r="6"/> <line x1="770" y1="499" x2="770" y2="516"/>
+    <circle cx="810" cy="496" r="7"/> <line x1="810" y1="503" x2="810" y2="519"/>
+    <circle cx="850" cy="495" r="6"/> <line x1="850" y1="501" x2="850" y2="518"/>
+    <circle cx="890" cy="497" r="7"/> <line x1="890" y1="504" x2="890" y2="520"/>
+    <circle cx="930" cy="494" r="6"/> <line x1="930" y1="500" x2="930" y2="517"/>
+    <circle cx="970" cy="496" r="7"/> <line x1="970" y1="503" x2="970" y2="519"/>
+    <circle cx="1010" cy="493" r="6"/><line x1="1010" y1="499" x2="1010" y2="516"/>
+    <circle cx="1050" cy="497" r="7"/><line x1="1050" y1="504" x2="1050" y2="520"/>
+    <circle cx="1090" cy="495" r="6"/><line x1="1090" y1="501" x2="1090" y2="518"/>
+    <circle cx="1130" cy="496" r="7"/><line x1="1130" y1="503" x2="1130" y2="519"/>
+    <circle cx="1170" cy="494" r="6"/><line x1="1170" y1="500" x2="1170" y2="517"/>
+    <circle cx="1210" cy="497" r="7"/><line x1="1210" y1="504" x2="1210" y2="520"/>
+    <circle cx="1250" cy="493" r="6"/><line x1="1250" y1="499" x2="1250" y2="516"/>
+    <circle cx="1290" cy="496" r="7"/><line x1="1290" y1="503" x2="1290" y2="519"/>
+    <circle cx="1330" cy="495" r="6"/><line x1="1330" y1="501" x2="1330" y2="518"/>
+    <circle cx="1370" cy="497" r="7"/><line x1="1370" y1="504" x2="1370" y2="520"/>
+    <!-- row at 540 -->
+    <circle cx="70" cy="538" r="7"/>  <line x1="70" y1="545" x2="70" y2="560"/>
+    <circle cx="110" cy="534" r="6"/> <line x1="110" y1="540" x2="110" y2="557"/>
+    <circle cx="150" cy="537" r="7"/> <line x1="150" y1="544" x2="150" y2="559"/>
+    <circle cx="185" cy="535" r="6"/> <line x1="185" y1="541" x2="185" y2="557"/>
+    <circle cx="225" cy="538" r="7"/> <line x1="225" y1="545" x2="225" y2="560"/>
+    <circle cx="265" cy="534" r="6"/> <line x1="265" y1="540" x2="265" y2="557"/>
+    <circle cx="305" cy="537" r="7"/> <line x1="305" y1="544" x2="305" y2="559"/>
+    <circle cx="345" cy="535" r="6"/> <line x1="345" y1="541" x2="345" y2="557"/>
+    <circle cx="385" cy="538" r="7"/> <line x1="385" y1="545" x2="385" y2="560"/>
+    <circle cx="420" cy="535" r="6"/> <line x1="420" y1="541" x2="420" y2="557"/>
+    <circle cx="460" cy="537" r="7"/> <line x1="460" y1="544" x2="460" y2="559"/>
+    <circle cx="500" cy="534" r="6"/> <line x1="500" y1="540" x2="500" y2="557"/>
+    <circle cx="540" cy="538" r="7"/> <line x1="540" y1="545" x2="540" y2="560"/>
+    <circle cx="580" cy="535" r="6"/> <line x1="580" y1="541" x2="580" y2="557"/>
+    <circle cx="620" cy="537" r="7"/> <line x1="620" y1="544" x2="620" y2="559"/>
+    <circle cx="660" cy="534" r="6"/> <line x1="660" y1="540" x2="660" y2="557"/>
+    <circle cx="700" cy="538" r="7"/> <line x1="700" y1="545" x2="700" y2="560"/>
+    <circle cx="740" cy="535" r="6"/> <line x1="740" y1="541" x2="740" y2="557"/>
+    <circle cx="780" cy="537" r="7"/> <line x1="780" y1="544" x2="780" y2="559"/>
+    <circle cx="820" cy="534" r="6"/> <line x1="820" y1="540" x2="820" y2="557"/>
+    <circle cx="860" cy="538" r="7"/> <line x1="860" y1="545" x2="860" y2="560"/>
+    <circle cx="900" cy="535" r="6"/> <line x1="900" y1="541" x2="900" y2="557"/>
+    <circle cx="940" cy="537" r="7"/> <line x1="940" y1="544" x2="940" y2="559"/>
+    <circle cx="980" cy="534" r="6"/> <line x1="980" y1="540" x2="980" y2="557"/>
+    <circle cx="1020" cy="538" r="7"/><line x1="1020" y1="545" x2="1020" y2="560"/>
+    <circle cx="1060" cy="535" r="6"/><line x1="1060" y1="541" x2="1060" y2="557"/>
+    <circle cx="1100" cy="537" r="7"/><line x1="1100" y1="544" x2="1100" y2="559"/>
+    <circle cx="1140" cy="534" r="6"/><line x1="1140" y1="540" x2="1140" y2="557"/>
+    <circle cx="1180" cy="538" r="7"/><line x1="1180" y1="545" x2="1180" y2="560"/>
+    <circle cx="1220" cy="535" r="6"/><line x1="1220" y1="541" x2="1220" y2="557"/>
+    <circle cx="1260" cy="537" r="7"/><line x1="1260" y1="544" x2="1260" y2="559"/>
+    <circle cx="1300" cy="534" r="6"/><line x1="1300" y1="540" x2="1300" y2="557"/>
+    <circle cx="1340" cy="538" r="7"/><line x1="1340" y1="545" x2="1340" y2="560"/>
+    <circle cx="1380" cy="535" r="6"/><line x1="1380" y1="541" x2="1380" y2="557"/>
+    <!-- row at 580 hats etc -->
+    <circle cx="60" cy="578" r="7"/>  <line x1="60" y1="585" x2="60" y2="600"/>
+    <circle cx="100" cy="574" r="6"/> <line x1="100" y1="580" x2="100" y2="597"/>
+    <circle cx="145" cy="577" r="8"/> <line x1="145" y1="585" x2="145" y2="600"/>
+    <circle cx="185" cy="575" r="6"/> <line x1="185" y1="581" x2="185" y2="597"/>
+    <circle cx="230" cy="578" r="7"/> <line x1="230" y1="585" x2="230" y2="600"/>
+    <circle cx="270" cy="574" r="6"/> <line x1="270" y1="580" x2="270" y2="597"/>
+    <circle cx="315" cy="577" r="7"/> <line x1="315" y1="584" x2="315" y2="599"/>
+    <circle cx="360" cy="575" r="6"/> <line x1="360" y1="581" x2="360" y2="597"/>
+    <circle cx="400" cy="578" r="7"/> <line x1="400" y1="585" x2="400" y2="600"/>
+    <circle cx="445" cy="575" r="6"/> <line x1="445" y1="581" x2="445" y2="597"/>
+    <circle cx="490" cy="577" r="7"/> <line x1="490" y1="584" x2="490" y2="599"/>
+    <circle cx="535" cy="574" r="6"/> <line x1="535" y1="580" x2="535" y2="597"/>
+    <circle cx="580" cy="578" r="7"/> <line x1="580" y1="585" x2="580" y2="600"/>
+    <circle cx="625" cy="575" r="6"/> <line x1="625" y1="581" x2="625" y2="597"/>
+    <circle cx="670" cy="577" r="8"/> <line x1="670" y1="585" x2="670" y2="600"/>
+    <circle cx="715" cy="574" r="6"/> <line x1="715" y1="580" x2="715" y2="597"/>
+    <circle cx="760" cy="578" r="7"/> <line x1="760" y1="585" x2="760" y2="600"/>
+    <circle cx="805" cy="575" r="6"/> <line x1="805" y1="581" x2="805" y2="597"/>
+    <circle cx="850" cy="577" r="7"/> <line x1="850" y1="584" x2="850" y2="599"/>
+    <circle cx="895" cy="574" r="6"/> <line x1="895" y1="580" x2="895" y2="597"/>
+    <circle cx="940" cy="578" r="7"/> <line x1="940" y1="585" x2="940" y2="600"/>
+    <circle cx="985" cy="575" r="6"/> <line x1="985" y1="581" x2="985" y2="597"/>
+    <circle cx="1030" cy="577" r="7"/><line x1="1030" y1="584" x2="1030" y2="599"/>
+    <circle cx="1075" cy="574" r="6"/><line x1="1075" y1="580" x2="1075" y2="597"/>
+    <circle cx="1120" cy="578" r="7"/><line x1="1120" y1="585" x2="1120" y2="600"/>
+    <circle cx="1165" cy="575" r="6"/><line x1="1165" y1="581" x2="1165" y2="597"/>
+    <circle cx="1210" cy="577" r="8"/><line x1="1210" y1="585" x2="1210" y2="600"/>
+    <circle cx="1255" cy="574" r="6"/><line x1="1255" y1="580" x2="1255" y2="597"/>
+    <circle cx="1300" cy="578" r="7"/><line x1="1300" y1="585" x2="1300" y2="600"/>
+    <circle cx="1345" cy="575" r="6"/><line x1="1345" y1="581" x2="1345" y2="597"/>
+    <circle cx="1390" cy="577" r="7"/><line x1="1390" y1="584" x2="1390" y2="599"/>
+  </g>
+  <!-- racetrack rails -->
+  <line x1="0" y1="270" x2="1400" y2="270" stroke="#5a3e1b" stroke-width="2.5"/>
+  <line x1="0" y1="220" x2="1400" y2="220" stroke="#5a3e1b" stroke-width="1.5" stroke-dasharray="10,6"/>
+  <line x1="0" y1="180" x2="1400" y2="180" stroke="#5a3e1b" stroke-width="2"/>
+  <!-- horses silhouettes -->
+  <g stroke="#5a3e1b" stroke-width="1.5" fill="none">
+    <!-- horse 1 -->
+    <ellipse cx="250" cy="245" rx="45" ry="16"/>
+    <circle cx="290" cy="238" r="10"/>
+    <line x1="295" y1="242" x2="310" y2="232"/> <!-- neck -->
+    <circle cx="312" cy="229" r="8"/> <!-- head -->
+    <line x1="220" y1="258" x2="215" y2="278"/>
+    <line x1="235" y1="260" x2="230" y2="280"/>
+    <line x1="265" y1="260" x2="268" y2="280"/>
+    <line x1="280" y1="258" x2="283" y2="278"/>
+    <!-- horse 2 -->
+    <ellipse cx="680" cy="243" rx="45" ry="16"/>
+    <circle cx="720" cy="236" r="10"/>
+    <line x1="725" y1="240" x2="740" y2="230"/>
+    <circle cx="742" cy="227" r="8"/>
+    <line x1="650" y1="256" x2="645" y2="276"/>
+    <line x1="665" y1="258" x2="660" y2="278"/>
+    <line x1="695" y1="258" x2="698" y2="278"/>
+    <line x1="710" y1="256" x2="713" y2="276"/>
+    <!-- horse 3 -->
+    <ellipse cx="1100" cy="246" rx="45" ry="16"/>
+    <circle cx="1140" cy="239" r="10"/>
+    <line x1="1145" y1="243" x2="1160" y2="233"/>
+    <circle cx="1162" cy="230" r="8"/>
+    <line x1="1070" y1="259" x2="1065" y2="279"/>
+    <line x1="1085" y1="261" x2="1080" y2="281"/>
+    <line x1="1115" y1="261" x2="1118" y2="281"/>
+    <line x1="1130" y1="259" x2="1133" y2="279"/>
+    <!-- jockeys rough -->
+    <ellipse cx="260" cy="232" rx="8" ry="5"/>
+    <ellipse cx="690" cy="230" rx="8" ry="5"/>
+    <ellipse cx="1110" cy="233" rx="8" ry="5"/>
+  </g>
+  <!-- finishing post -->
+  <line x1="1350" y1="180" x2="1350" y2="270" stroke="#5a3e1b" stroke-width="3"/>
+  <rect x="1348" y="178" width="40" height="8" fill="#5a3e1b" opacity="0.5"/>
+  <!-- hatching shading on ground -->
+  <line x1="0" y1="275" x2="1400" y2="275" stroke="#5a3e1b" stroke-width="0.5" opacity="0.5"/>
+  <line x1="0" y1="285" x2="1400" y2="285" stroke="#5a3e1b" stroke-width="0.5" opacity="0.5"/>
+  <line x1="0" y1="295" x2="1400" y2="295" stroke="#5a3e1b" stroke-width="0.5" opacity="0.5"/>
+</svg>
+</div>
+
+<!-- ═══════════════════ LANDING ═══════════════════ -->
+<div id="landing" class="screen active">
+  <div class="badge">English Language • Grammar</div>
+  <h1 class="title">Grammar<br><span>Challenge</span></h1>
+  <p class="subtitle">Test your eye for errors — and bet on your confidence</p>
+  <div class="divider"></div>
+
+  <div class="level-grid">
+    <div class="level-card lv1" onclick="selectLevel(1)">
+      <div class="level-num">1</div>
+      <div class="level-name">Foundation</div>
+      <div class="level-cefr">A2 / B1</div>
+      <div class="level-desc">Everyday sentences about work and home life at an accessible level</div>
+      <button class="btn-play">Start</button>
+    </div>
+    <div class="level-card lv2" onclick="selectLevel(2)">
+      <div class="level-num">2</div>
+      <div class="level-name">Intermediate</div>
+      <div class="level-cefr">B1 / B2</div>
+      <div class="level-desc">More nuanced language involving tense choices and complex phrases</div>
+      <button class="btn-play">Start</button>
+    </div>
+    <div class="level-card lv3" onclick="selectLevel(3)">
+      <div class="level-num">3</div>
+      <div class="level-name">Advanced</div>
+      <div class="level-cefr">B2 / C1</div>
+      <div class="level-desc">Subtle errors in register, syntax, and advanced grammar structures</div>
+      <button class="btn-play">Start</button>
+    </div>
+  </div>
+
+  <div class="how-it-works">
+    <strong>How it works:</strong> Read each statement and decide — is there a grammatical error or not?
+    Before you confirm, <strong>bet 1–5 points</strong> on your answer. Right answer wins your bet; wrong answer loses it.
+    Score starts at 0, max +100, max −100. Eight of the twenty statements contain an error.
+    Three different tests available at each level.
+  </div>
+</div>
+
+<!-- ═══════════════════ QUIZ ═══════════════════ -->
+<div id="quiz" class="screen">
+  <div class="quiz-header">
+    <button class="back-btn" onclick="goHome()">← Home</button>
+    <div class="quiz-meta">
+      <div class="quiz-level-label" id="quizLevelLabel">Level 1 — Foundation</div>
+    </div>
+    <div class="quiz-score-box">
+      <div class="score-label">Score</div>
+      <div class="score-val zero" id="scoreDisplay">0</div>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progressBar" style="width:0%"></div>
+  </div>
+
+  <div class="question-card" id="questionCard">
+    <div class="q-number" id="qNumber">Statement 1 of 20</div>
+    <div class="q-statement" id="qStatement">Loading...</div>
+
+    <div class="choice-row">
+      <button class="choice-btn" id="btnNoError" onclick="selectChoice('no_error')">✓ No Error</button>
+      <button class="choice-btn" id="btnError" onclick="selectChoice('error')">✗ Error</button>
+    </div>
+
+    <div class="bet-section">
+      <div class="bet-label">Your confidence bet</div>
+      <div class="bet-row">
+        <button class="bet-btn" onclick="selectBet(1)">1</button>
+        <button class="bet-btn" onclick="selectBet(2)">2</button>
+        <button class="bet-btn" onclick="selectBet(3)">3</button>
+        <button class="bet-btn" onclick="selectBet(4)">4</button>
+        <button class="bet-btn" onclick="selectBet(5)">5</button>
+      </div>
+    </div>
+
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+
+  <button class="submit-btn" id="submitBtn" onclick="submitAnswer()" disabled>Confirm Answer</button>
+  <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Statement →</button>
+</div>
+
+<!-- ═══════════════════ RESULT ═══════════════════ -->
+<div id="result" class="screen">
+  <div class="result-card">
+    <div class="result-icon" id="resultIcon">🏆</div>
+    <div class="result-title" id="resultTitle">Challenge Complete!</div>
+    <div class="result-score" id="resultScore">72</div>
+    <div class="result-out-of">out of a possible 100 points</div>
+    <div class="result-feedback" id="resultFeedback">Great work!</div>
+    <div class="result-stats">
+      <div class="stat-box"><div class="stat-n g" id="statCorrect">0</div><div class="stat-l">Correct</div></div>
+      <div class="stat-box"><div class="stat-n r" id="statWrong">0</div><div class="stat-l">Wrong</div></div>
+      <div class="stat-box"><div class="stat-n b" id="statErrors">8</div><div class="stat-l">Errors in test</div></div>
+    </div>
+    <button class="btn-again" onclick="selectLevel(currentLevel)">Try Again (New Test)</button>
+    <button class="btn-again" onclick="goHome()">Choose Level</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  STATEMENT POOLS  (60 per level, 8 errors per set of 20)
+// ═══════════════════════════════════════════════════════
+
+// Format: { text: "...", hasError: true/false, explanation: "..." }
+// Errors are marked hasError:true with explanation of the mistake
+
+const POOLS = {
+
+// ─────────────────────────────────────────────────────
+// LEVEL 1  A2/B1  (60 statements, 24 errors, 36 correct)
+// ─────────────────────────────────────────────────────
+1: [
+  // ── CORRECT ──
+  { text: "She goes to work by bus every morning.", hasError: false },
+  { text: "They are having dinner at seven o'clock tonight.", hasError: false },
+  { text: "I have worked here for three years.", hasError: false },
+  { text: "He doesn't like spicy food very much.", hasError: false },
+  { text: "We are going on holiday next week.", hasError: false },
+  { text: "My brother lives in a flat near the city centre.", hasError: false },
+  { text: "She usually finishes work at five o'clock.", hasError: false },
+  { text: "There are two bedrooms in my apartment.", hasError: false },
+  { text: "I have been to Paris twice.", hasError: false },
+  { text: "He is taller than his father.", hasError: false },
+  { text: "We had a meeting this morning.", hasError: false },
+  { text: "She sent me an email yesterday.", hasError: false },
+  { text: "They moved to a new house last year.", hasError: false },
+  { text: "I need to call the doctor tomorrow.", hasError: false },
+  { text: "He has just arrived at the office.", hasError: false },
+  { text: "We eat lunch together every Friday.", hasError: false },
+  { text: "She is studying for her exams at the moment.", hasError: false },
+  { text: "My manager gave me some good feedback.", hasError: false },
+  { text: "The children are playing in the garden.", hasError: false },
+  { text: "I forgot to buy milk at the supermarket.", hasError: false },
+  { text: "They have been married for ten years.", hasError: false },
+  { text: "He always arrives early to the office.", hasError: false },
+  { text: "She was tired because she worked late.", hasError: false },
+  { text: "We need more chairs in the meeting room.", hasError: false },
+  { text: "He speaks three languages fluently.", hasError: false },
+  { text: "She cooked a delicious meal last night.", hasError: false },
+  { text: "I am going to visit my parents at the weekend.", hasError: false },
+  { text: "The report is on my desk.", hasError: false },
+  { text: "They played tennis for an hour.", hasError: false },
+  { text: "She has never seen snow before.", hasError: false },
+  { text: "He was born in the north of England.", hasError: false },
+  { text: "We finished the project on time.", hasError: false },
+  { text: "I don't know where she is.", hasError: false },
+  { text: "The meeting starts at nine o'clock.", hasError: false },
+  { text: "She is the best student in the class.", hasError: false },
+  { text: "He has been working all morning.", hasError: false },
+  // ── ERRORS ──
+  { text: "She go to work by bus every morning.", hasError: true, explanation: "'She go' is incorrect. The third person singular present simple requires 's': 'She goes'." },
+  { text: "I have saw this film before.", hasError: true, explanation: "'Have saw' is incorrect. The past participle of 'see' is 'seen': 'I have seen'." },
+  { text: "He doesn't likes spicy food very much.", hasError: true, explanation: "After 'doesn't', the base form is used: 'doesn't like', not 'doesn't likes'." },
+  { text: "There is two bedrooms in my apartment.", hasError: true, explanation: "'There is' must agree with the plural noun: 'There are two bedrooms'." },
+  { text: "She has went to the shops this morning.", hasError: true, explanation: "'Has went' is incorrect. The past participle of 'go' is 'gone': 'has gone'." },
+  { text: "We was having dinner when he called.", hasError: true, explanation: "'We was' is incorrect. The correct form is 'we were': 'We were having dinner'." },
+  { text: "He is more taller than his father.", hasError: true, explanation: "Double comparative: 'more taller' is wrong. Use only 'taller'." },
+  { text: "I did not went to the meeting yesterday.", hasError: true, explanation: "After 'did not', the base form is used: 'did not go', not 'did not went'." },
+  { text: "She has lived here since three years.", hasError: true, explanation: "With a period of time, use 'for', not 'since': 'She has lived here for three years'." },
+  { text: "They moved to a new house last year, isn't it?", hasError: true, explanation: "Incorrect question tag. With 'they moved', the tag should be 'didn't they?'." },
+  { text: "He always arrives early at the office, no?", hasError: true, explanation: "In standard English, question tags like 'doesn't he?' are used, not 'no?'." },
+  { text: "The childrens are playing in the garden.", hasError: true, explanation: "'Children' is already plural. Adding 's' is wrong: 'The children are playing'." },
+  { text: "I am working here since two years.", hasError: true, explanation: "Use present perfect with 'for': 'I have been working here for two years'." },
+  { text: "She was very boring at the party last night.", hasError: true, explanation: "'Boring' means causing boredom. The correct word is 'bored': 'She was bored at the party'." },
+  { text: "My manager give me some good feedback yesterday.", hasError: true, explanation: "'Give' should be past tense: 'My manager gave me some good feedback'." },
+  { text: "He speak three languages fluently.", hasError: true, explanation: "Third person singular needs 's': 'He speaks three languages'." },
+  { text: "I am agree with your suggestion.", hasError: true, explanation: "'Agree' is a verb, not an adjective: say 'I agree', not 'I am agree'." },
+  { text: "She did not cooked dinner last night.", hasError: true, explanation: "After 'did not', use the base form: 'did not cook', not 'did not cooked'." },
+  { text: "We have finish the project on time.", hasError: true, explanation: "After 'have', use the past participle: 'We have finished the project'." },
+  { text: "He has been work all morning.", hasError: true, explanation: "After 'has been', use the -ing form: 'He has been working all morning'." },
+  { text: "She is more older than me.", hasError: true, explanation: "Double comparative: 'more older' is wrong. Use only 'older'." },
+  { text: "I did not knew the answer.", hasError: true, explanation: "After 'did not', use the base form: 'did not know', not 'did not knew'." },
+  { text: "They has been married for ten years.", hasError: true, explanation: "'Has' cannot be used with 'they'. The correct form is 'have': 'They have been married'." },
+  { text: "The meeting it starts at nine o'clock.", hasError: true, explanation: "The subject pronoun 'it' is redundant here: 'The meeting starts at nine o'clock'." },
+],
+
+// ─────────────────────────────────────────────────────
+// LEVEL 2  B1/B2  (60 statements, 24 errors, 36 correct)
+// ─────────────────────────────────────────────────────
+2: [
+  // ── CORRECT ──
+  { text: "By the time she arrived, the meeting had already finished.", hasError: false },
+  { text: "He would rather stay at home than go to the party.", hasError: false },
+  { text: "If I had known, I would have told you.", hasError: false },
+  { text: "She suggested taking a different approach to the problem.", hasError: false },
+  { text: "He is used to working long hours on complex projects.", hasError: false },
+  { text: "The proposal needs to be reviewed before the deadline.", hasError: false },
+  { text: "Despite the delay, the team managed to complete the task.", hasError: false },
+  { text: "It was such an interesting talk that everyone stayed late.", hasError: false },
+  { text: "Neither the manager nor the staff were informed in advance.", hasError: false },
+  { text: "She admitted making a mistake in the financial report.", hasError: false },
+  { text: "The more you practise, the more confident you become.", hasError: false },
+  { text: "Having read the report, she was ready to present her findings.", hasError: false },
+  { text: "He tends to procrastinate when faced with a difficult task.", hasError: false },
+  { text: "The results were far better than anyone had expected.", hasError: false },
+  { text: "She has been promoted twice since joining the company.", hasError: false },
+  { text: "I wish I had applied for that position when I had the chance.", hasError: false },
+  { text: "The project was delayed due to a lack of resources.", hasError: false },
+  { text: "She could have handled the situation more professionally.", hasError: false },
+  { text: "I would appreciate it if you could send the file today.", hasError: false },
+  { text: "The new policy is designed to improve staff wellbeing.", hasError: false },
+  { text: "It is difficult to balance a career and family responsibilities.", hasError: false },
+  { text: "He should have asked for help instead of making the decision alone.", hasError: false },
+  { text: "They are unlikely to reach an agreement before the deadline.", hasError: false },
+  { text: "We have been living in this neighbourhood for over a decade.", hasError: false },
+  { text: "She is looking forward to starting her new role next month.", hasError: false },
+  { text: "The feedback was constructive, even though it was difficult to hear.", hasError: false },
+  { text: "He was made redundant after the company was restructured.", hasError: false },
+  { text: "She found it hard to concentrate in such a noisy environment.", hasError: false },
+  { text: "The board is considering several options before making a final decision.", hasError: false },
+  { text: "I haven't seen her since she left the department last autumn.", hasError: false },
+  { text: "They agreed to meet again once the initial phase was complete.", hasError: false },
+  { text: "His work has improved considerably over the past six months.", hasError: false },
+  { text: "She had barely sat down when the phone rang.", hasError: false },
+  { text: "The contract was signed despite several outstanding issues.", hasError: false },
+  { text: "He is not the sort of person who gives up easily.", hasError: false },
+  { text: "By next spring, they will have been living there for five years.", hasError: false },
+  // ── ERRORS ──
+  { text: "By the time she arrived, the meeting already finished.", hasError: true, explanation: "The past perfect is needed here: 'had already finished', since the meeting ended before she arrived." },
+  { text: "If I would have known, I would have told you.", hasError: true, explanation: "In a third conditional, 'would have' cannot appear in the 'if' clause: correct is 'If I had known'." },
+  { text: "She suggested to take a different approach to the problem.", hasError: true, explanation: "'Suggest' is followed by a gerund, not an infinitive: 'suggested taking', not 'suggested to take'." },
+  { text: "He is used to work long hours on complex projects.", hasError: true, explanation: "'Be used to' is followed by a gerund: 'used to working', not 'used to work'." },
+  { text: "It was so an interesting talk that everyone stayed late.", hasError: true, explanation: "'So' is used with adjectives alone ('so interesting'), but 'such' is used before a noun phrase: 'such an interesting talk'." },
+  { text: "Neither the manager nor the staff was informed in advance.", hasError: true, explanation: "When 'neither…nor' joins two subjects, the verb agrees with the closer one: 'staff were informed'." },
+  { text: "She admitted to make a mistake in the financial report.", hasError: true, explanation: "'Admit' is followed by a gerund: 'admitted making', not 'admitted to make'." },
+  { text: "Having read the report, her findings were presented.", hasError: true, explanation: "Dangling participle: the participle phrase must relate to the subject. Say 'Having read the report, she presented her findings'." },
+  { text: "I wish I applied for that position when I had the chance.", hasError: true, explanation: "To express regret about a past event, use past perfect after 'wish': 'I wish I had applied'." },
+  { text: "She could have handle the situation more professionally.", hasError: true, explanation: "After a modal perfect, use the past participle: 'could have handled'." },
+  { text: "The project was delayed due to lack of resources.", hasError: true, explanation: "'A lack of' requires the indefinite article: 'due to a lack of resources'." },
+  { text: "The results were far more better than anyone had expected.", hasError: true, explanation: "Double comparative: 'more better' is wrong. Use simply 'better': 'far better than expected'." },
+  { text: "She has promoted twice since joining the company.", hasError: true, explanation: "Passive voice is required here: 'She has been promoted twice'." },
+  { text: "He should have ask for help instead of making the decision alone.", hasError: true, explanation: "After a modal perfect, use the past participle: 'should have asked'." },
+  { text: "We are living in this neighbourhood for over a decade.", hasError: true, explanation: "A state continuing from the past to now requires present perfect continuous: 'have been living', not 'are living'." },
+  { text: "She is looking forward to start her new role next month.", hasError: true, explanation: "'Look forward to' requires a gerund: 'looking forward to starting', not 'to start'." },
+  { text: "He was made redundant after the company was restructuring.", hasError: true, explanation: "Parallel passive structures are needed: 'after the company was restructured'." },
+  { text: "The board is considering several options before to make a final decision.", hasError: true, explanation: "After 'before', use a gerund, not an infinitive: 'before making a final decision'." },
+  { text: "His work has improved considerable over the past six months.", hasError: true, explanation: "'Considerable' is an adjective; an adverb is needed to modify 'improved': 'considerably'." },
+  { text: "She had barely sat down when the phone had rung.", hasError: true, explanation: "With 'had barely…when', the second clause uses simple past: 'when the phone rang'." },
+  { text: "By next spring, they will live there for five years.", hasError: true, explanation: "A future action completed before a specific future moment needs future perfect: 'will have been living'." },
+  { text: "Despite of the delay, the team managed to complete the task.", hasError: true, explanation: "'Despite' does not take 'of': say 'Despite the delay', not 'Despite of'." },
+  { text: "The contract was signed despite several outstanding issues was unresolved.", hasError: true, explanation: "Incorrect clause structure: say 'despite several outstanding issues remaining unresolved' or 'although several issues were still unresolved'." },
+  { text: "He is not the sort of person who give up easily.", hasError: true, explanation: "The relative clause refers to 'person' (singular), so the verb must agree: 'who gives up'." },
+],
+
+// ─────────────────────────────────────────────────────
+// LEVEL 3  B2/C1  (60 statements, 24 errors, 36 correct)
+// ─────────────────────────────────────────────────────
+3: [
+  // ── CORRECT ──
+  { text: "Rarely has the company faced such a challenging set of circumstances.", hasError: false },
+  { text: "She would sooner resign than compromise her professional integrity.", hasError: false },
+  { text: "The extent to which remote working affects productivity remains debated.", hasError: false },
+  { text: "It is high time the organisation reviewed its appraisal procedures.", hasError: false },
+  { text: "Not until the audit was complete did the board realise the full extent of the problem.", hasError: false },
+  { text: "He is understood to have been passed over for promotion on several occasions.", hasError: false },
+  { text: "The legislation, once enacted, will have far-reaching implications for employers.", hasError: false },
+  { text: "No sooner had she submitted the report than the goalposts changed.", hasError: false },
+  { text: "Were the proposal to be rejected, the team would need to start from scratch.", hasError: false },
+  { text: "The findings lend credence to the view that flexible working boosts morale.", hasError: false },
+  { text: "She was at pains to stress the importance of transparent communication.", hasError: false },
+  { text: "The manager intimated that redundancies could not be ruled out.", hasError: false },
+  { text: "Under no circumstances should confidential data be shared externally.", hasError: false },
+  { text: "The proposal has merit, notwithstanding its significant budgetary implications.", hasError: false },
+  { text: "It is not as though she had not been warned about the consequences.", hasError: false },
+  { text: "He appears to have been unaware of the seriousness of the situation.", hasError: false },
+  { text: "Had the meeting been scheduled earlier, the confusion might have been avoided.", hasError: false },
+  { text: "The committee was divided as to whether the new measures were proportionate.", hasError: false },
+  { text: "She has a tendency to take on more than she can realistically manage.", hasError: false },
+  { text: "The initiative, however well-intentioned, proved difficult to implement in practice.", hasError: false },
+  { text: "Their reluctance to delegate is what is holding the project back.", hasError: false },
+  { text: "So complex was the case that even senior counsel struggled to advise clearly.", hasError: false },
+  { text: "The board's decision, while controversial, was reached through due process.", hasError: false },
+  { text: "Little did anyone anticipate the long-term consequences of that decision.", hasError: false },
+  { text: "The staff survey revealed a marked disparity between management and employee perceptions.", hasError: false },
+  { text: "She would have been better placed to respond had she been given more notice.", hasError: false },
+  { text: "The implications of the merger are only now beginning to emerge.", hasError: false },
+  { text: "It remains to be seen whether the restructuring will yield the intended benefits.", hasError: false },
+  { text: "Her manner of handling the complaint left a great deal to be desired.", hasError: false },
+  { text: "Only by addressing the root causes can the organisation hope to move forward.", hasError: false },
+  { text: "He has been consistent in his view, despite considerable pressure to change it.", hasError: false },
+  { text: "The degree to which personal values influence professional decisions is often underestimated.", hasError: false },
+  { text: "It was not so much the outcome that surprised her as the process that led to it.", hasError: false },
+  { text: "The policy had unintended consequences that were difficult to have foreseen at the time.", hasError: false },
+  { text: "Senior management were at odds over how best to communicate the changes.", hasError: false },
+  { text: "What is needed is not more data, but a clearer framework for interpreting it.", hasError: false },
+  // ── ERRORS ──
+  { text: "Rarely the company has faced such a challenging set of circumstances.", hasError: true, explanation: "After a fronted negative adverb like 'Rarely', subject-auxiliary inversion is required: 'Rarely has the company faced…'" },
+  { text: "Not until the audit was complete the board realised the full extent of the problem.", hasError: true, explanation: "Fronting 'Not until…' triggers inversion: 'did the board realise', not 'the board realised'." },
+  { text: "No sooner had she submitted the report when the goalposts changed.", hasError: true, explanation: "'No sooner…than' is the correct correlative: 'No sooner had she submitted the report than…'" },
+  { text: "Were the proposal to be rejected, the team would need to start from the scratch.", hasError: true, explanation: "No article is used in the idiom 'start from scratch', not 'from the scratch'." },
+  { text: "Under no circumstances confidential data should be shared externally.", hasError: true, explanation: "Fronting 'Under no circumstances' requires inversion: 'should confidential data be shared'." },
+  { text: "The proposal has merit, notwithstanding its significant budgetary implications, but however it still needs revision.", hasError: true, explanation: "'Notwithstanding' and 'however' are both concessive; using both together is redundant and grammatically awkward." },
+  { text: "He appears to have been unaware of the seriousness of the situation, what led to his dismissal.", hasError: true, explanation: "'What' cannot introduce a relative clause referring to a whole clause; use 'which': '…which led to his dismissal'." },
+  { text: "Had the meeting been scheduled earlier, the confusion might have been avoid.", hasError: true, explanation: "After a modal perfect passive, use the past participle: 'might have been avoided'." },
+  { text: "So complex was the case that even senior counsel struggled to advise it clearly.", hasError: true, explanation: "The intransitive verb 'advise' here is used without an object in this context; the pronoun 'it' is erroneous: 'struggled to advise clearly'." },
+  { text: "Little did anyone anticipated the long-term consequences of that decision.", hasError: true, explanation: "After 'did' in inversion, the bare infinitive is required: 'did anyone anticipate', not 'anticipated'." },
+  { text: "She would have been better placed to respond had she been given more notice of the matter at hand.", hasError: false }, // intentional correct
+  { text: "Only by addressing the root causes can the organisation hopes to move forward.", hasError: true, explanation: "After inverted structure 'can the organisation', the base form is used: 'can…hope', not 'hopes'." },
+  { text: "It is high time the organisation will review its appraisal procedures.", hasError: true, explanation: "'It is high time' takes the past subjunctive: 'reviewed', not 'will review'." },
+  { text: "The extent to which remote working affects productivity remains to debate.", hasError: true, explanation: "The correct adjective phrase is 'remains debated' or 'remains open to debate', not 'remains to debate'." },
+  { text: "The legislation, once enacted, will have had far-reaching implications for employers.", hasError: true, explanation: "Future perfect 'will have had' is incorrect here — a simple future 'will have' (as in 'will have implications') fits the meaning." },
+  { text: "Their reluctance to delegate is what is holding back the project.", hasError: false }, // intentional correct — both word orders valid
+  { text: "The staff survey revealed a marked disparity between management and employees perceptions.", hasError: true, explanation: "The genitive is required before the noun: 'employees'' (possessive) or 'employee perceptions' as a compound noun." },
+  { text: "It is not as though she had not warned about the consequences.", hasError: true, explanation: "Passive voice is required: 'had not been warned about the consequences'." },
+  { text: "The findings lend credence to the view that flexible working boost morale.", hasError: true, explanation: "The subordinate clause subject is 'flexible working' (gerund phrase, singular): 'boosts', not 'boost'." },
+  { text: "What is needed are not more data, but a clearer framework for interpreting it.", hasError: true, explanation: "The subject of the cleft is 'what is needed', which is singular: 'What is needed is not more data'." },
+  { text: "She was at pains to stress the important of transparent communication.", hasError: true, explanation: "'Important' is an adjective; the noun is needed here: 'the importance of'." },
+  { text: "So complex the case was that even senior counsel struggled to advise clearly.", hasError: true, explanation: "In fronted 'so + adjective' structures, inversion is required: 'So complex was the case that…'" },
+  { text: "The manager intimated that redundancies could not be ruled off.", hasError: true, explanation: "The correct idiom is 'ruled out', not 'ruled off'." },
+  { text: "The initiative, however well-intentioned, proved difficulty to implement in practice.", hasError: true, explanation: "'Proved' is a linking verb taking an adjective complement: 'proved difficult', not 'proved difficulty'." },
+],
+};
+
+// ─────────────────────────────────────────────────────
+//  BUILD 3 TEST SETS per level from pool
+// ─────────────────────────────────────────────────────
+
+function buildTestSets(pool) {
+  // pool has 36 correct + 24 errors → split
+  let correct = pool.filter(s => !s.hasError);
+  let errors  = pool.filter(s => s.hasError);
+  // shuffle
+  correct = shuffle(correct);
+  errors  = shuffle(errors);
+  // 3 tests × (12 correct + 8 errors) = 60 total
+  let sets = [];
+  for (let i = 0; i < 3; i++) {
+    let c = correct.slice(i*12, i*12+12);
+    let e = errors.slice(i*8, i*8+8);
+    // if pool overflows, wrap
+    if (c.length < 12) c = [...c, ...correct.slice(0, 12-c.length)];
+    if (e.length < 8)  e = [...e,  ...errors.slice(0, 8-e.length)];
+    // interleave: errors spread across positions, rising difficulty around 10-14
+    let set = buildOrderedSet(c, e);
+    sets.push(set);
+  }
+  return sets;
+}
+
+function buildOrderedSet(correct, errors) {
+  // positions 0-19; errors placed at positions that give peak difficulty at 9-13
+  // Strategy: spread errors at indices: 2,5,7,9,10,11,13,16
+  const errorPositions = [2, 5, 7, 9, 10, 11, 13, 16];
+  let result = new Array(20).fill(null);
+  let ei = 0, ci = 0;
+  for (let i = 0; i < 20; i++) {
+    if (errorPositions.includes(i)) {
+      result[i] = errors[ei++];
+    } else {
+      result[i] = correct[ci++];
+    }
+  }
+  return result;
+}
+
+function shuffle(arr) {
+  let a = [...arr];
+  for (let i = a.length-1; i > 0; i--) {
+    let j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+// Precompute test sets
+const TEST_SETS = {
+  1: buildTestSets(POOLS[1]),
+  2: buildTestSets(POOLS[2]),
+  3: buildTestSets(POOLS[3]),
+};
+
+// ─────────────────────────────────────────────────────
+//  GAME STATE
+// ─────────────────────────────────────────────────────
+let currentLevel = 1;
+let currentTest  = 0;  // 0,1,2 — rotates
+let questions    = [];
+let qIndex       = 0;
+let score        = 0;
+let correct      = 0;
+let wrong        = 0;
+let selectedChoice = null;  // 'error' | 'no_error'
+let selectedBet    = null;  // 1-5
+let answered       = false;
+
+const testUsage = { 1:[0,0,0], 2:[0,0,0], 3:[0,0,0] };
+
+// ─────────────────────────────────────────────────────
+//  NAVIGATION
+// ─────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function goHome() { showScreen('landing'); }
+
+function selectLevel(level) {
+  currentLevel = level;
+  // pick least-used test
+  let usage = testUsage[level];
+  let minUse = Math.min(...usage);
+  let candidates = usage.map((u,i)=>u===minUse?i:-1).filter(i=>i>=0);
+  currentTest = candidates[Math.floor(Math.random()*candidates.length)];
+  testUsage[level][currentTest]++;
+
+  questions = TEST_SETS[level][currentTest];
+  qIndex    = 0;
+  score     = 0;
+  correct   = 0;
+  wrong     = 0;
+
+  const labels = ['','Foundation — A2/B1','Intermediate — B1/B2','Advanced — B2/C1'];
+  document.getElementById('quizLevelLabel').textContent = `Level ${level} · ${labels[level]}`;
+
+  showScreen('quiz');
+  renderQuestion();
+}
+
+// ─────────────────────────────────────────────────────
+//  RENDER QUESTION
+// ─────────────────────────────────────────────────────
+function renderQuestion() {
+  answered = false;
+  selectedChoice = null;
+  selectedBet    = null;
+
+  const q = questions[qIndex];
+  document.getElementById('qNumber').textContent = `Statement ${qIndex+1} of 20`;
+  document.getElementById('qStatement').textContent = q.text;
+
+  // progress
+  document.getElementById('progressBar').style.width = ((qIndex/20)*100)+'%';
+
+  // score
+  updateScoreDisplay();
+
+  // choices
+  const bne = document.getElementById('btnNoError');
+  const be  = document.getElementById('btnError');
+  bne.className = 'choice-btn';
+  be.className  = 'choice-btn';
+  bne.disabled  = false;
+  be.disabled   = false;
+
+  // bets
+  document.querySelectorAll('.bet-btn').forEach(b => {
+    b.className = 'bet-btn';
+    b.disabled  = false;
+  });
+
+  // feedback
+  const fb = document.getElementById('feedbackBox');
+  fb.style.display = 'none';
+  fb.className = 'feedback-box';
+
+  // submit / next
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('submitBtn').style.display = 'block';
+  document.getElementById('nextBtn').classList.remove('visible');
+  document.getElementById('nextBtn').textContent =
+    qIndex === 19 ? 'Finish & See Results' : 'Next Statement →';
+}
+
+function updateScoreDisplay() {
+  const el = document.getElementById('scoreDisplay');
+  el.textContent = score;
+  el.className = 'score-val ' + (score > 0 ? 'pos' : score < 0 ? 'neg' : 'zero');
+}
+
+// ─────────────────────────────────────────────────────
+//  INTERACTIONS
+// ─────────────────────────────────────────────────────
+function selectChoice(choice) {
+  if (answered) return;
+  selectedChoice = choice;
+  document.getElementById('btnNoError').className = 'choice-btn' + (choice==='no_error' ? ' selected-correct' : '');
+  document.getElementById('btnError').className   = 'choice-btn' + (choice==='error'    ? ' selected-correct' : '');
+  checkSubmitReady();
+}
+
+function selectBet(n) {
+  if (answered) return;
+  selectedBet = n;
+  document.querySelectorAll('.bet-btn').forEach((b,i) => {
+    b.className = 'bet-btn' + (i+1===n ? ' selected' : '');
+  });
+  checkSubmitReady();
+}
+
+function checkSubmitReady() {
+  document.getElementById('submitBtn').disabled = !(selectedChoice && selectedBet);
+}
+
+function submitAnswer() {
+  if (!selectedChoice || !selectedBet || answered) return;
+  answered = true;
+
+  const q = questions[qIndex];
+  const userSaysError = selectedChoice === 'error';
+  const isCorrect     = userSaysError === q.hasError;
+  const delta         = isCorrect ? selectedBet : -selectedBet;
+  score  += delta;
+  if (isCorrect) correct++; else wrong++;
+
+  updateScoreDisplay();
+
+  // style buttons
+  const bne = document.getElementById('btnNoError');
+  const be  = document.getElementById('btnError');
+  bne.disabled = be.disabled = true;
+  document.querySelectorAll('.bet-btn').forEach(b => b.disabled = true);
+
+  if (selectedChoice === 'no_error') {
+    bne.className = isCorrect ? 'choice-btn selected-correct' : 'choice-btn selected-wrong';
+    be.className  = 'choice-btn unselected-reveal';
+  } else {
+    be.className  = isCorrect ? 'choice-btn selected-correct' : 'choice-btn selected-wrong';
+    bne.className = 'choice-btn unselected-reveal';
+  }
+
+  // feedback
+  const fb = document.getElementById('feedbackBox');
+  fb.style.display = 'block';
+  if (isCorrect) {
+    fb.className = 'feedback-box win';
+    fb.innerHTML = `<strong>+${selectedBet} points!</strong> ${q.hasError
+      ? 'Correct — there was an error. ' + (q.explanation||'')
+      : 'Correct — no error in this statement.'}`;
+  } else {
+    fb.className = 'feedback-box lose';
+    fb.innerHTML = `<strong>−${selectedBet} points.</strong> ${q.hasError
+      ? 'There was an error here. ' + (q.explanation||'')
+      : 'There was no error — the statement is correct.'}`;
+  }
+
+  document.getElementById('submitBtn').style.display = 'none';
+  document.getElementById('nextBtn').classList.add('visible');
+}
+
+function nextQuestion() {
+  qIndex++;
+  if (qIndex >= 20) {
+    showResult();
+  } else {
+    renderQuestion();
+  }
+}
+
+// ─────────────────────────────────────────────────────
+//  RESULT
+// ─────────────────────────────────────────────────────
+function showResult() {
+  document.getElementById('progressBar').style.width = '100%';
+  showScreen('result');
+
+  document.getElementById('resultScore').textContent = score;
+  document.getElementById('statCorrect').textContent = correct;
+  document.getElementById('statWrong').textContent   = wrong;
+  document.getElementById('statErrors').textContent  = 8;
+
+  let cls, icon, title, feedback;
+  if (score >= 70) {
+    cls = 'great'; icon = '🏆'; title = 'Excellent Work!';
+    feedback = `You have a sharp eye for grammatical errors and excellent confidence in your choices. Your knowledge at this level is impressive — keep challenging yourself!`;
+  } else if (score >= 40) {
+    cls = 'great'; icon = '🎯'; title = 'Well Done!';
+    feedback = `A solid performance. You correctly identified most errors and managed your bets sensibly. Review the statements you missed to build even greater accuracy.`;
+  } else if (score >= 10) {
+    cls = 'ok'; icon = '📚'; title = 'Good Effort';
+    feedback = `You identified a good number of errors, but some tricky ones caught you out — or perhaps some bold bets didn't pay off. Try again to improve your score.`;
+  } else if (score >= -20) {
+    cls = 'ok'; icon = '🔍'; title = 'Keep Practising';
+    feedback = `Grammar at this level can be subtle. Review the explanations for the statements you missed, and try again — each attempt builds your accuracy.`;
+  } else {
+    cls = 'poor'; icon = '📝'; title = 'Room to Grow';
+    feedback = `This level tested some challenging grammar points. Don't be discouraged — try a lower level to build confidence, then come back to this one.`;
+  }
+
+  const rs = document.getElementById('resultScore');
+  rs.className = 'result-score ' + cls;
+  document.getElementById('resultIcon').textContent  = icon;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultFeedback').textContent = feedback;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Meeting Organization Exercise</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        h1 {
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+        .scenario {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .conversation {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            border: 1px solid #e2e8f0;
+        }
+        .message {
+            margin: 18px 0;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 1.05em;
+        }
+        .person-a {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-left: 5px solid #4c51bf;
+        }
+        .person-b {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-left: 5px solid #d53f8c;
+        }
+        .person-c {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border-left: 5px solid #0ea5e9;
+        }
+        .person-d {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+            border-left: 5px solid #10b981;
+        }
+        .options {
+            margin: 20px 0;
+        }
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: #fff;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: 1.02em;
+            line-height: 1.5;
+        }
+        .option-btn:hover {
+            background: #f7fafc;
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+        .option-btn.correct {
+            background: linear-gradient(135deg, #68d391 0%, #38a169 100%);
+            border-color: #38a169;
+            color: white;
+            font-weight: bold;
+        }
+        .option-btn.incorrect {
+            background: linear-gradient(135deg, #fc8181 0%, #e53e3e 100%);
+            border-color: #e53e3e;
+            color: white;
+        }
+        .feedback {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 12px;
+            display: none;
+            font-size: 1.05em;
+        }
+        .feedback.correct {
+            background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
+            color: #22543d;
+            display: block;
+            border-left: 5px solid #38a169;
+        }
+        .feedback.incorrect {
+            background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+            color: #742a2a;
+            display: block;
+            border-left: 5px solid #e53e3e;
+        }
+        .expressions {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            border-left: 5px solid #ed8936;
+        }
+        .expressions h3 {
+            color: #c05621;
+            margin-top: 0;
+            font-size: 1.3em;
+        }
+        .expression-group {
+            margin: 15px 0;
+        }
+        .expression-title {
+            font-weight: bold;
+            color: #9c4221;
+            margin-bottom: 8px;
+        }
+        .expression {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 8px;
+            font-style: italic;
+            color: #744210;
+        }
+        .next-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 15px 5px;
+            display: none;
+            transition: all 0.3s ease;
+        }
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4);
+        }
+        .score {
+            text-align: center;
+            font-size: 20px;
+            margin: 25px 0;
+            color: #4a5568;
+            font-weight: bold;
+        }
+        .progress {
+            width: 100%;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            margin: 25px 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        .hidden {
+            display: none;
+        }
+        .question-header {
+            color: #4a5568;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            text-align: center;
+            padding: 10px;
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%);
+            border-radius: 8px;
+        }
+        .context-note {
+            background: #edf2f7;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #4299e1;
+            font-style: italic;
+            color: #2d3748;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Advanced Professional Communication</h1>
+        
+        <div class="expressions">
+            <h3>Sophisticated Meeting Language (B1-B2):</h3>
+            
+            <div class="expression-group">
+                <div class="expression-title">Diplomatic Declining:</div>
+                <div class="expression">"I'm afraid I have a prior commitment"</div>
+                <div class="expression">"Unfortunately, I'm not available at that time"</div>
+                <div class="expression">"I have a conflict in my schedule"</div>
+            </div>
+            
+            <div class="expression-group">
+                <div class="expression-title">Professional Suggesting:</div>
+                <div class="expression">"Would it be possible to reschedule for..."</div>
+                <div class="expression">"Perhaps we could meet..."</div>
+                <div class="expression">"I was wondering if we might consider..."</div>
+            </div>
+            
+            <div class="expression-group">
+                <div class="expression-title">Polite Agreement:</div>
+                <div class="expression">"That works perfectly for me"</div>
+                <div class="expression">"I'm completely flexible with that arrangement"</div>
+                <div class="expression">"That suits my schedule perfectly"</div>
+            </div>
+        </div>
+
+        <div class="scenario">
+            <strong>Scenario:</strong> You're navigating complex professional situations requiring diplomatic communication. Practice advanced expressions for scheduling conflicts, proposing alternatives, and maintaining professional relationships while managing competing priorities and stakeholder expectations.
+        </div>
+
+        <div class="score">Score: <span id="score">0</span>/15</div>
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- Question 1 -->
+        <div id="question1" class="conversation">
+            <div class="question-header">Question 1/15 - Executive Board Meeting Conflict</div>
+            <div class="context-note">
+                Context: You're a department manager. The CEO has called an urgent board meeting, but you have a crucial client presentation scheduled at the same time.
+            </div>
+            <div class="message person-a">
+                <strong>CEO (Patricia):</strong> I need all department heads in the boardroom tomorrow at 2 PM for an emergency strategy session regarding the quarterly projections.
+            </div>
+            <div class="message person-b">
+                <strong>You:</strong> <em>Choose the most diplomatically professional response:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(1, 'incorrect')">A) I can't make it at 2 PM because I have another meeting.</button>
+                <button class="option-btn" onclick="checkAnswer(1, 'correct')">B) I'm afraid I have a prior commitment with our key client at that time. Would it be possible to reschedule for 4 PM, or could I join virtually for the first part?</button>
+                <button class="option-btn" onclick="checkAnswer(1, 'incorrect')">C) I'm sorry, but I'm busy at 2 PM. How about 3 PM instead?</button>
+            </div>
+            <div id="feedback1" class="feedback">
+                <strong>Excellent diplomatic communication!</strong> You used "I'm afraid I have a prior commitment" (showing respect), explained the importance, and offered two viable alternatives while showing flexibility.
+            </div>
+            <button id="next1" class="next-btn" onclick="showQuestion(2)">Next Question</button>
+        </div>
+
+        <!-- Question 2 -->
+        <div id="question2" class="conversation hidden">
+            <div class="question-header">Question 2/15</div>
+            <div class="message person-a">
+                <strong>CEO (Patricia):</strong> The client meeting is indeed crucial. Could you delegate the presentation and join us at 2:30 PM instead?
+            </div>
+            <div class="message person-b">
+                <strong>You:</strong> <em>Choose the most professional response that shows you understand priorities:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(2, 'incorrect')">A) Okay, I'll try to make it work.</button>
+                <button class="option-btn" onclick="checkAnswer(2, 'correct')">B) That arrangement works perfectly for me. I'll brief my senior manager to handle the technical aspects, and I'll join the board meeting by 2:30 PM to contribute to the strategic discussion.</button>
+                <button class="option-btn" onclick="checkAnswer(2, 'incorrect')">C) 2:30 PM is fine with me. I'll ask someone else to do the presentation.</button>
+            </div>
+            <div id="feedback2" class="feedback">
+                <strong>Outstanding!</strong> You used "works perfectly for me," showed leadership by mentioning delegation strategy, and confirmed your commitment to both priorities.
+            </div>
+            <button id="next2" class="next-btn" onclick="showQuestion(3)">Next Question</button>
+        </div>
+
+        <!-- Question 3 -->
+        <div id="question3" class="conversation hidden">
+            <div class="question-header">Question 3/15 - International Team Coordination</div>
+            <div class="context-note">
+                Context: You're coordinating a project with team members across different time zones (New York, London, Tokyo). You need to find a time that works for a critical project review.
+            </div>
+            <div class="message person-c">
+                <strong>James (London):</strong> The Tokyo team has requested the project review meeting for Thursday at 9 AM their time, which would be 1 AM London time and 8 PM New York time.
+            </div>
+            <div class="message person-d">
+                <strong>Sarah (Tokyo):</strong> This timing is essential for us to present to our regional stakeholders on Friday morning.
+            </div>
+            <div class="message person-b">
+                <strong>You (New York):</strong> <em>Propose a diplomatic solution that considers everyone's constraints:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(3, 'incorrect')">A) 8 PM works for me, but James, 1 AM is too late for you.</button>
+                <button class="option-btn" onclick="checkAnswer(3, 'correct')">B) I understand the urgency for Tokyo's stakeholder presentation. Perhaps we could consider Wednesday at 6 AM Tokyo time, which would be 10 PM Tuesday for me and 3 AM Wednesday for London. Alternatively, could we split this into two sessions?</button>
+                <button class="option-btn" onclick="checkAnswer(3, 'incorrect')">C) The time zones make this difficult. What if we just do it over email instead?</button>
+            </div>
+            <div id="feedback3" class="feedback">
+                <strong>Excellent global leadership!</strong> You acknowledged Tokyo's constraint, used "Perhaps we could consider," and offered both a compromise and an innovative alternative solution.
+            </div>
+            <button id="next3" class="next-btn" onclick="showQuestion(4)">Next Question</button>
+        </div>
+
+        <!-- Question 4 -->
+        <div id="question4" class="conversation hidden">
+            <div class="question-header">Question 4/15 - Stakeholder Negotiation</div>
+            <div class="context-note">
+                Context: You're mediating between the marketing and finance departments who have conflicting views on budget allocation. Both department heads want to meet with you separately.
+            </div>
+            <div class="message person-a">
+                <strong>Marketing Director (Lisa):</strong> I need to discuss the Q4 campaign budget with you privately before the joint meeting. Can we meet Monday at 10 AM?
+            </div>
+            <div class="message person-c">
+                <strong>Finance Director (Robert):</strong> Actually, I was hoping to present the financial constraints to you first. Would Tuesday at 9 AM work better?
+            </div>
+            <div class="message person-b">
+                <strong>You:</strong> <em>Choose the response that demonstrates diplomatic leadership:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(4, 'incorrect')">A) I can meet with both of you separately as requested.</button>
+                <button class="option-btn" onclick="checkAnswer(4, 'correct')">B) I appreciate both of your perspectives on this matter. Rather than separate meetings, I was wondering if we might consider a collaborative session on Monday at 10 AM where we can address both the creative vision and financial realities together. This approach often leads to more innovative solutions.</button>
+                <button class="option-btn" onclick="checkAnswer(4, 'incorrect')">C) Let's just have the joint meeting without any preliminary discussions.</button>
+            </div>
+            <div id="feedback4" class="feedback">
+                <strong>Masterful diplomatic leadership!</strong> You acknowledged both parties, used "I was wondering if we might consider," and provided a strategic rationale that benefits everyone.
+            </div>
+            <button id="next4" class="next-btn" onclick="showQuestion(5)">Next Question</button>
+        </div>
+
+        <!-- Question 5 -->
+        <div id="question5" class="conversation hidden">
+            <div class="question-header">Question 5/15</div>
+            <div class="message person-a">
+                <strong>Marketing Director (Lisa):</strong> I understand the collaborative approach, but I'm concerned about revealing our strategy before we've had a chance to refine it.
+            </div>
+            <div class="message person-b">
+                <strong>You:</strong> <em>Address her concern while maintaining the collaborative approach:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(5, 'incorrect')">A) Your strategy should be ready for discussion if we're having a meeting about it.</button>
+                <button class="option-btn" onclick="checkAnswer(5, 'correct')">B) Your concern about strategic refinement is completely valid. Perhaps we could structure the session as a strategic workshop rather than a presentation, where we develop the approach together. That way, both marketing creativity and financial feasibility inform the strategy from the ground up.</button>
+                <button class="option-btn" onclick="checkAnswer(5, 'incorrect')">C) If you're not ready to discuss it, maybe we should postpone the meeting.</button>
+            </div>
+            <div id="feedback5" class="feedback">
+                <strong>Brilliant facilitation!</strong> You validated her concern, used "Perhaps we could structure," and reframed the meeting format to address her worry while maintaining collaboration.
+            </div>
+            <button id="next5" class="next-btn" onclick="showQuestion(6)">Next Question</button>
+        </div>
+
+        <!-- Question 6 -->
+        <div id="question6" class="conversation hidden">
+            <div class="question-header">Question 6/15 - Crisis Management Scheduling</div>
+            <div class="context-note">
+                Context: A major system outage has occurred. You need to coordinate emergency response meetings with technical teams, customer service, and executive leadership simultaneously.
+            </div>
+            <div class="message person-c">
+                <strong>IT Director (Mark):</strong> We need the technical team assembled immediately. The outage is affecting 60% of our customer base.
+            </div>
+            <div class="message person-d">
+                <strong>Customer Service Manager (Anna):</strong> Our call center is overwhelmed. I need to brief the management team on customer impact within the hour.
+            </div>
+            <div class="message person-a">
+                <strong>VP Operations (David):</strong> The board is demanding an immediate status report and recovery timeline.
+            </div>
+            <div class="message person-b">
+                <strong>You:</strong> <em>Coordinate the crisis response professionally:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(6, 'incorrect')">A) Let's all meet in the conference room right now to figure this out.</button>
+                <button class="option-btn" onclick="checkAnswer(6, 'correct')">B) Given the severity of this situation, I suggest we establish parallel streams: Mark, please initiate the technical recovery session immediately. Anna, could you prepare a customer impact summary in 30 minutes? David, I'll personally brief the board in 45 minutes once we have preliminary data. We'll reconvene at 2 PM for coordinated response planning.</button>
+                <button class="option-btn" onclick="checkAnswer(6, 'incorrect')">C) This is too chaotic. Everyone should focus on their own departments first.</button>
+            </div>
+            <div id="feedback6" class="feedback">
+                <strong>Exceptional crisis leadership!</strong> You provided clear structure, assigned specific roles with timelines, and coordinated both immediate and strategic responses professionally.
+            </div>
+            <button id="next6" class="next-btn" onclick="showQuestion(7)">Next Question</button>
+        </div>
+
+        <!-- Question 7 -->
+        <div id="question7" class="conversation hidden">
+            <div class="question-header">Question 7/15 - Vendor Negotiation Meeting</div>
+            <div class="context-note">
+                Context: You're renegotiating a major contract with a key supplier. They've requested a meeting to discuss price increases, but your budget meeting with finance is scheduled at the same time.
+            </div>
+            <div class="message person-a">
+                <strong>Vendor Representative (Michael):</strong> We need to discuss the contract modifications and pricing adjustments for the next fiscal year. Thursday at 3 PM is the only time our negotiation team is available.
+            </div>
+            <div class="message person-c">
+                <strong>CFO (Jennifer):</strong> Remember, our budget finalization meeting is Thursday at 3 PM. We need to lock in supplier costs before the board presentation Friday.
+            </div>
+            <div class="message person-b">
+                <strong>You:</strong> <em>Navigate this scheduling conflict professionally:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(7, 'incorrect')">A) Can we move one of these meetings to Friday?</button>
+                <button class="option-btn" onclick="checkAnswer(7, 'correct')">B) I recognize both meetings are crucial for our Friday board presentation. Michael, unfortunately I have a conflict in my schedule at 3 PM Thursday. Would it be possible to reschedule for Thursday at 1 PM, or could we arrange a preliminary discussion over video conference? Jennifer, I'd like to ensure we have the most current supplier information before finalizing our budget.</button>
+                <button class="option-btn" onclick="checkAnswer(7, 'incorrect')">C) The vendor meeting is more important. Let's reschedule the budget meeting.</button>
+            </div>
+            <div id="feedback7" class="feedback">
+                <strong>Excellent stakeholder management!</strong> You acknowledged both priorities, used "unfortunately I have a conflict," offered alternatives to the vendor, and kept the CFO informed about your strategic approach.
+            </div>
+            <button id="next7" class="next-btn" onclick="showQuestion(8)">Next Question</button>
+        </div>
+
+        <!-- Question 8 -->
+        <div id="question8" class="conversation hidden">
+            <div class="question-header">Question 8/15 - Team Performance Review Scheduling</div>
+            <div class="context-note">
+                Context: You need to schedule performance reviews for your 8-person team, but three team members have submitted conflicting availability for the only week you have available before the deadline.
+            </div>
+            <div class="message person-b">
+                <strong>Team Member (Alex):</strong> I have a family commitment Monday through Wednesday next week.
+            </div>
+            <div class="message person-c">
+                <strong>Team Member (Sofia):</strong> I'm attending a professional conference Thursday and Friday.
+            </div>
+            <div class="message person-d">
+                <strong>Team Member (James):</strong> I have medical appointments Tuesday and Thursday.
+            </div>
+            <div class="message person-a">
+                <strong>You:</strong> <em>Address the scheduling complexity while being fair to everyone:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(8, 'incorrect')">A) Some of you will need to reschedule your personal commitments.</button>
+                <button class="option-btn" onclick="checkAnswer(8, 'correct')">B) I understand everyone has important commitments that week. Let me propose a flexible approach: Alex, would Monday morning work before your family commitment? Sofia, could we schedule yours for early Thursday before the conference? James, would Wednesday work around your appointments? For the remaining team members, I'm completely flexible with Tuesday through Friday.</button>
+                <button class="option-btn" onclick="checkAnswer(8, 'incorrect')">C) We'll just have to push the performance reviews to the following month.</button>
+            </div>
+            <div id="feedback8" class="feedback">
+                <strong>Outstanding people management!</strong> You showed empathy, addressed each person's specific constraints, and demonstrated flexibility while maintaining the deadline. The phrase "I'm completely flexible" shows collaborative leadership.
+            </div>
+            <button id="next8" class="next-btn" onclick="showQuestion(9)">Next Question</button>
+        </div>
+
+        <!-- Question 9 -->
+        <div id="question9" class="conversation hidden">
+            <div class="question-header">Question 9/15 - Cross-Departmental Project Coordination</div>
+            <div class="context-note">
+                Context: You're leading a cross-departmental initiative involving Legal, Marketing, and IT. Each department has different preferences for meeting frequency and timing due to their work patterns.
+            </div>
+            <div class="message person-a">
+                <strong>Legal Director (Patricia):</strong> Given the compliance requirements, we need weekly detailed reviews. Tuesday mornings work best for our team's court schedule.
+            </div>
+            <div class="message person-c">
+                <strong>Marketing Director (Carlos):</strong> Weekly meetings might slow down our creative process. We prefer bi-weekly check-ins, and Thursday afternoons align with our campaign development cycles.
+            </div>
+            <div class="message person-d">
+                <strong>IT Director (Rachel):</strong> Our development sprints run Monday to Wednesday. Thursday or Friday meetings would be ideal for progress updates.
+            </div>
+            <div class="message person-b">
+                <strong>You:</strong> <em>Propose a solution that accommodates everyone's working styles:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(9, 'incorrect')">A) Let's compromise and meet every other Tuesday.</button>
+                <button class="option-btn" onclick="checkAnswer(9, 'correct')">B) I appreciate each department's unique operational needs. Perhaps we could structure this as hybrid approach: a brief weekly legal-compliance check on Tuesday mornings with Patricia, bi-weekly strategic sessions with Marketing on Thursday afternoons, and IT progress updates every Friday. This way, each team gets the frequency and timing that suits their workflow while maintaining project coordination.</button>
+                <button class="option-btn" onclick="checkAnswer(9, 'incorrect')">C) Since we can't agree, let's just communicate via email updates.</button>
+            </div>
+            <div id="feedback9" class="feedback">
+                <strong>Brilliant organizational design!</strong> You used "I appreciate each department's unique operational needs," proposed a sophisticated hybrid solution, and demonstrated understanding of how different professional workflows require different coordination approaches.
+            </div>
+            <button id="next9" class="next-btn" onclick="showQuestion(10)">Next Question</button>
+        </div>
+
+        <!-- Question 10 -->
+        <div id="question10" class="conversation hidden">
+            <div class="question-header">Question 10/15 - Board Presentation Preparation</div>
+            <div class="context-note">
+                Context: You need to prepare a quarterly presentation for the board. Multiple stakeholders want input sessions, but you also need focused preparation time.
+            </div>
+            <div class="message person-a">
+                <strong>Sales Director (Tom):</strong> I need to review the revenue projections with you before you present to the board. How about Monday afternoon?
+            </div>
+            <div class="message person-c">
+                <strong>HR Director (Lisa):</strong> The staffing changes need to be presented accurately. Could we meet Monday morning to go over the organizational updates?
+            </div>
+            <div class="message person-d">
+                <strong>Operations Manager (Kevin):</strong> The efficiency metrics are complex. I'd like to walk through them with you Monday evening.
+            </div>
+            <div class="message person-b">
+                <strong>You:</strong> <em>Manage these requests while protecting your preparation time:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(10, 'incorrect')">A) I can meet with all of you on Monday as requested.</button>
+                <button class="option-btn" onclick="checkAnswer(10, 'correct')">B) Your input is essential for an accurate board presentation. However, I'm concerned that back-to-back meetings won't allow for adequate integration of your feedback. Would it be possible to consolidate these into a focused preparation session Monday from 2-4 PM? This would allow us to address interdependencies between revenue, staffing, and operations while ensuring I have Tuesday morning for final preparation.</button>
+                <button class="option-btn" onclick="checkAnswer(10, 'incorrect')">C) Let me review everything myself first, then we can meet if needed.</button>
+            </div>
+            <div id="feedback10" class="feedback">
+                <strong>Strategic meeting management!</strong> You acknowledged their importance, used "I'm concerned that" to explain your reasoning professionally, proposed an efficient alternative with "Would it be possible to consolidate," and demonstrated strategic thinking about interdependencies.
+            </div>
+            <button id="next10" class="next-btn" onclick="showQuestion(11)">Next Question</button>
+        </div>
+
+        <!-- Question 11 -->
+        <div id="question11" class="conversation hidden">
+            <div class="question-header">Question 11/15 - Client Relationship Management</div>
+            <div class="context-note">
+                Context: Your biggest client has requested an emergency meeting about service issues, but it conflicts with a long-planned strategy session with your senior team about next year's growth plans.
+            </div>
+            <div class="message person-a">
+                <strong>Client CEO (Margaret):</strong> We're experiencing significant service disruptions that are affecting our operations. I need to meet with you and your senior team tomorrow at 10 AM to address this immediately.
+            </div>
+            <div class="message person-c">
+                <strong>Your Senior Team Lead (Robert):</strong> Tomorrow's strategy session has been planned for months. We have the consultants flying in, and postponing will cost us significant fees and delay our planning by weeks.
+            </div>
+            <div class="message person-b">
+                <strong>You:</strong> <em>Balance client relationship management with internal strategic priorities:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(11, 'incorrect')">A) The client emergency takes priority. We'll have to reschedule the strategy session.</button>
+                <button class="option-btn" onclick="checkAnswer(11, 'correct')">B) Margaret, I completely understand the urgency of your operational concerns, and they're absolutely our top priority. I have a conflict in my schedule at 10 AM, but I could personally meet with you at 8 AM to assess the situation and develop an immediate action plan. Then, would it be possible to have a comprehensive resolution meeting at 2 PM with both our technical team and your operations team? This would allow us to provide both immediate attention and thorough solutions.</button>
+                <button class="option-btn" onclick="checkAnswer(11, 'incorrect')">C) Can we handle the client issue over a phone call instead?</button>
+            </div>
+            <div id="feedback11" class="feedback">
+                <strong>Masterful client relationship management!</strong> You acknowledged the client's priority, used "I have a conflict in my schedule" diplomatically, offered immediate

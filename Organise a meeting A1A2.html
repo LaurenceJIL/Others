@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Organization Exercise</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #e3f2fd, #f8f9fa);
+            line-height: 1.6;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1976d2;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .scenario {
+            background: #f0f8ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #2196f3;
+        }
+        .conversation {
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .message {
+            margin: 15px 0;
+            padding: 12px;
+            border-radius: 8px;
+        }
+        .person-a {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+        .person-b {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+        }
+        .person-c {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+        }
+        .options {
+            margin: 15px 0;
+        }
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: #fff;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+        .option-btn:hover {
+            background: #f5f5f5;
+            border-color: #2196f3;
+        }
+        .option-btn.correct {
+            background: #c8e6c9;
+            border-color: #4caf50;
+            color: #2e7d32;
+        }
+        .option-btn.incorrect {
+            background: #ffcdd2;
+            border-color: #f44336;
+            color: #c62828;
+        }
+        .feedback {
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        .feedback.correct {
+            background: #c8e6c9;
+            color: #2e7d32;
+            display: block;
+        }
+        .feedback.incorrect {
+            background: #ffcdd2;
+            color: #c62828;
+            display: block;
+        }
+        .expressions {
+            background: #fff3e0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #ff9800;
+        }
+        .expressions h3 {
+            color: #f57c00;
+            margin-top: 0;
+        }
+        .expression {
+            background: white;
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-weight: bold;
+            color: #e65100;
+        }
+        .next-btn {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            display: none;
+        }
+        .next-btn:hover {
+            background: #1976d2;
+        }
+        .score {
+            text-align: center;
+            font-size: 18px;
+            margin: 20px 0;
+            color: #1976d2;
+            font-weight: bold;
+        }
+        .progress {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #2196f3);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .hidden {
+            display: none;
+        }
+        .question-header {
+            color: #1976d2;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📅 Meeting Organization Exercise</h1>
+        
+        <div class="expressions">
+            <h3>Key Expressions to Practice:</h3>
+            <div class="expression">"I'm sorry, I'm busy"</div>
+            <div class="expression">"How about..."</div>
+            <div class="expression">"...is fine with me"</div>
+        </div>
+
+        <div class="scenario">
+            <strong>Scenario:</strong> You are organizing different meetings with friends and colleagues. Practice using polite expressions to suggest times, decline when busy, and agree to plans.
+        </div>
+
+        <div class="score">Score: <span id="score">0</span>/12</div>
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- Question 1 -->
+        <div id="question1" class="conversation">
+            <div class="question-header">Question 1/12 - Planning coffee with Sarah</div>
+            <div class="message person-a">
+                <strong>You:</strong> Hi Sarah! Would you like to have coffee on Thursday at 2 PM?
+            </div>
+            <div class="message person-b">
+                <strong>Sarah:</strong> Hi! I'd love to, but I'm sorry, I'm busy on Thursday afternoon. I have a doctor's appointment.
+            </div>
+            <div class="message person-a">
+                <strong>You:</strong> <em>Choose the best response:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(1, 'incorrect')">A) That's okay, maybe another time.</button>
+                <button class="option-btn" onclick="checkAnswer(1, 'correct')">B) How about Friday at 3 PM?</button>
+                <button class="option-btn" onclick="checkAnswer(1, 'incorrect')">C) Why are you busy?</button>
+            </div>
+            <div id="feedback1" class="feedback">
+                <strong>Correct!</strong> "How about..." is a polite way to suggest another time when someone is busy.
+            </div>
+            <button id="next1" class="next-btn" onclick="showQuestion(2)">Next Question</button>
+        </div>
+
+        <!-- Question 2 -->
+        <div id="question2" class="conversation hidden">
+            <div class="question-header">Question 2/12</div>
+            <div class="message person-b">
+                <strong>Sarah:</strong> Friday at 3 PM sounds good! Where shall we meet?
+            </div>
+            <div class="message person-a">
+                <strong>You:</strong> <em>Choose the best response:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(2, 'incorrect')">A) I don't know, you decide.</button>
+                <button class="option-btn" onclick="checkAnswer(2, 'correct')">B) How about the café on Main Street? It's quiet and the coffee is good.</button>
+                <button class="option-btn" onclick="checkAnswer(2, 'incorrect')">C) Anywhere is okay.</button>
+            </div>
+            <div id="feedback2" class="feedback">
+                <strong>Correct!</strong> Using "How about..." again shows you're making a helpful suggestion with details.
+            </div>
+            <button id="next2" class="next-btn" onclick="showQuestion(3)">Next Question</button>
+        </div>
+
+        <!-- Question 3 -->
+        <div id="question3" class="conversation hidden">
+            <div class="question-header">Question 3/12</div>
+            <div class="message person-b">
+                <strong>Sarah:</strong> The café on Main Street is perfect! But I'm sorry, I'm busy until 3:30. Can we meet at 4 PM instead?
+            </div>
+            <div class="message person-a">
+                <strong>You:</strong> <em>Choose the best response:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(3, 'incorrect')">A) I suppose so.</button>
+                <button class="option-btn" onclick="checkAnswer(3, 'correct')">B) 4 PM is fine with me. See you then!</button>
+                <button class="option-btn" onclick="checkAnswer(3, 'incorrect')">C) Okay, but don't be late.</button>
+            </div>
+            <div id="feedback3" class="feedback">
+                <strong>Excellent!</strong> "...is fine with me" is a friendly way to agree to someone's suggestion.
+            </div>
+            <button id="next3" class="next-btn" onclick="showQuestion(4)">Next Question</button>
+        </div>
+
+        <!-- Question 4 -->
+        <div id="question4" class="conversation hidden">
+            <div class="question-header">Question 4/12 - Meeting with your colleague Mike</div>
+            <div class="message person-c">
+                <strong>Mike:</strong> Can we have our project meeting on Monday morning at 9 AM?
+            </div>
+            <div class="message person-a">
+                <strong>You:</strong> <em>You have another meeting at 9 AM. Choose your response:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(4, 'correct')">A) I'm sorry, I'm busy at 9 AM. How about 10:30 AM?</button>
+                <button class="option-btn" onclick="checkAnswer(4, 'incorrect')">B) No, I can't do 9 AM.</button>
+                <button class="option-btn" onclick="checkAnswer(4, 'incorrect')">C) Monday is not good for me.</button>
+            </div>
+            <div id="feedback4" class="feedback">
+                <strong>Perfect!</strong> You used "I'm sorry, I'm busy" and then suggested an alternative with "How about..."
+            </div>
+            <button id="next4" class="next-btn" onclick="showQuestion(5)">Next Question</button>
+        </div>
+
+        <!-- Question 5 -->
+        <div id="question5" class="conversation hidden">
+            <div class="question-header">Question 5/12</div>
+            <div class="message person-c">
+                <strong>Mike:</strong> 10:30 AM works for me. Should we meet in the conference room?
+            </div>
+            <div class="message person-a">
+                <strong>You:</strong> <em>Choose the best response:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(5, 'incorrect')">A) Yes, okay.</button>
+                <button class="option-btn" onclick="checkAnswer(5, 'correct')">B) The conference room is fine with me.</button>
+                <button class="option-btn" onclick="checkAnswer(5, 'incorrect')">C) Sure, whatever.</button>
+            </div>
+            <div id="feedback5" class="feedback">
+                <strong>Great!</strong> "...is fine with me" shows polite agreement with the suggestion.
+            </div>
+            <button id="next5" class="next-btn" onclick="showQuestion(6)">Next Question</button>
+        </div>
+
+        <!-- Question 6 -->
+        <div id="question6" class="conversation hidden">
+            <div class="question-header">Question 6/12 - Planning lunch with Emma</div>
+            <div class="message person-a">
+                <strong>You:</strong> Emma, would you like to have lunch together on Wednesday at 12 PM?
+            </div>
+            <div class="message person-b">
+                <strong>Emma:</strong> <em>Emma responds. Choose what she should say if she's busy:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(6, 'incorrect')">A) I can't make it on Wednesday.</button>
+                <button class="option-btn" onclick="checkAnswer(6, 'correct')">B) I'm sorry, I'm busy on Wednesday. How about Thursday?</button>
+                <button class="option-btn" onclick="checkAnswer(6, 'incorrect')">C) Wednesday doesn't work for me.</button>
+            </div>
+            <div id="feedback6" class="feedback">
+                <strong>Excellent!</strong> This response uses both "I'm sorry, I'm busy" and "How about..." to decline politely and suggest an alternative.
+            </div>
+            <button id="next6" class="next-btn" onclick="showQuestion(7)">Next Question</button>
+        </div>
+
+        <!-- Question 7 -->
+        <div id="question7" class="conversation hidden">
+            <div class="question-header">Question 7/12</div>
+            <div class="message person-a">
+                <strong>You:</strong> <em>Respond to Emma's suggestion:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(7, 'correct')">A) Thursday is fine with me! What time works best?</button>
+                <button class="option-btn" onclick="checkAnswer(7, 'incorrect')">B) Okay, Thursday then.</button>
+                <button class="option-btn" onclick="checkAnswer(7, 'incorrect')">C) Thursday is better, yes.</button>
+            </div>
+            <div id="feedback7" class="feedback">
+                <strong>Perfect!</strong> You used "...is fine with me" and asked a follow-up question to continue planning.
+            </div>
+            <button id="next7" class="next-btn" onclick="showQuestion(8)">Next Question</button>
+        </div>
+
+        <!-- Question 8 -->
+        <div id="question8" class="conversation hidden">
+            <div class="question-header">Question 8/12 - Group meeting with Tom and Lisa</div>
+            <div class="message person-c">
+                <strong>Tom:</strong> Can we all meet on Friday at 2 PM to discuss the presentation?
+            </div>
+            <div class="message person-b">
+                <strong>Lisa:</strong> I'm sorry, I'm busy on Friday afternoon. I have a client meeting.
+            </div>
+            <div class="message person-a">
+                <strong>You:</strong> <em>Help suggest an alternative time:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(8, 'incorrect')">A) When are you both free?</button>
+                <button class="option-btn" onclick="checkAnswer(8, 'correct')">B) How about Monday morning at 10 AM?</button>
+                <button class="option-btn" onclick="checkAnswer(8, 'incorrect')">C) We need to find another time.</button>
+            </div>
+            <div id="feedback8" class="feedback">
+                <strong>Great!</strong> "How about..." is perfect for suggesting specific alternative times in group discussions.
+            </div>
+            <button id="next8" class="next-btn" onclick="showQuestion(9)">Next Question</button>
+        </div>
+
+        <!-- Question 9 -->
+        <div id="question9" class="conversation hidden">
+            <div class="question-header">Question 9/12</div>
+            <div class="message person-c">
+                <strong>Tom:</strong> Monday at 10 AM sounds good to me.
+            </div>
+            <div class="message person-b">
+                <strong>Lisa:</strong> <em>Choose Lisa's response:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(9, 'incorrect')">A) Monday works for me too.</button>
+                <button class="option-btn" onclick="checkAnswer(9, 'correct')">B) Monday at 10 AM is fine with me.</button>
+                <button class="option-btn" onclick="checkAnswer(9, 'incorrect')">C) I can do Monday morning.</button>
+            </div>
+            <div id="feedback9" class="feedback">
+                <strong>Excellent!</strong> "...is fine with me" is the most polite way to agree to the suggested time.
+            </div>
+            <button id="next9" class="next-btn" onclick="showQuestion(10)">Next Question</button>
+        </div>
+
+        <!-- Question 10 -->
+        <div id="question10" class="conversation hidden">
+            <div class="question-header">Question 10/12 - Making weekend plans with your friend Alex</div>
+            <div class="message person-c">
+                <strong>Alex:</strong> Do you want to go to the movies on Saturday evening?
+            </div>
+            <div class="message person-a">
+                <strong>You:</strong> <em>You're busy Saturday evening. Choose your response:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(10, 'incorrect')">A) I can't go on Saturday evening.</button>
+                <button class="option-btn" onclick="checkAnswer(10, 'correct')">B) I'm sorry, I'm busy on Saturday evening. How about Sunday afternoon?</button>
+                <button class="option-btn" onclick="checkAnswer(10, 'incorrect')">C) Saturday evening is not possible for me.</button>
+            </div>
+            <div id="feedback10" class="feedback">
+                <strong>Perfect!</strong> You politely declined with "I'm sorry, I'm busy" and suggested another time with "How about..."
+            </div>
+            <button id="next10" class="next-btn" onclick="showQuestion(11)">Next Question</button>
+        </div>
+
+        <!-- Question 11 -->
+        <div id="question11" class="conversation hidden">
+            <div class="question-header">Question 11/12</div>
+            <div class="message person-c">
+                <strong>Alex:</strong> Sunday afternoon could work, but I'm sorry, I'm busy until 3 PM. How about 4 PM?
+            </div>
+            <div class="message person-a">
+                <strong>You:</strong> <em>Choose your response:</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(11, 'incorrect')">A) 4 PM works for me.</button>
+                <button class="option-btn" onclick="checkAnswer(11, 'correct')">B) 4 PM is fine with me. Which movie should we see?</button>
+                <button class="option-btn" onclick="checkAnswer(11, 'incorrect')">C) Okay, 4 PM then.</button>
+            </div>
+            <div id="feedback11" class="feedback">
+                <strong>Great!</strong> You used "...is fine with me" and asked a follow-up question to continue the conversation naturally.
+            </div>
+            <button id="next11" class="next-btn" onclick="showQuestion(12)">Next Question</button>
+        </div>
+
+        <!-- Question 12 -->
+        <div id="question12" class="conversation hidden">
+            <div class="question-header">Question 12/12 - Final planning with your study group</div>
+            <div class="message person-b">
+                <strong>Maria:</strong> Can we meet for our study session on Tuesday at 7 PM?
+            </div>
+            <div class="message person-c">
+                <strong>David:</strong> Tuesday evening is fine with me.
+            </div>
+            <div class="message person-a">
+                <strong>You:</strong> <em>You have a family dinner on Tuesday evening. What do you say?</em>
+            </div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(12, 'incorrect')">A) I have a family dinner on Tuesday. Can we meet another day?</button>
+                <button class="option-btn" onclick="checkAnswer(12, 'correct')">B) I'm sorry, I'm busy on Tuesday evening. How about Wednesday at 6 PM?</button>
+                <button class="option-btn" onclick="checkAnswer(12, 'incorrect')">C) Tuesday doesn't work for me. What about Wednesday?</button>
+            </div>
+            <div id="feedback12" class="feedback">
+                <strong>Excellent!</strong> You used the complete polite formula: "I'm sorry, I'm busy" followed by "How about..." with a specific alternative.
+            </div>
+            <button id="next12" class="next-btn" onclick="showResults()">See Results</button>
+        </div>
+
+        <!-- Results -->
+        <div id="results" class="hidden">
+            <div class="conversation">
+                <h2 style="color: #1976d2; text-align: center;">🎉 Exercise Complete!</h2>
+                <div id="finalScore" class="score" style="font-size: 24px;"></div>
+                
+                <div class="message" style="background: #e8f5e8; border-left: 4px solid #4caf50;">
+                    <strong>Key Learning Points:</strong><br><br>
+                    
+                    <strong>✅ "I'm sorry, I'm busy"</strong><br>
+                    Use this polite phrase when you cannot meet at the suggested time. It's more polite than just saying "No" or "I can't."<br><br>
+                    
+                    <strong>✅ "How about..."</strong><br>
+                    Use this to suggest alternative times, places, or activities. It shows you're still interested in meeting and being helpful.<br><br>
+                    
+                    <strong>✅ "...is fine with me"</strong><br>
+                    Use this to politely agree to someone's suggestion. It sounds more natural and friendly than just "OK" or "Yes."
+                </div>
+
+                <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #2196f3;">
+                    <strong>💡 Pro Tips:</strong><br>
+                    • Always suggest a specific alternative when declining<br>
+                    • Ask follow-up questions to keep the conversation going<br>
+                    • Be specific with times and places when making suggestions<br>
+                    • Use these expressions in professional and casual situations
+                </div>
+
+                <div style="text-align: center; margin: 20px 0;">
+                    <button class="next-btn" onclick="restartExercise()" style="display: inline-block;">Try Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let currentQuestion = 1;
+        
+        function checkAnswer(questionNum, result) {
+            const buttons = document.querySelectorAll(`#question${questionNum} .option-btn`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            const nextBtn = document.getElementById(`next${questionNum}`);
+            
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                if (btn.onclick.toString().includes(result)) {
+                    btn.classList.add(result);
+                } else {
+                    btn.classList.add('incorrect');
+                }
+            });
+            
+            if (result === 'correct') {
+                score++;
+                feedback.classList.add('correct');
+            } else {
+                feedback.classList.add('incorrect');
+                feedback.innerHTML = '<strong>Try again next time!</strong> The correct answer uses the target expressions more naturally.';
+            }
+            
+            document.getElementById('score').textContent = score;
+            updateProgressBar();
+            nextBtn.style.display = 'inline-block';
+        }
+        
+        function showQuestion(questionNum) {
+            document.getElementById(`question${questionNum-1}`).classList.add('hidden');
+            document.getElementById(`question${questionNum}`).classList.remove('hidden');
+            currentQuestion = questionNum;
+            updateProgressBar();
+        }
+        
+        function updateProgressBar() {
+            const progress = (currentQuestion / 12) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+        
+        function showResults() {
+            document.getElementById('question12').classList.add('hidden');
+            document.getElementById('results').classList.remove('hidden');
+            
+            const percentage = Math.round((score / 12) * 100);
+            let message = '';
+            
+            if (percentage >= 90) {
+                message = `Outstanding! ${score}/12 (${percentage}%) 🌟`;
+            } else if (percentage >= 70) {
+                message = `Great job! ${score}/12 (${percentage}%) 👏`;
+            } else if (percentage >= 50) {
+                message = `Good effort! ${score}/12 (${percentage}%) 👍`;
+            } else {
+                message = `Keep practicing! ${score}/12 (${percentage}%) 📚`;
+            }
+            
+            document.getElementById('finalScore').innerHTML = message;
+            document.getElementById('progressBar').style.width = '100%';
+        }
+        
+        function restartExercise() {
+            score = 0;
+            currentQuestion = 1;
+            document.getElementById('score').textContent = score;
+            document.getElementById('progressBar').style.width = '0%';
+            
+            // Reset all questions
+            for (let i = 1; i <= 12; i++) {
+                const question = document.getElementById(`question${i}`);
+                const buttons = question.querySelectorAll('.option-btn');
+                const feedback = document.getElementById(`feedback${i}`);
+                const nextBtn = document.getElementById(`next${i}`);
+                
+                buttons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.className = 'option-btn';
+                });
+                
+                feedback.style.display = 'none';
+                feedback.className = 'feedback';
+                nextBtn.style.display = 'none';
+                
+                if (i > 1) {
+                    question.classList.add('hidden');
+                } else {
+                    question.classList.remove('hidden');
+                }
+            }
+            
+            document.getElementById('results').classList.add('hidden');
+        }
+        
+        // Initialize progress bar
+        updateProgressBar();
+    </script>
+</body>
+</html>

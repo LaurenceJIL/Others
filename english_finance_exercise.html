@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English for Finance — Describing Change</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', Arial, sans-serif;
+    background: #d8d5ce;
+    color: #1a1a1a;
+    padding: 24px 16px;
+    font-size: 10pt;
+    line-height: 1.45;
+  }
+
+  /* ====== A4 PAGE ====== */
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    background: white;
+    margin: 0 auto 28px;
+    padding: 17mm 17mm 15mm;
+    box-shadow: 0 3px 20px rgba(0,0,0,0.18);
+    position: relative;
+  }
+
+  /* ====== PAGE HEADER ====== */
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 2.5px solid #1e5c8f;
+    padding-bottom: 7px;
+    margin-bottom: 15px;
+  }
+  .header-left {}
+  .page-main-title {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 13pt;
+    font-weight: 700;
+    color: #1e5c8f;
+    letter-spacing: 0.02em;
+  }
+  .page-sub {
+    font-size: 8pt;
+    color: #777;
+    font-style: italic;
+    margin-top: 1px;
+  }
+  .page-num {
+    font-size: 8pt;
+    color: #999;
+    background: #f2f0eb;
+    border: 0.5px solid #ccc;
+    padding: 2px 9px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+
+  /* ====== CHART BOXES ====== */
+  .chart-box {
+    border: 1px solid #cdc9c1;
+    border-radius: 5px;
+    padding: 10px 12px 9px;
+    background: #fafaf8;
+    margin-bottom: 14px;
+  }
+  .chart-box:last-child { margin-bottom: 0; }
+
+  .chart-title {
+    font-size: 8.5pt;
+    font-weight: 700;
+    color: #1e5c8f;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 1px;
+  }
+  .chart-sub {
+    font-size: 7.5pt;
+    color: #888;
+    font-style: italic;
+    margin-bottom: 8px;
+  }
+  .canvas-wrap {
+    position: relative;
+    width: 100%;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin-top: 7px;
+    font-size: 7.5pt;
+    color: #555;
+  }
+  .li { display: flex; align-items: center; gap: 4px; }
+  .ls { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+  .ll { width: 20px; height: 0; border-top: 3px solid; flex-shrink: 0; }
+  .ll-dash { border-top: 3px dashed; }
+
+  /* Pie pair */
+  .pie-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .pie-sub { text-align: center; }
+  .pie-year {
+    font-size: 8.5pt;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 5px;
+  }
+
+  /* ====== WORKSHEET PAGE ====== */
+  .section-title {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 10.5pt;
+    font-weight: 700;
+    color: #1e5c8f;
+    border-left: 3.5px solid #1e5c8f;
+    padding-left: 9px;
+    margin: 15px 0 8px;
+  }
+  .section-intro {
+    font-size: 8.5pt;
+    color: #666;
+    font-style: italic;
+    line-height: 1.5;
+    margin-bottom: 9px;
+  }
+
+  .q-list { list-style: none; }
+  .q-list li {
+    font-size: 9pt;
+    padding: 5px 4px 5px 22px;
+    border-bottom: 0.5px dotted #d0cdc8;
+    position: relative;
+    line-height: 1.5;
+  }
+  .q-list li:last-child { border-bottom: none; }
+  .qn {
+    position: absolute;
+    left: 0;
+    font-weight: 700;
+    color: #1e5c8f;
+  }
+
+  /* TF table */
+  .tf-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 8.5pt;
+    margin-top: 4px;
+  }
+  .tf-table th {
+    background: #1e5c8f;
+    color: white;
+    padding: 5px 8px;
+    font-size: 8pt;
+    font-weight: 600;
+    text-align: left;
+  }
+  .tf-table td {
+    padding: 5px 8px;
+    border-bottom: 0.5px solid #e0ddd8;
+    vertical-align: middle;
+    line-height: 1.45;
+  }
+  .tf-table tr:nth-child(even) td { background: #f7f5f0; }
+  .tf-num { font-weight: 700; color: #1e5c8f; width: 22px; }
+  .tf-box {
+    width: 50px;
+    text-align: center;
+  }
+  .box-sq {
+    display: inline-block;
+    width: 32px;
+    height: 22px;
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    line-height: 22px;
+    font-size: 8pt;
+    color: #aaa;
+    text-align: center;
+  }
+
+  /* Presentation box */
+  .pres-box {
+    border: 1px solid #a8c4df;
+    border-radius: 5px;
+    background: #f0f7fc;
+    padding: 10px 12px;
+    margin-top: 4px;
+  }
+  .pres-step {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 7px;
+    font-size: 8.5pt;
+    line-height: 1.5;
+  }
+  .pres-step:last-child { margin-bottom: 0; }
+  .pn { font-weight: 700; color: #1e5c8f; min-width: 18px; }
+  .pres-tip {
+    font-size: 7.5pt;
+    color: #5a7a96;
+    font-style: italic;
+    margin-top: 8px;
+    border-top: 0.5px solid #b8d0e8;
+    padding-top: 6px;
+    line-height: 1.5;
+  }
+
+  /* ====== VOCABULARY PAGE ====== */
+  .vocab-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 6px;
+  }
+  .vocab-card {
+    border: 1px solid #cdc9c1;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .vocab-head {
+    background: #1e5c8f;
+    color: white;
+    font-size: 8pt;
+    font-weight: 700;
+    padding: 5px 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .vocab-body { padding: 7px 10px; }
+  .vi {
+    display: grid;
+    grid-template-columns: 2fr 2.8fr;
+    gap: 4px;
+    font-size: 8pt;
+    padding: 3px 0;
+    border-bottom: 0.5px dotted #ddd;
+    line-height: 1.4;
+  }
+  .vi:last-child { border-bottom: none; }
+  .vw { font-weight: 700; color: #142e4a; }
+  .vg { color: #666; font-style: italic; }
+  .vi-mini { font-size: 7pt; color: #999; font-style: italic; margin-bottom: 3px; }
+
+  .grammar-note {
+    background: #fdf6e4;
+    border-left: 3.5px solid #c0921a;
+    padding: 8px 11px;
+    font-size: 8pt;
+    line-height: 1.6;
+    color: #4a3c10;
+    margin-top: 11px;
+    border-radius: 0 4px 4px 0;
+  }
+  .grammar-note strong { color: #7a5c08; }
+
+  .examples-box {
+    border: 1px solid #c4dcc0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 10px;
+  }
+  .ex-head {
+    background: #2e7a44;
+    color: white;
+    font-size: 8pt;
+    font-weight: 700;
+    padding: 5px 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .ex-body { padding: 8px 10px; }
+  .ex-item {
+    font-size: 8.5pt;
+    padding: 3.5px 0;
+    border-bottom: 0.5px dotted #bcd8b8;
+    line-height: 1.5;
+    color: #1e3a1e;
+  }
+  .ex-item:last-child { border-bottom: none; }
+  .ek { font-weight: 700; color: #1a5c2a; }
+
+  /* ====== PRINT ====== */
+  @media print {
+    body { background: white; padding: 0; }
+    .page {
+      box-shadow: none;
+      margin: 0;
+      page-break-after: always;
+      page-break-inside: avoid;
+    }
+    .page:last-child { page-break-after: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     PAGE 1 — CHARTS 1 & 2
+     ============================================================ -->
+<div class="page">
+  <div class="page-header">
+    <div class="header-left">
+      <div class="page-main-title">Precision Industries Ltd — Financial Overview</div>
+      <div class="page-sub">Annual Performance Data &nbsp;·&nbsp; English for Business Finance &nbsp;·&nbsp; Level A2–B1</div>
+    </div>
+    <div class="page-num">Handout — Page 1 of 4</div>
+  </div>
+
+  <!-- CHART 1: Line -->
+  <div class="chart-box">
+    <div class="chart-title">Chart 1 — Revenue &amp; Operating Profit (2020–2024)</div>
+    <div class="chart-sub">Five-year trend &nbsp;|&nbsp; values in millions of euros (€M)</div>
+    <div class="canvas-wrap" style="height:170px;">
+      <canvas id="lineChart" role="img" aria-label="Line chart: Revenue rose from €18.2M in 2020 to €24.1M in 2024, dipping to €21.4M in 2023. Operating profit peaked at €4.6M in 2022, fell sharply to €2.1M in 2023, then recovered to €3.9M in 2024.">Revenue 2020:18.2 2021:19.6 2022:23.8 2023:21.4 2024:24.1. Operating profit 2020:2.8 2021:3.1 2022:4.6 2023:2.1 2024:3.9</canvas>
+    </div>
+    <div class="legend">
+      <div class="li"><div class="ll" style="border-color:#1e6bbf;"></div> Revenue (€M)</div>
+      <div class="li"><div class="ll ll-dash" style="border-color:#cf7c0e;"></div> Operating Profit (€M)</div>
+    </div>
+  </div>
+
+  <!-- CHART 2: Grouped Bar -->
+  <div class="chart-box">
+    <div class="chart-title">Chart 2 — Operating Costs by Department (2022 vs 2024)</div>
+    <div class="chart-sub">Comparison of departmental costs &nbsp;|&nbsp; values in thousands of euros (€K)</div>
+    <div class="canvas-wrap" style="height:172px;">
+      <canvas id="barChart" role="img" aria-label="Grouped bar chart. Production: rose from €4,200K to €5,100K. Logistics: fell from €1,800K to €1,600K. R&D: rose from €900K to €1,400K. Administration: marginally up from €600K to €650K. Sales: rose from €1,100K to €1,750K.">Departmental costs 2022 vs 2024.</canvas>
+    </div>
+    <div class="legend">
+      <div class="li"><div class="ls" style="background:#1e6bbf;"></div> 2022</div>
+      <div class="li"><div class="ls" style="background:#e09018;"></div> 2024</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE 2 — CHARTS 3 & 4
+     ============================================================ -->
+<div class="page">
+  <div class="page-header">
+    <div class="header-left">
+      <div class="page-main-title">Precision Industries Ltd — Financial Overview</div>
+      <div class="page-sub">Annual Performance Data &nbsp;·&nbsp; English for Business Finance &nbsp;·&nbsp; Level A2–B1</div>
+    </div>
+    <div class="page-num">Handout — Page 2 of 4</div>
+  </div>
+
+  <!-- CHART 3: Pie pair -->
+  <div class="chart-box" style="margin-bottom:14px;">
+    <div class="chart-title">Chart 3 — Revenue by Business Segment (2022 → 2024)</div>
+    <div class="chart-sub">Percentage share of total revenue — comparing two years</div>
+    <div class="pie-pair">
+      <div class="pie-sub">
+        <div class="pie-year">2022</div>
+        <div class="canvas-wrap" style="height:145px;">
+          <canvas id="pie2022" role="img" aria-label="2022 revenue shares: Industrial 42%, Consumer 28%, Export 20%, Other 10%.">Industrial 42%, Consumer 28%, Export 20%, Other 10%</canvas>
+        </div>
+      </div>
+      <div class="pie-sub">
+        <div class="pie-year">2024</div>
+        <div class="canvas-wrap" style="height:145px;">
+          <canvas id="pie2024" role="img" aria-label="2024 revenue shares: Industrial 35%, Consumer 30%, Export 27%, Other 8%.">Industrial 35%, Consumer 30%, Export 27%, Other 8%</canvas>
+        </div>
+      </div>
+    </div>
+    <div class="legend" style="justify-content:center; margin-top:9px;">
+      <div class="li"><div class="ls" style="background:#1e6bbf;"></div> Industrial</div>
+      <div class="li"><div class="ls" style="background:#e09018;"></div> Consumer</div>
+      <div class="li"><div class="ls" style="background:#2a9860;"></div> Export</div>
+      <div class="li"><div class="ls" style="background:#9058a0;"></div> Other</div>
+    </div>
+  </div>
+
+  <!-- CHART 4: Stacked column -->
+  <div class="chart-box">
+    <div class="chart-title">Chart 4 — Headcount by Contract Type (2020–2024)</div>
+    <div class="chart-sub">Number of employees — permanent, temporary and contractors</div>
+    <div class="canvas-wrap" style="height:168px;">
+      <canvas id="stackedChart" role="img" aria-label="Stacked column chart. Total headcount grew from 210 in 2020 to 285 in 2024. Permanent staff rose slightly from 148 to 162. Temporary staff rose from 42 to 58. Contractors grew most dramatically from 20 to 65.">Headcount 2020-2024 by contract type.</canvas>
+    </div>
+    <div class="legend">
+      <div class="li"><div class="ls" style="background:#1e6bbf;"></div> Permanent</div>
+      <div class="li"><div class="ls" style="background:#e09018;"></div> Temporary</div>
+      <div class="li"><div class="ls" style="background:#2a9860;"></div> Contractors</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE 3 — WORKSHEET
+     ============================================================ -->
+<div class="page">
+  <div class="page-header">
+    <div class="header-left">
+      <div class="page-main-title">Worksheet — Describing Change</div>
+      <div class="page-sub">Interpreting, Presenting &amp; Questioning Business Charts</div>
+    </div>
+    <div class="page-num">Handout — Page 3 of 4</div>
+  </div>
+
+  <!-- SECTION A -->
+  <div class="section-title">A. Open Questions — Interpret the Charts</div>
+  <p class="section-intro">Study the four charts carefully. Answer each question in one or two complete sentences. Use language of change: direction, degree and speed. Be as precise as possible — include numbers where you can.</p>
+
+  <ol class="q-list">
+    <li><span class="qn">1.</span> Look at Chart 1. How did total revenue change between 2020 and 2024? Was this change consistent every year? Explain what happened in 2023 and suggest a word to describe the overall trend.</li>
+    <li><span class="qn">2.</span> Compare the operating profit in 2022 and 2023 (Chart 1). How significant was this change? Which words from the vocabulary list would you use to describe this fall — and why?</li>
+    <li><span class="qn">3.</span> Look at Chart 2. Which department saw the largest percentage increase in costs between 2022 and 2024? Approximately how much did costs rise in this department?</li>
+    <li><span class="qn">4.</span> Did any department manage to reduce its costs between 2022 and 2024? (Chart 2). Describe this change using an appropriate noun and adverb.</li>
+    <li><span class="qn">5.</span> Compare the two pie charts (Chart 3). Which segment grew the most between 2022 and 2024? Which segment declined? Mention the specific percentage change for both.</li>
+    <li><span class="qn">6.</span> Looking at Chart 3, what strategic trend can you identify in the company's business? What might explain this shift? Use at least one phrase from the vocabulary list.</li>
+    <li><span class="qn">7.</span> Study Chart 4. What happened to the number of contractors between 2020 and 2024? How does this compare to the change in permanent staff? Use different vocabulary for each group.</li>
+    <li><span class="qn">8.</span> Looking at all four charts together, what is your overall assessment of this company's performance over the five-year period? Give at least two pieces of evidence and link two charts in your answer.</li>
+  </ol>
+
+  <!-- SECTION B -->
+  <div class="section-title">B. True or False? — Read Carefully!</div>
+  <p class="section-intro">Write TRUE or FALSE in the box. If the statement is false, correct it in your own words on a separate sheet.</p>
+
+  <table class="tf-table">
+    <thead>
+      <tr>
+        <th style="width:26px;">#</th>
+        <th>Statement</th>
+        <th style="width:60px; text-align:center;">T / F</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="tf-num">1</td>
+        <td>Revenue rose steadily every single year between 2020 and 2024, with no interruption to the upward trend.</td>
+        <td class="tf-box"><div class="box-sq">F</div></td>
+      </tr>
+      <tr>
+        <td class="tf-num">2</td>
+        <td>The operating profit in 2023 was the lowest point in the five-year period shown in Chart 1.</td>
+        <td class="tf-box"><div class="box-sq">T</div></td>
+      </tr>
+      <tr>
+        <td class="tf-num">3</td>
+        <td>R&amp;D costs more than doubled between 2022 and 2024 according to Chart 2.</td>
+        <td class="tf-box"><div class="box-sq">F</div></td>
+      </tr>
+      <tr>
+        <td class="tf-num">4</td>
+        <td>The Production department had the largest absolute cost increase of all departments between 2022 and 2024.</td>
+        <td class="tf-box"><div class="box-sq">F</div></td>
+      </tr>
+      <tr>
+        <td class="tf-num">5</td>
+        <td>The Export segment grew from 20% to 27% of total revenue between 2022 and 2024 (Chart 3).</td>
+        <td class="tf-box"><div class="box-sq">T</div></td>
+      </tr>
+      <tr>
+        <td class="tf-num">6</td>
+        <td>The number of permanent employees fell between 2020 and 2024 according to Chart 4.</td>
+        <td class="tf-box"><div class="box-sq">F</div></td>
+      </tr>
+      <tr>
+        <td class="tf-num">7</td>
+        <td>Contractors represented the smallest group of workers in every year shown in Chart 4.</td>
+        <td class="tf-box"><div class="box-sq">T</div></td>
+      </tr>
+      <tr>
+        <td class="tf-num">8</td>
+        <td>The Industrial segment increased its share of total revenue between 2022 and 2024 (Chart 3).</td>
+        <td class="tf-box"><div class="box-sq">F</div></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SECTION C -->
+  <div class="section-title">C. Presentation Task — Instructions</div>
+  <div class="pres-box">
+    <div class="pres-step"><span class="pn">1.</span><span><strong>Introduction (approx. 1 min):</strong> Introduce yourself and the topic. Explain what the four charts show, the period they cover, and what company the data is from.</span></div>
+    <div class="pres-step"><span class="pn">2.</span><span><strong>Chart by chart (3–4 min):</strong> Present each chart in order. For each one: identify the main trend, highlight one key or surprising change, and use precise language. Include at least one specific figure (e.g. <em>"Sales costs rose sharply by approximately 59%, from €1.1M to €1.75M"</em>).</span></div>
+    <div class="pres-step"><span class="pn">3.</span><span><strong>Overall assessment (1 min):</strong> Summarise the company's performance. Mention one strength and one area of concern. Link data from at least two different charts in your conclusion.</span></div>
+    <div class="pres-step"><span class="pn">4.</span><span><strong>Questions:</strong> Invite questions and respond using: <em>"That's a good question — if you look at Chart…"</em> or <em>"The data suggests that…"</em> or <em>"According to the figures…"</em></span></div>
+    <div class="pres-tip">
+      <strong>Useful signposting phrases:</strong> &nbsp;
+      "Let me draw your attention to…" &nbsp;|&nbsp;
+      "As you can see from Chart…" &nbsp;|&nbsp;
+      "This is particularly striking because…" &nbsp;|&nbsp;
+      "Moving on to the next chart…" &nbsp;|&nbsp;
+      "To summarise the key points…" &nbsp;|&nbsp;
+      "What is especially notable is…"
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE 4 — VOCABULARY LIST
+     ============================================================ -->
+<div class="page">
+  <div class="page-header">
+    <div class="header-left">
+      <div class="page-main-title">Vocabulary — The Language of Change</div>
+      <div class="page-sub">Direction · Degree · Speed &nbsp;·&nbsp; Business English A2–B1</div>
+    </div>
+    <div class="page-num">Handout — Page 4 of 4</div>
+  </div>
+
+  <div class="vocab-grid">
+    <!-- NOUNS -->
+    <div class="vocab-card">
+      <div class="vocab-head">Nouns — Naming a Change</div>
+      <div class="vocab-body">
+        <div class="vi vi-mini" style="grid-template-columns: 1fr;">Use with: "There was a ___" / "a ___ in profits"</div>
+        <div class="vi"><span class="vw">a rise / an increase</span><span class="vg">movement upward (general)</span></div>
+        <div class="vi"><span class="vw">a fall / a decrease</span><span class="vg">movement downward (general)</span></div>
+        <div class="vi"><span class="vw">a drop</span><span class="vg">a sudden or notable fall</span></div>
+        <div class="vi"><span class="vw">a surge</span><span class="vg">a large, rapid increase</span></div>
+        <div class="vi"><span class="vw">a recovery / a rebound</span><span class="vg">return to a better level</span></div>
+        <div class="vi"><span class="vw">a peak</span><span class="vg">the highest point reached</span></div>
+        <div class="vi"><span class="vw">a trough / a low point</span><span class="vg">the lowest point reached</span></div>
+        <div class="vi"><span class="vw">a fluctuation</span><span class="vg">irregular ups and downs</span></div>
+        <div class="vi"><span class="vw">a plateau / levelling off</span><span class="vg">period of little or no change</span></div>
+        <div class="vi"><span class="vw">a shift</span><span class="vg">a change in structure or focus</span></div>
+      </div>
+    </div>
+    <!-- VERBS -->
+    <div class="vocab-card">
+      <div class="vocab-head">Verbs — Describing Movement</div>
+      <div class="vocab-body">
+        <div class="vi vi-mini" style="grid-template-columns: 1fr;">Use with adverbs: "costs rose sharply"</div>
+        <div class="vi"><span class="vw">to rise / to increase</span><span class="vg">go up (general)</span></div>
+        <div class="vi"><span class="vw">to grow / to climb</span><span class="vg">increase gradually or steadily</span></div>
+        <div class="vi"><span class="vw">to surge / to soar</span><span class="vg">increase rapidly and strongly</span></div>
+        <div class="vi"><span class="vw">to fall / to decrease</span><span class="vg">go down (general)</span></div>
+        <div class="vi"><span class="vw">to drop / to decline</span><span class="vg">fall, often significantly</span></div>
+        <div class="vi"><span class="vw">to plunge / to collapse</span><span class="vg">fall sharply and suddenly</span></div>
+        <div class="vi"><span class="vw">to recover / to rebound</span><span class="vg">improve after a fall</span></div>
+        <div class="vi"><span class="vw">to level off / to stabilise</span><span class="vg">stop changing significantly</span></div>
+        <div class="vi"><span class="vw">to fluctuate</span><span class="vg">vary up and down irregularly</span></div>
+        <div class="vi"><span class="vw">to double / to triple</span><span class="vg">multiply by two / three</span></div>
+      </div>
+    </div>
+    <!-- ADJECTIVES -->
+    <div class="vocab-card">
+      <div class="vocab-head">Adjectives — Degree of Change</div>
+      <div class="vocab-body">
+        <div class="vi vi-mini" style="grid-template-columns: 1fr;">Before a noun: "a sharp rise" / "a gradual fall"</div>
+        <div class="vi"><span class="vw">sharp / dramatic</span><span class="vg">very large and notable</span></div>
+        <div class="vi"><span class="vw">significant / considerable</span><span class="vg">large; important to notice</span></div>
+        <div class="vi"><span class="vw">substantial</span><span class="vg">large in amount</span></div>
+        <div class="vi"><span class="vw">moderate</span><span class="vg">medium-sized; not extreme</span></div>
+        <div class="vi"><span class="vw">slight / marginal</span><span class="vg">very small</span></div>
+        <div class="vi"><span class="vw">negligible</span><span class="vg">so small it is unimportant</span></div>
+        <div class="vi"><span class="vw">steady</span><span class="vg">regular and continuous</span></div>
+        <div class="vi"><span class="vw">gradual</span><span class="vg">slow and regular over time</span></div>
+        <div class="vi"><span class="vw">rapid / sudden</span><span class="vg">happening very quickly</span></div>
+        <div class="vi"><span class="vw">unexpected / surprising</span><span class="vg">not predicted</span></div>
+      </div>
+    </div>
+    <!-- ADVERBS -->
+    <div class="vocab-card">
+      <div class="vocab-head">Adverbs — Speed &amp; Degree</div>
+      <div class="vocab-body">
+        <div class="vi vi-mini" style="grid-template-columns: 1fr;">After a verb: "costs rose sharply"</div>
+        <div class="vi"><span class="vw">sharply / dramatically</span><span class="vg">by a large amount, quickly</span></div>
+        <div class="vi"><span class="vw">significantly / considerably</span><span class="vg">by a noteworthy amount</span></div>
+        <div class="vi"><span class="vw">substantially</span><span class="vg">by a large amount</span></div>
+        <div class="vi"><span class="vw">moderately</span><span class="vg">by a medium amount</span></div>
+        <div class="vi"><span class="vw">slightly / marginally</span><span class="vg">by a very small amount</span></div>
+        <div class="vi"><span class="vw">steadily / consistently</span><span class="vg">at a regular, even pace</span></div>
+        <div class="vi"><span class="vw">gradually</span><span class="vg">slowly, over a period of time</span></div>
+        <div class="vi"><span class="vw">rapidly / suddenly</span><span class="vg">very quickly</span></div>
+        <div class="vi"><span class="vw">briefly / temporarily</span><span class="vg">for a short time only</span></div>
+        <div class="vi"><span class="vw">overall / broadly</span><span class="vg">when looking at the whole picture</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grammar note -->
+  <div class="grammar-note">
+    <strong>Grammar note — Noun or Verb?</strong>&nbsp; You can express the same idea in two ways. Both are correct; the noun form is more formal and common in written reports:<br>
+    &nbsp;&nbsp;▸ <strong>Verb + adverb:</strong> <em>"Revenue <strong>rose sharply</strong> in 2022."</em><br>
+    &nbsp;&nbsp;▸ <strong>There was + article + adjective + noun:</strong> <em>"There was <strong>a sharp rise</strong> in revenue in 2022."</em>
+  </div>
+
+  <!-- Model sentences -->
+  <div class="examples-box">
+    <div class="ex-head">Model Sentences — Use These as a Guide</div>
+    <div class="ex-body">
+      <div class="ex-item">▸ Revenue <span class="ek">rose steadily</span> over the five-year period, from €18.2M in 2020 to €24.1M in 2024, despite a <span class="ek">temporary dip</span> in 2023.</div>
+      <div class="ex-item">▸ Operating profit <span class="ek">fell sharply</span> in 2023, reaching its <span class="ek">lowest point</span> at €2.1M — a dramatic <span class="ek">drop</span> from the 2022 peak of €4.6M.</div>
+      <div class="ex-item">▸ There was a <span class="ek">considerable increase</span> in R&amp;D spending between 2022 and 2024, with costs <span class="ek">rising substantially</span> from €900K to €1.4M — an increase of approximately 55%.</div>
+      <div class="ex-item">▸ The Export segment <span class="ek">grew gradually</span> from 20% to 27% of total revenue, indicating a clear <span class="ek">shift</span> in the company's business strategy towards international markets.</div>
+      <div class="ex-item">▸ The number of contractors <span class="ek">surged dramatically</span> — more than tripling from 20 to 65 — while permanent headcount <span class="ek">rose only slightly</span> from 148 to 162 over the same period.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  Chart.defaults.font.family = "'Source Sans 3', Arial, sans-serif";
+  Chart.defaults.font.size = 9;
+  Chart.defaults.color = '#555';
+
+  const grid = { color: 'rgba(0,0,0,0.07)', lineWidth: 0.5 };
+  const PIE = ['#1e6bbf','#e09018','#2a9860','#9058a0'];
+
+  // LINE CHART
+  new Chart(document.getElementById('lineChart'), {
+    type: 'line',
+    data: {
+      labels: ['2020','2021','2022','2023','2024'],
+      datasets: [
+        {
+          label: 'Revenue (€M)',
+          data: [18.2, 19.6, 23.8, 21.4, 24.1],
+          borderColor: '#1e6bbf',
+          backgroundColor: 'rgba(30,107,191,0.07)',
+          pointBackgroundColor: '#1e6bbf',
+          pointRadius: 4.5, pointHoverRadius: 6,
+          borderWidth: 2.5, fill: true, tension: 0.32, yAxisID: 'y'
+        },
+        {
+          label: 'Operating Profit (€M)',
+          data: [2.8, 3.1, 4.6, 2.1, 3.9],
+          borderColor: '#cf7c0e',
+          backgroundColor: 'transparent',
+          pointBackgroundColor: '#cf7c0e',
+          pointRadius: 4.5, pointHoverRadius: 6,
+          borderWidth: 2, borderDash: [6,3],
+          fill: false, tension: 0.32, yAxisID: 'y'
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { mode: 'index', intersect: false }
+      },
+      scales: {
+        x: { grid: grid, ticks: { font: { size: 9 } } },
+        y: {
+          grid: grid, min: 0, max: 27,
+          ticks: { font: { size: 9 }, callback: v => '€' + v + 'M' }
+        }
+      }
+    }
+  });
+
+  // BAR CHART
+  new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Production','Logistics','R&D','Administration','Sales'],
+      datasets: [
+        {
+          label: '2022',
+          data: [4200, 1800, 900, 600, 1100],
+          backgroundColor: '#1e6bbf', borderRadius: 2, barPercentage: 0.7
+        },
+        {
+          label: '2024',
+          data: [5100, 1600, 1400, 650, 1750],
+          backgroundColor: '#e09018', borderRadius: 2, barPercentage: 0.7
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 8 } } },
+        y: {
+          grid: grid,
+          ticks: { font: { size: 9 }, callback: v => '€' + (v/1000).toFixed(1) + 'K' }
+        }
+      }
+    }
+  });
+
+  // PIE 2022
+  const pieOpts = (labels, data) => ({
+    type: 'pie',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: data,
+        backgroundColor: PIE,
+        borderColor: 'white',
+        borderWidth: 2.5,
+        hoverOffset: 5
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => ' ' + c.label + ': ' + c.raw + '%' } }
+      }
+    }
+  });
+
+  const seg = ['Industrial','Consumer','Export','Other'];
+  new Chart(document.getElementById('pie2022'), pieOpts(seg, [42,28,20,10]));
+  new Chart(document.getElementById('pie2024'), pieOpts(seg, [35,30,27,8]));
+
+  // STACKED
+  new Chart(document.getElementById('stackedChart'), {
+    type: 'bar',
+    data: {
+      labels: ['2020','2021','2022','2023','2024'],
+      datasets: [
+        { label: 'Permanent',   data: [148,152,158,155,162], backgroundColor: '#1e6bbf' },
+        { label: 'Temporary',   data: [42, 44, 40, 52, 58],  backgroundColor: '#e09018' },
+        { label: 'Contractors', data: [20, 26, 34, 54, 65],  backgroundColor: '#2a9860' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { stacked: true, grid: { display: false }, ticks: { font: { size: 9 } } },
+        y: { stacked: true, grid: grid, min: 0, max: 320, ticks: { font: { size: 9 } } }
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>

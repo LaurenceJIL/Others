@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business English Grammar Test — few / a few / little / a little</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1510;
+    --paper: #f7f3ed;
+    --cream: #ede8df;
+    --rule: #c8b99a;
+    --accent: #8b3a2a;
+    --accent-light: #c4503a;
+    --gold: #b5872a;
+    --correct: #2a6b3a;
+    --correct-bg: #eaf4ec;
+    --incorrect: #8b1a1a;
+    --incorrect-bg: #f9eaea;
+    --selected: #2c4a7a;
+    --selected-bg: #eaf0fa;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--paper);
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 27px,
+        rgba(180,160,120,0.12) 27px,
+        rgba(180,160,120,0.12) 28px
+      );
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+    padding: 40px 20px 80px;
+  }
+
+  .page {
+    max-width: 780px;
+    margin: 0 auto;
+    background: var(--paper);
+  }
+
+  /* ── HEADER ── */
+  header {
+    border-top: 4px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+    padding: 28px 0 22px;
+    margin-bottom: 36px;
+    position: relative;
+  }
+
+  header::after {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(to right, var(--accent), var(--gold), var(--accent));
+    margin-top: 14px;
+  }
+
+  .label {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    font-family: 'Source Serif 4', serif;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(22px, 4vw, 34px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-top: 6px;
+    color: var(--ink);
+  }
+
+  .subtitle {
+    margin-top: 6px;
+    color: #5a4e3c;
+    font-style: italic;
+    font-size: 15px;
+  }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 14px;
+    font-size: 13px;
+    color: #6a5d4a;
+  }
+
+  .meta-row span { display: flex; align-items: center; gap: 5px; }
+  .meta-row .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); display: inline-block; }
+
+  /* ── INSTRUCTIONS ── */
+  .instructions {
+    background: var(--cream);
+    border-left: 3px solid var(--accent);
+    padding: 16px 20px;
+    margin-bottom: 36px;
+    font-size: 14.5px;
+    color: #3a2e1e;
+    line-height: 1.65;
+  }
+
+  .instructions strong { color: var(--accent); }
+
+  /* ── QUESTIONS ── */
+  .question-block {
+    margin-bottom: 32px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--rule);
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeUp 0.4s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .q-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 28px;
+    letter-spacing: 0.05em;
+  }
+
+  .q-text {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink);
+    flex: 1;
+  }
+
+  .blank {
+    display: inline-block;
+    border-bottom: 2px solid var(--ink);
+    min-width: 90px;
+    height: 1px;
+    vertical-align: bottom;
+    margin: 0 3px;
+  }
+
+  /* ── OPTIONS ── */
+  .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+    margin-left: 40px;
+  }
+
+  @media (max-width: 520px) {
+    .options { grid-template-columns: 1fr; margin-left: 0; }
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    border: 1.5px solid var(--rule);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    user-select: none;
+    background: transparent;
+    font-family: 'Source Serif 4', serif;
+    font-size: 14.5px;
+    color: var(--ink);
+    text-align: left;
+    position: relative;
+  }
+
+  .option:hover:not(.disabled) {
+    border-color: var(--selected);
+    background: var(--selected-bg);
+  }
+
+  .option.selected {
+    border-color: var(--selected);
+    background: var(--selected-bg);
+  }
+
+  .option.correct {
+    border-color: var(--correct);
+    background: var(--correct-bg);
+    color: var(--correct);
+  }
+
+  .option.incorrect {
+    border-color: var(--incorrect);
+    background: var(--incorrect-bg);
+    color: var(--incorrect);
+  }
+
+  .option.reveal-correct {
+    border-color: var(--correct);
+    background: var(--correct-bg);
+    color: var(--correct);
+  }
+
+  .opt-letter {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 12px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s, color 0.15s;
+    color: var(--accent);
+  }
+
+  .option.selected .opt-letter { background: var(--selected); color: #fff; border-color: var(--selected); }
+  .option.correct .opt-letter { background: var(--correct); color: #fff; border-color: var(--correct); }
+  .option.incorrect .opt-letter { background: var(--incorrect); color: #fff; border-color: var(--incorrect); }
+  .option.reveal-correct .opt-letter { background: var(--correct); color: #fff; border-color: var(--correct); }
+
+  .feedback-icon {
+    margin-left: auto;
+    font-size: 14px;
+    display: none;
+  }
+
+  .option.correct .feedback-icon,
+  .option.incorrect .feedback-icon,
+  .option.reveal-correct .feedback-icon { display: block; }
+
+  /* ── EXPLANATION ── */
+  .explanation {
+    display: none;
+    margin-top: 12px;
+    margin-left: 40px;
+    padding: 10px 14px;
+    border-left: 2px solid var(--gold);
+    font-size: 13.5px;
+    font-style: italic;
+    color: #4a3d28;
+    background: #faf6ee;
+    line-height: 1.6;
+  }
+
+  .explanation.show { display: block; }
+
+  /* ── SUBMIT / RESULTS ── */
+  .actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-top: 40px;
+  }
+
+  .btn-submit {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    color: var(--paper);
+    background: var(--ink);
+    border: none;
+    padding: 14px 48px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    border-radius: 1px;
+  }
+
+  .btn-submit:hover { background: var(--accent); }
+  .btn-submit:active { transform: scale(0.98); }
+  .btn-submit:disabled { opacity: 0.4; cursor: default; }
+
+  .btn-reset {
+    font-family: 'Source Serif 4', serif;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    background: transparent;
+    border: 1px solid var(--accent);
+    padding: 8px 28px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 1px;
+    display: none;
+  }
+
+  .btn-reset:hover { background: var(--accent); color: var(--paper); }
+
+  /* ── SCORE CARD ── */
+  .score-card {
+    display: none;
+    text-align: center;
+    padding: 36px 24px;
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    margin-top: 36px;
+  }
+
+  .score-card.show { display: block; }
+
+  .score-big {
+    font-family: 'Playfair Display', serif;
+    font-size: 64px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .score-label {
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-top: 4px;
+  }
+
+  .score-message {
+    margin-top: 16px;
+    font-style: italic;
+    font-size: 17px;
+    color: #3a2e1e;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .score-bar-wrap {
+    max-width: 360px;
+    margin: 20px auto 0;
+    height: 6px;
+    background: var(--rule);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--accent), var(--gold));
+    border-radius: 3px;
+    transition: width 0.8s ease;
+  }
+
+  .progress-note {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #6a5d4a;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: linear-gradient(to right, var(--accent), var(--gold));
+    transition: width 0.3s ease;
+    z-index: 100;
+  }
+
+  /* ── UNANSWERED WARNING ── */
+  .warning {
+    color: var(--accent);
+    font-size: 13.5px;
+    font-style: italic;
+    display: none;
+  }
+  .warning.show { display: block; }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="page">
+
+  <header>
+    <div class="label">Business English · Grammar Practice</div>
+    <h1>few &nbsp;·&nbsp; a few &nbsp;·&nbsp; little &nbsp;·&nbsp; a little</h1>
+    <p class="subtitle">Quantifiers in professional contexts</p>
+    <div class="meta-row">
+      <span><span class="dot"></span> Level: B1</span>
+      <span><span class="dot"></span> 20 questions</span>
+      <span><span class="dot"></span> Multiple choice</span>
+    </div>
+  </header>
+
+  <div class="instructions">
+    <strong>Instructions:</strong> Read each sentence carefully and choose the best answer (A–D).
+    Each question has only one correct answer. Pay close attention to the meaning — the four options may look similar,
+    but the context will guide you. When you have finished all 20 questions, click <strong>Submit</strong> to see your results.
+  </div>
+
+  <div id="quiz"></div>
+
+  <div class="actions">
+    <span class="warning" id="warning">⚠ Please answer all questions before submitting.</span>
+    <button class="btn-submit" id="btnSubmit">Submit answers</button>
+    <button class="btn-reset" id="btnReset">Start again</button>
+  </div>
+
+  <div class="score-card" id="scoreCard">
+    <div class="score-big" id="scoreNum">—</div>
+    <div class="score-label">out of 20</div>
+    <div class="score-bar-wrap"><div class="score-bar-fill" id="scoreFill" style="width:0%"></div></div>
+    <div class="score-message" id="scoreMsg"></div>
+    <div class="progress-note" id="progressNote"></div>
+  </div>
+
+</div>
+
+<script>
+// ── DATA ────────────────────────────────────────────────────────────────────
+// correct is always the first option in `choices`; shuffling is done at render time
+const questions = [
+  {
+    id: 1,
+    text: `We have received <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> complaints about the new billing system, so we are looking into it.`,
+    choices: ["a few", "a little", "few", "little"],
+    correct: "a few",
+    explanation: `"A few" is used with countable nouns (complaints). It has a positive/neutral meaning: there are some — enough to take notice.`
+  },
+  {
+    id: 2,
+    text: `There is <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> time left before the client presentation, so please wrap up your slides.`,
+    choices: ["a little", "a few", "little", "few"],
+    correct: "a little",
+    explanation: `"A little" is used with uncountable nouns (time). It means some — enough to do the task.`
+  },
+  {
+    id: 3,
+    text: `Unfortunately, <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> candidates had the experience required, so the position is still open.`,
+    choices: ["few", "little", "a few", "a little"],
+    correct: "few",
+    explanation: `"Few" (no article) with a countable noun (candidates) means almost none — a negative, disappointing quantity.`
+  },
+  {
+    id: 4,
+    text: `We have <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> budget remaining, but it won't be enough to cover the full redesign.`,
+    choices: ["little", "few", "a little", "a few"],
+    correct: "little",
+    explanation: `"Little" (no article) with an uncountable noun (budget) means almost none — a negative, insufficient amount.`
+  },
+  {
+    id: 5,
+    text: `Could you give me <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> feedback on my report before I send it to the director?`,
+    choices: ["a little", "a few", "few", "little"],
+    correct: "a little",
+    explanation: `"Feedback" is uncountable, so we use "a little" — meaning some, which is a reasonable and positive request.`
+  },
+  {
+    id: 6,
+    text: `<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> of our clients have requested a discount this quarter, so we should discuss our policy.`,
+    choices: ["A few", "A little", "Few", "Little"],
+    correct: "A few",
+    explanation: `"A few of our clients" uses a countable noun and means some — enough to be worth discussing. Note the capital letter at the start of the sentence.`
+  },
+  {
+    id: 7,
+    text: `The training session covered <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> important areas, which I found very helpful.`,
+    choices: ["a few", "a little", "few", "little"],
+    correct: "a few",
+    explanation: `"Areas" is countable. "A few" has a positive nuance — the speaker found the session useful.`
+  },
+  {
+    id: 8,
+    text: `We have <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> information about the new regulations, so it is difficult to plan ahead.`,
+    choices: ["little", "few", "a little", "a few"],
+    correct: "little",
+    explanation: `"Information" is uncountable. "Little" (no article) means almost none — a negative situation that makes planning hard.`
+  },
+  {
+    id: 9,
+    text: `I need <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> more minutes to finish the report. Would that be alright?`,
+    choices: ["a few", "a little", "few", "little"],
+    correct: "a few",
+    explanation: `"Minutes" is countable. "A few more minutes" is a polite request — it implies just a small, manageable number.`
+  },
+  {
+    id: 10,
+    text: `<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> progress has been made on the construction project due to the recent delays.`,
+    choices: ["Little", "Few", "A little", "A few"],
+    correct: "Little",
+    explanation: `"Progress" is uncountable. "Little" at the start of the sentence means almost no progress — a negative result.`
+  },
+  {
+    id: 11,
+    text: `The manager spoke <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> English during the meeting, which helped international colleagues follow along.`,
+    choices: ["a little", "little", "a few", "few"],
+    correct: "a little",
+    explanation: `"English" here is uncountable. "A little" means some — and the result was positive (it helped colleagues).`
+  },
+  {
+    id: 12,
+    text: `<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> employees responded to the internal survey, which made it hard to draw conclusions.`,
+    choices: ["Few", "Little", "A few", "A little"],
+    correct: "Few",
+    explanation: `"Employees" is countable. "Few" means almost none responded — not enough for a reliable result. A negative situation.`
+  },
+  {
+    id: 13,
+    text: `We still have <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> copies of the original contract on file — I'll send you one.`,
+    choices: ["a few", "a little", "few", "little"],
+    correct: "a few",
+    explanation: `"Copies" is countable. "A few" means some are available — a helpful, positive message.`
+  },
+  {
+    id: 14,
+    text: `There is <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> flexibility in the deadline, but we strongly advise submitting by Friday.`,
+    choices: ["a little", "a few", "little", "few"],
+    correct: "a little",
+    explanation: `"Flexibility" is uncountable. "A little" means some exists — a helpful detail, even if it's a small amount.`
+  },
+  {
+    id: 15,
+    text: `<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> of the departments have updated their safety procedures, which is a concern for the audit.`,
+    choices: ["Few", "Little", "A few", "A little"],
+    correct: "Few",
+    explanation: `"Departments" is countable. "Few of the departments" means almost none have updated — a problem for the audit.`
+  },
+  {
+    id: 16,
+    text: `Could you add <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> more detail to the executive summary? It feels a bit thin.`,
+    choices: ["a little", "a few", "few", "little"],
+    correct: "a little",
+    explanation: `"Detail" here is uncountable. "A little more detail" is a common, polite way to ask for a small improvement.`
+  },
+  {
+    id: 17,
+    text: `We interviewed <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> suppliers last week, and two of them look very promising.`,
+    choices: ["a few", "a little", "little", "few"],
+    correct: "a few",
+    explanation: `"Suppliers" is countable. "A few suppliers" = some, and the context is positive — two look promising.`
+  },
+  {
+    id: 18,
+    text: `There is very <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> evidence to support that claim, so we should not include it in the report.`,
+    choices: ["little", "few", "a little", "a few"],
+    correct: "little",
+    explanation: `"Evidence" is uncountable. "Very little evidence" = almost none, which is why the claim should be excluded.`
+  },
+  {
+    id: 19,
+    text: `The project went well overall, although there were <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> communication issues in the early stages.`,
+    choices: ["a few", "a little", "little", "few"],
+    correct: "a few",
+    explanation: `"Issues" is countable. "A few issues" = some, but the sentence is balanced — things went well overall, so this is a mild criticism.`
+  },
+  {
+    id: 20,
+    text: `I have <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> experience managing remote teams, but I'm willing to learn.`,
+    choices: ["little", "few", "a little", "a few"],
+    correct: "little",
+    explanation: `"Experience" is uncountable. "Little experience" = almost none — the speaker is being honest about a weakness.`
+  }
+];
+
+// ── HELPERS ─────────────────────────────────────────────────────────────────
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const letters = ['A','B','C','D'];
+
+// ── RENDER ───────────────────────────────────────────────────────────────────
+const quiz = document.getElementById('quiz');
+const shuffledQs = shuffle(questions);
+const rendered = []; // {q, shuffledChoices, selectedIdx}
+
+shuffledQs.forEach((q, qi) => {
+  const shuffledChoices = shuffle(q.choices);
+  rendered.push({ q, shuffledChoices, selectedIdx: null });
+
+  const block = document.createElement('div');
+  block.className = 'question-block';
+  block.id = `qb-${qi}`;
+  block.style.animationDelay = `${qi * 0.05}s`;
+
+  const optionsHTML = shuffledChoices.map((choice, ci) => `
+    <button class="option" data-q="${qi}" data-c="${ci}" role="radio" aria-checked="false">
+      <span class="opt-letter">${letters[ci]}</span>
+      <span class="opt-text">${choice}</span>
+      <span class="feedback-icon"></span>
+    </button>
+  `).join('');
+
+  block.innerHTML = `
+    <div class="q-header">
+      <span class="q-number">${qi + 1}.</span>
+      <div class="q-text">${q.text}</div>
+    </div>
+    <div class="options" role="radiogroup" aria-label="Question ${qi + 1} options">
+      ${optionsHTML}
+    </div>
+    <div class="explanation" id="exp-${qi}">${q.explanation}</div>
+  `;
+
+  quiz.appendChild(block);
+});
+
+// ── OPTION CLICK ─────────────────────────────────────────────────────────────
+document.getElementById('quiz').addEventListener('click', e => {
+  const btn = e.target.closest('.option');
+  if (!btn || btn.classList.contains('disabled')) return;
+
+  const qi = +btn.dataset.q;
+  const ci = +btn.dataset.c;
+  const block = document.getElementById(`qb-${qi}`);
+  const allOpts = block.querySelectorAll('.option');
+
+  allOpts.forEach(o => { o.classList.remove('selected'); o.setAttribute('aria-checked','false'); });
+  btn.classList.add('selected');
+  btn.setAttribute('aria-checked','true');
+  rendered[qi].selectedIdx = ci;
+
+  updateProgress();
+  document.getElementById('warning').classList.remove('show');
+});
+
+// ── PROGRESS BAR ─────────────────────────────────────────────────────────────
+function updateProgress() {
+  const answered = rendered.filter(r => r.selectedIdx !== null).length;
+  const pct = (answered / rendered.length) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+// ── SUBMIT ───────────────────────────────────────────────────────────────────
+document.getElementById('btnSubmit').addEventListener('click', () => {
+  const unanswered = rendered.filter(r => r.selectedIdx === null);
+  if (unanswered.length > 0) {
+    document.getElementById('warning').classList.add('show');
+    // scroll to first unanswered
+    const firstUnansweredIdx = rendered.findIndex(r => r.selectedIdx === null);
+    document.getElementById(`qb-${firstUnansweredIdx}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  let score = 0;
+
+  rendered.forEach((r, qi) => {
+    const block = document.getElementById(`qb-${qi}`);
+    const allOpts = block.querySelectorAll('.option');
+    const selected = r.shuffledChoices[r.selectedIdx];
+    const isCorrect = selected === r.q.correct;
+    if (isCorrect) score++;
+
+    allOpts.forEach((btn, ci) => {
+      btn.classList.add('disabled');
+      btn.classList.remove('selected');
+      const icon = btn.querySelector('.feedback-icon');
+
+      if (ci === r.selectedIdx) {
+        if (isCorrect) {
+          btn.classList.add('correct');
+          icon.textContent = '✓';
+        } else {
+          btn.classList.add('incorrect');
+          icon.textContent = '✗';
+        }
+      }
+      // Reveal correct answer if the student was wrong
+      if (!isCorrect && r.shuffledChoices[ci] === r.q.correct) {
+        btn.classList.add('reveal-correct');
+        icon.textContent = '✓';
+      }
+    });
+
+    document.getElementById(`exp-${qi}`).classList.add('show');
+  });
+
+  // Score card
+  document.getElementById('scoreNum').textContent = score;
+  const pct = Math.round((score / 20) * 100);
+  setTimeout(() => {
+    document.getElementById('scoreFill').style.width = pct + '%';
+  }, 100);
+
+  let msg, note;
+  if (score === 20) {
+    msg = "Perfect score! You have an excellent command of these quantifiers.";
+    note = "You are ready to use few, a few, little and a little with confidence in professional writing and speech.";
+  } else if (score >= 17) {
+    msg = "Excellent work! You have a strong understanding of these quantifiers.";
+    note = "Review the explanations for any questions you missed to consolidate your knowledge.";
+  } else if (score >= 14) {
+    msg = "Good result. You understand the main rules, with some areas to refine.";
+    note = "Focus on the difference between the article 'a' (positive/neutral) and no article (negative/scarce).";
+  } else if (score >= 10) {
+    msg = "Fair attempt. The core distinction between countable and uncountable nouns needs more practice.";
+    note = "Tip: Ask yourself — is the noun countable (few / a few) or uncountable (little / a little)?";
+  } else {
+    msg = "Keep practising! These quantifiers can be tricky, but the rules are learnable.";
+    note = "Read each explanation carefully. Try to learn two or three examples by heart to build confidence.";
+  }
+
+  document.getElementById('scoreMsg').textContent = msg;
+  document.getElementById('progressNote').textContent = note;
+
+  const card = document.getElementById('scoreCard');
+  card.classList.add('show');
+  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  document.getElementById('btnSubmit').disabled = true;
+  document.getElementById('btnReset').style.display = 'inline-block';
+});
+
+// ── RESET ─────────────────────────────────────────────────────────────────────
+document.getElementById('btnReset').addEventListener('click', () => {
+  window.location.reload();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A2 Vocabulary Test – Fasteners & Fixings</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --paper: #f5f0e8;
+    --accent: #e63946;
+    --accent2: #457b9d;
+    --accent3: #2a9d8f;
+    --light: #a8dadc;
+    --muted: #6b6b6b;
+    --correct: #2a9d8f;
+    --wrong: #e63946;
+    --border: #1a1a2e;
+    --card: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Mono', monospace;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 40px 40px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.18;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 120px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: var(--accent2);
+    opacity: 0.2;
+  }
+  .header-tag {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(26px, 5vw, 48px);
+    font-weight: 800;
+    line-height: 1.1;
+    position: relative;
+    z-index: 1;
+  }
+  header p {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #bbb;
+    max-width: 560px;
+    position: relative;
+    z-index: 1;
+  }
+  .badge-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+  }
+  .badge {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+  .badge span { color: var(--accent); font-weight: 600; }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    background: var(--ink);
+    padding: 0 40px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #888;
+    padding-bottom: 6px;
+    font-family: 'Syne', sans-serif;
+    letter-spacing: 1px;
+  }
+  .progress-track {
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  /* MAIN */
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  /* SECTION HEADERS */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 48px 0 28px;
+  }
+  .section-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--paper);
+    -webkit-text-stroke: 2px var(--ink);
+    line-height: 1;
+    min-width: 60px;
+  }
+  .section-info h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .section-info p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+  .section-line {
+    flex: 1;
+    height: 2px;
+    background: var(--ink);
+    opacity: 0.12;
+  }
+
+  /* CARDS */
+  .question-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    position: relative;
+    transition: box-shadow 0.2s;
+  }
+  .question-card:hover { box-shadow: 4px 4px 0 var(--ink); }
+  .q-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 10px;
+  }
+  .q-text {
+    font-size: 15px;
+    line-height: 1.6;
+    font-weight: 500;
+    margin-bottom: 18px;
+  }
+
+  /* MULTIPLE CHOICE */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  @media (max-width: 500px) { .options-grid { grid-template-columns: 1fr; } }
+  .option-btn {
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .option-btn:hover { background: var(--ink); color: var(--paper); }
+  .option-btn.selected { background: var(--ink); color: var(--paper); }
+  .option-btn.correct { background: var(--correct); border-color: var(--correct); color: white; }
+  .option-btn.wrong { background: var(--wrong); border-color: var(--wrong); color: white; }
+  .option-letter {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    margin-right: 8px;
+    opacity: 0.6;
+  }
+
+  /* MATCHING */
+  .match-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  @media (max-width: 540px) { .match-layout { grid-template-columns: 1fr; } }
+  .match-col-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .match-word-item {
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 8px;
+    padding: 11px 15px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .match-word-item .num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    color: var(--accent);
+    min-width: 20px;
+  }
+  .match-select {
+    width: 100%;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: 8px;
+    padding: 11px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    cursor: pointer;
+    margin-bottom: 8px;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231a1a2e' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    transition: all 0.15s;
+  }
+  .match-select:focus { outline: none; border-color: var(--accent2); }
+  .match-example {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+    padding: 10px 12px;
+    border-left: 3px solid var(--light);
+    background: #f9f9f9;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 8px;
+    font-style: italic;
+  }
+  .match-select.correct { border-color: var(--correct); background-color: #e8f8f5; }
+  .match-select.wrong { border-color: var(--wrong); background-color: #fdf0f0; }
+
+  /* GAP FILL */
+  .gap-text {
+    font-size: 15px;
+    line-height: 2.2;
+    background: #fafafa;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 24px;
+  }
+  .gap-input {
+    display: inline-block;
+    width: 110px;
+    border: none;
+    border-bottom: 2px solid var(--ink);
+    background: transparent;
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 0 4px 2px;
+    color: var(--accent2);
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .gap-input:focus { border-color: var(--accent2); }
+  .gap-input.correct { border-color: var(--correct); color: var(--correct); }
+  .gap-input.wrong { border-color: var(--wrong); color: var(--wrong); }
+  .gap-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    vertical-align: super;
+    margin-right: 2px;
+  }
+  .word-bank {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 14px;
+    background: var(--ink);
+    border-radius: 8px;
+  }
+  .word-chip {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    color: var(--paper);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .word-chip:hover { background: var(--accent); border-color: var(--accent); }
+  .word-chip.used { opacity: 0.35; text-decoration: line-through; pointer-events: none; }
+  .word-bank-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #aaa;
+    width: 100%;
+    margin-bottom: 4px;
+  }
+
+  /* SUBMIT / RESULTS */
+  .submit-area {
+    text-align: center;
+    margin-top: 52px;
+    padding: 40px 20px;
+    border-top: 2px solid var(--ink);
+  }
+  .submit-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 18px 52px;
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid var(--accent);
+    transition: all 0.2s;
+  }
+  .submit-btn:hover { background: var(--ink); border-color: var(--ink); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+
+  .score-panel {
+    display: none;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 14px;
+    padding: 40px;
+    margin-top: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .score-panel::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.12;
+  }
+  .score-big {
+    font-family: 'Syne', sans-serif;
+    font-size: 72px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .score-denom { font-size: 28px; color: #888; }
+  .score-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-top: 12px;
+  }
+  .score-msg { font-size: 14px; color: #aaa; margin-top: 8px; line-height: 1.6; }
+  .score-breakdown {
+    display: flex;
+    gap: 20px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+  .score-section {
+    background: rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 14px 20px;
+    flex: 1;
+    min-width: 140px;
+  }
+  .score-section .s-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #888;
+  }
+  .score-section .s-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    margin-top: 4px;
+  }
+  .retry-btn {
+    background: transparent;
+    color: var(--paper);
+    border: 2px solid rgba(255,255,255,0.3);
+    padding: 12px 32px;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 24px;
+    transition: all 0.2s;
+  }
+  .retry-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .feedback-tag {
+    display: inline-block;
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-top: 10px;
+  }
+  .feedback-tag.correct { background: #e8f8f5; color: var(--correct); }
+  .feedback-tag.wrong { background: #fdf0f0; color: var(--wrong); }
+  .correct-answer-note {
+    font-size: 12px;
+    color: var(--correct);
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: #e8f8f5;
+    border-radius: 6px;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-tag">A2 English · Vocabulary Test</div>
+  <h1>Fasteners,<br>Fixings & Connectors</h1>
+  <p>Test your knowledge of words for joining and fixing things together. Take your time and read each question carefully.</p>
+  <div class="badge-row">
+    <div class="badge">Level: <span>A2</span></div>
+    <div class="badge">Questions: <span>24</span></div>
+    <div class="badge">Sections: <span>3</span></div>
+    <div class="badge">Topic: <span>Everyday Objects</span></div>
+  </div>
+</header>
+
+<div class="progress-bar-wrap">
+  <div class="progress-label">
+    <span>YOUR PROGRESS</span>
+    <span id="progress-text">0 / 24 answered</span>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+</div>
+
+<main>
+
+  <!-- ─── SECTION A: MULTIPLE CHOICE ─── -->
+  <div class="section-header">
+    <div class="section-num">A</div>
+    <div class="section-info">
+      <h2>Multiple Choice</h2>
+      <p>Choose the best word to complete each sentence. (8 questions)</p>
+    </div>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Q1 -->
+  <div class="question-card" id="q1">
+    <div class="q-label">Question 1</div>
+    <div class="q-text">She used a _____ to keep the two pieces of paper together. She pushed it through both sheets.</div>
+    <div class="options-grid">
+      <button class="option-btn" onclick="selectMC(this,'q1','A')"><span class="option-letter">A</span> screw</button>
+      <button class="option-btn" onclick="selectMC(this,'q1','B')"><span class="option-letter">B</span> pin</button>
+      <button class="option-btn" onclick="selectMC(this,'q1','C')"><span class="option-letter">C</span> hinge</button>
+      <button class="option-btn" onclick="selectMC(this,'q1','D')"><span class="option-letter">D</span> clamp</button>
+    </div>
+    <div class="correct-answer-note" id="q1-note">✓ Correct answer: B — pin</div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="question-card" id="q2">
+    <div class="q-label">Question 2</div>
+    <div class="q-text">The door swings open and closed because it has a metal _____ on one side.</div>
+    <div class="options-grid">
+      <button class="option-btn" onclick="selectMC(this,'q2','A')"><span class="option-letter">A</span> bolt</button>
+      <button class="option-btn" onclick="selectMC(this,'q2','B')"><span class="option-letter">B</span> bracket</button>
+      <button class="option-btn" onclick="selectMC(this,'q2','C')"><span class="option-letter">C</span> hinge</button>
+      <button class="option-btn" onclick="selectMC(this,'q2','D')"><span class="option-letter">D</span> chain</button>
+    </div>
+    <div class="correct-answer-note" id="q2-note">✓ Correct answer: C — hinge</div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="question-card" id="q3">
+    <div class="q-label">Question 3</div>
+    <div class="q-text">He used _____ to stick the broken vase back together. It dried clear and was very strong.</div>
+    <div class="options-grid">
+      <button class="option-btn" onclick="selectMC(this,'q3','A')"><span class="option-letter">A</span> string</button>
+      <button class="option-btn" onclick="selectMC(this,'q3','B')"><span class="option-letter">B</span> cement</button>
+      <button class="option-btn" onclick="selectMC(this,'q3','C')"><span class="option-letter">C</span> glue</button>
+      <button class="option-btn" onclick="selectMC(this,'q3','D')"><span class="option-letter">D</span> solder</button>
+    </div>
+    <div class="correct-answer-note" id="q3-note">✓ Correct answer: C — glue</div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="question-card" id="q4">
+    <div class="q-label">Question 4</div>
+    <div class="q-text">The bicycle was locked to the fence with a thick metal _____ and a padlock.</div>
+    <div class="options-grid">
+      <button class="option-btn" onclick="selectMC(this,'q4','A')"><span class="option-letter">A</span> hose</button>
+      <button class="option-btn" onclick="selectMC(this,'q4','B')"><span class="option-letter">B</span> chain</button>
+      <button class="option-btn" onclick="selectMC(this,'q4','C')"><span class="option-letter">C</span> string</button>
+      <button class="option-btn" onclick="selectMC(this,'q4','D')"><span class="option-letter">D</span> pipe</button>
+    </div>
+    <div class="correct-answer-note" id="q4-note">✓ Correct answer: B — chain</div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="question-card" id="q5">
+    <div class="q-label">Question 5</div>
+    <div class="q-text">The plumber connected a _____ to the garden tap so water could reach the flowerbed far away.</div>
+    <div class="options-grid">
+      <button class="option-btn" onclick="selectMC(this,'q5','A')"><span class="option-letter">A</span> hose</button>
+      <button class="option-btn" onclick="selectMC(this,'q5','B')"><span class="option-letter">B</span> bolt</button>
+      <button class="option-btn" onclick="selectMC(this,'q5','C')"><span class="option-letter">C</span> staple</button>
+      <button class="option-btn" onclick="selectMC(this,'q5','D')"><span class="option-letter">D</span> nail</button>
+    </div>
+    <div class="correct-answer-note" id="q5-note">✓ Correct answer: A — hose</div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="question-card" id="q6">
+    <div class="q-label">Question 6</div>
+    <div class="q-text">She used a staple gun to push a _____ through the cardboard box to seal it shut.</div>
+    <div class="options-grid">
+      <button class="option-btn" onclick="selectMC(this,'q6','A')"><span class="option-letter">A</span> button</button>
+      <button class="option-btn" onclick="selectMC(this,'q6','B')"><span class="option-letter">B</span> zip</button>
+      <button class="option-btn" onclick="selectMC(this,'q6','C')"><span class="option-letter">C</span> staple</button>
+      <button class="option-btn" onclick="selectMC(this,'q6','D')"><span class="option-letter">D</span> screw</button>
+    </div>
+    <div class="correct-answer-note" id="q6-note">✓ Correct answer: C — staple</div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="question-card" id="q7">
+    <div class="q-label">Question 7</div>
+    <div class="q-text">Workers poured _____ into the mould to build the strong base of the new building.</div>
+    <div class="options-grid">
+      <button class="option-btn" onclick="selectMC(this,'q7','A')"><span class="option-letter">A</span> paste</button>
+      <button class="option-btn" onclick="selectMC(this,'q7','B')"><span class="option-letter">B</span> cement</button>
+      <button class="option-btn" onclick="selectMC(this,'q7','C')"><span class="option-letter">C</span> solder</button>
+      <button class="option-btn" onclick="selectMC(this,'q7','D')"><span class="option-letter">D</span> battery</button>
+    </div>
+    <div class="correct-answer-note" id="q7-note">✓ Correct answer: B — cement</div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="question-card" id="q8">
+    <div class="q-label">Question 8</div>
+    <div class="q-text">The shelf fell off the wall because the _____ holding it in place came out of the wood.</div>
+    <div class="options-grid">
+      <button class="option-btn" onclick="selectMC(this,'q8','A')"><span class="option-letter">A</span> string</button>
+      <button class="option-btn" onclick="selectMC(this,'q8','B')"><span class="option-letter">B</span> zip</button>
+      <button class="option-btn" onclick="selectMC(this,'q8','C')"><span class="option-letter">C</span> screw</button>
+      <button class="option-btn" onclick="selectMC(this,'q8','D')"><span class="option-letter">D</span> hinge</button>
+    </div>
+    <div class="correct-answer-note" id="q8-note">✓ Correct answer: C — screw</div>
+  </div>
+
+  <!-- ─── SECTION B: MATCHING ─── -->
+  <div class="section-header">
+    <div class="section-num">B</div>
+    <div class="section-info">
+      <h2>Match Word to Example</h2>
+      <p>Match each word on the left with the sentence that best shows its meaning. (8 questions)</p>
+    </div>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="question-card">
+    <div class="q-label">Questions 9–16 — Select the correct word for each example sentence</div>
+    <div class="match-layout">
+      <div>
+        <div class="match-col-label">Example Sentence</div>
+        <div class="match-example">"My jacket has a long metal fastener that you pull up to close it."</div>
+        <div class="match-example">"He hit the pointed metal stick into the wood with a hammer."</div>
+        <div class="match-example">"She turned the small round object on her shirt through a hole to fasten it."</div>
+        <div class="match-example">"The engineer melted a soft metal to join the two wires in the circuit."</div>
+        <div class="match-example">"We tied a thin cord around the package to carry it."</div>
+        <div class="match-example">"A metal L-shape holds the shelf firmly to the wall."</div>
+        <div class="match-example">"He attached a metal lock without a key slot to the gate — you need a key to open it."</div>
+        <div class="match-example">"A tool held the wood tightly in place while the glue dried."</div>
+      </div>
+      <div>
+        <div class="match-col-label">Your Answer</div>
+        <select class="match-select" id="m9" onchange="updateProgress()">
+          <option value="">— choose —</option>
+          <option>zip</option><option>nail</option><option>button</option><option>solder</option>
+          <option>string</option><option>bracket</option><option>padlock</option><option>clamp</option>
+        </select>
+        <select class="match-select" id="m10" onchange="updateProgress()">
+          <option value="">— choose —</option>
+          <option>zip</option><option>nail</option><option>button</option><option>solder</option>
+          <option>string</option><option>bracket</option><option>padlock</option><option>clamp</option>
+        </select>
+        <select class="match-select" id="m11" onchange="updateProgress()">
+          <option value="">— choose —</option>
+          <option>zip</option><option>nail</option><option>button</option><option>solder</option>
+          <option>string</option><option>bracket</option><option>padlock</option><option>clamp</option>
+        </select>
+        <select class="match-select" id="m12" onchange="updateProgress()">
+          <option value="">— choose —</option>
+          <option>zip</option><option>nail</option><option>button</option><option>solder</option>
+          <option>string</option><option>bracket</option><option>padlock</option><option>clamp</option>
+        </select>
+        <select class="match-select" id="m13" onchange="updateProgress()">
+          <option value="">— choose —</option>
+          <option>zip</option><option>nail</option><option>button</option><option>solder</option>
+          <option>string</option><option>bracket</option><option>padlock</option><option>clamp</option>
+        </select>
+        <select class="match-select" id="m14" onchange="updateProgress()">
+          <option value="">— choose —</option>
+          <option>zip</option><option>nail</option><option>button</option><option>solder</option>
+          <option>string</option><option>bracket</option><option>padlock</option><option>clamp</option>
+        </select>
+        <select class="match-select" id="m15" onchange="updateProgress()">
+          <option value="">— choose —</option>
+          <option>zip</option><option>nail</option><option>button</option><option>solder</option>
+          <option>string</option><option>bracket</option><option>padlock</option><option>clamp</option>
+        </select>
+        <select class="match-select" id="m16" onchange="updateProgress()">
+          <option value="">— choose —</option>
+          <option>zip</option><option>nail</option><option>button</option><option>solder</option>
+          <option>string</option><option>bracket</option><option>padlock</option><option>clamp</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SECTION C: GAP FILL ─── -->
+  <div class="section-header">
+    <div class="section-num">C</div>
+    <div class="section-info">
+      <h2>Gap Fill</h2>
+      <p>Complete the text using words from the word bank. Use each word once only. (8 questions)</p>
+    </div>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="question-card">
+    <div class="q-label">Questions 17–24 — Fill in the gaps</div>
+    <div class="gap-text">
+      Tom is repairing his old shed. First, he checks the water system. A flexible rubber 
+      <span class="gap-num">17</span><input class="gap-input" id="g17" placeholder="________" oninput="updateProgress()" autocomplete="off"> 
+      carries water from the tap to a large container. Next to it, a metal 
+      <span class="gap-num">18</span><input class="gap-input" id="g18" placeholder="________" oninput="updateProgress()" autocomplete="off"> 
+      carries the waste water away from the shed.
+      <br><br>
+      Then he looks at the electricity. He replaces the old 
+      <span class="gap-num">19</span><input class="gap-input" id="g19" placeholder="________" oninput="updateProgress()" autocomplete="off"> 
+      in the torch so that it will produce power again. He uses a 
+      <span class="gap-num">20</span><input class="gap-input" id="g20" placeholder="________" oninput="updateProgress()" autocomplete="off"> 
+      iron to join two electrical wires by melting a special metal onto them.
+      <br><br>
+      After that, he works on the walls. He mixes 
+      <span class="gap-num">21</span><input class="gap-input" id="g21" placeholder="________" oninput="updateProgress()" autocomplete="off"> 
+      and sand with water to make mortar for the bricks. He uses 
+      <span class="gap-num">22</span><input class="gap-input" id="g22" placeholder="________" oninput="updateProgress()" autocomplete="off"> 
+      to stick new wallpaper to the inside walls.
+      <br><br>
+      Finally, he secures the gate with a heavy metal 
+      <span class="gap-num">23</span><input class="gap-input" id="g23" placeholder="________" oninput="updateProgress()" autocomplete="off"> 
+      that needs a key to open. He also tightens a metal 
+      <span class="gap-num">24</span><input class="gap-input" id="g24" placeholder="________" oninput="updateProgress()" autocomplete="off"> 
+      around the drainpipe to hold it firmly to the wall.
+    </div>
+
+    <div class="word-bank">
+      <div class="word-bank-label">Word Bank</div>
+      <div class="word-chip" onclick="useWord(this,'hose')" id="chip-hose">hose</div>
+      <div class="word-chip" onclick="useWord(this,'pipe')" id="chip-pipe">pipe</div>
+      <div class="word-chip" onclick="useWord(this,'battery')" id="chip-battery">battery</div>
+      <div class="word-chip" onclick="useWord(this,'solder')" id="chip-solder">solder</div>
+      <div class="word-chip" onclick="useWord(this,'cement')" id="chip-cement">cement</div>
+      <div class="word-chip" onclick="useWord(this,'paste')" id="chip-paste">paste</div>
+      <div class="word-chip" onclick="useWord(this,'padlock')" id="chip-padlock">padlock</div>
+      <div class="word-chip" onclick="useWord(this,'clamp')" id="chip-clamp">clamp</div>
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-area">
+    <button class="submit-btn" onclick="submitTest()">Check My Answers</button>
+
+    <div class="score-panel" id="score-panel">
+      <div class="score-big" id="score-val">0<span class="score-denom">/24</span></div>
+      <div class="score-label" id="score-label">—</div>
+      <div class="score-msg" id="score-msg"></div>
+      <div class="score-breakdown">
+        <div class="score-section">
+          <div class="s-label">Multiple Choice</div>
+          <div class="s-val" id="s-mc">—</div>
+        </div>
+        <div class="score-section">
+          <div class="s-label">Matching</div>
+          <div class="s-val" id="s-match">—</div>
+        </div>
+        <div class="score-section">
+          <div class="s-label">Gap Fill</div>
+          <div class="s-val" id="s-gap">—</div>
+        </div>
+      </div>
+      <button class="retry-btn" onclick="resetTest()">↺ Try Again</button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  // ── Data ──
+  const mcAnswers = { q1:'B', q2:'C', q3:'C', q4:'B', q5:'A', q6:'C', q7:'B', q8:'C' };
+  const matchAnswers = { m9:'zip', m10:'nail', m11:'button', m12:'solder', m13:'string', m14:'bracket', m15:'padlock', m16:'clamp' };
+  const gapAnswers = { g17:'hose', g18:'pipe', g19:'battery', g20:'solder', g21:'cement', g22:'paste', g23:'padlock', g24:'clamp' };
+  const mcSelected = {};
+  let submitted = false;
+
+  // ── Multiple Choice ──
+  function selectMC(btn, qid, letter) {
+    if (submitted) return;
+    const card = document.getElementById(qid);
+    card.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    mcSelected[qid] = letter;
+    updateProgress();
+  }
+
+  // ── Word Bank chips (gap fill helper) ──
+  function useWord(chip, word) {
+    if (submitted) return;
+    // Find first empty gap input
+    for (let i = 17; i <= 24; i++) {
+      const inp = document.getElementById('g' + i);
+      if (!inp.value) {
+        inp.value = word;
+        chip.classList.add('used');
+        updateProgress();
+        return;
+      }
+    }
+  }
+
+  // ── Progress ──
+  function updateProgress() {
+    let count = 0;
+    Object.keys(mcAnswers).forEach(q => { if (mcSelected[q]) count++; });
+    for (let i = 9; i <= 16; i++) { if (document.getElementById('m'+i).value) count++; }
+    for (let i = 17; i <= 24; i++) { if (document.getElementById('g'+i).value.trim()) count++; }
+    document.getElementById('progress-text').textContent = count + ' / 24 answered';
+    document.getElementById('progress-fill').style.width = (count/24*100) + '%';
+  }
+
+  // ── Submit ──
+  function submitTest() {
+    submitted = true;
+
+    // Mark MC
+    let mcScore = 0;
+    Object.keys(mcAnswers).forEach(qid => {
+      const card = document.getElementById(qid);
+      const correct = mcAnswers[qid];
+      const chosen = mcSelected[qid];
+      const btns = card.querySelectorAll('.option-btn');
+      const letters = ['A','B','C','D'];
+      btns.forEach((btn, i) => {
+        if (letters[i] === correct) btn.classList.add('correct');
+        else if (letters[i] === chosen && chosen !== correct) btn.classList.add('wrong');
+      });
+      const note = document.getElementById(qid + '-note');
+      if (note) note.style.display = 'block';
+      if (chosen === correct) mcScore++;
+    });
+
+    // Mark Matching
+    let matchScore = 0;
+    Object.keys(matchAnswers).forEach(id => {
+      const sel = document.getElementById(id);
+      const val = sel.value;
+      const correct = matchAnswers[id];
+      if (val === correct) { sel.classList.add('correct'); matchScore++; }
+      else { sel.classList.add('wrong'); sel.title = '✓ ' + correct; }
+      sel.disabled = true;
+    });
+
+    // Mark Gap Fill
+    let gapScore = 0;
+    Object.keys(gapAnswers).forEach(id => {
+      const inp = document.getElementById(id);
+      const val = inp.value.trim().toLowerCase();
+      const correct = gapAnswers[id];
+      if (val === correct) { inp.classList.add('correct'); gapScore++; }
+      else { inp.classList.add('wrong'); inp.placeholder = correct; }
+      inp.disabled = true;
+    });
+
+    const total = mcScore + matchScore + gapScore;
+
+    // Score panel
+    document.getElementById('score-val').innerHTML = total + '<span class="score-denom">/24</span>';
+    document.getElementById('s-mc').textContent = mcScore + '/8';
+    document.getElementById('s-match').textContent = matchScore + '/8';
+    document.getElementById('s-gap').textContent = gapScore + '/8';
+
+    let label, msg;
+    if (total >= 22) { label = 'Excellent! 🎉'; msg = 'Outstanding work! You have a strong command of this vocabulary.'; }
+    else if (total >= 18) { label = 'Very Good! 👍'; msg = 'Great result! Review the words you missed and you\'ll master them soon.'; }
+    else if (total >= 14) { label = 'Good Effort'; msg = 'You\'re making good progress. Try to review the vocabulary you found difficult.'; }
+    else if (total >= 10) { label = 'Keep Practising'; msg = 'You know some of the words well. Try studying the full list and take the test again.'; }
+    else { label = 'Keep Going!'; msg = 'Don\'t worry — everyone starts somewhere! Read through the word list and try again.'; }
+
+    document.getElementById('score-label').textContent = label;
+    document.getElementById('score-msg').textContent = msg;
+    document.getElementById('score-panel').style.display = 'block';
+    document.getElementById('score-panel').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.querySelector('.submit-btn').disabled = true;
+    document.querySelector('.submit-btn').style.opacity = '0.4';
+  }
+
+  // ── Reset ──
+  function resetTest() {
+    submitted = false;
+    Object.keys(mcSelected).forEach(k => delete mcSelected[k]);
+
+    Object.keys(mcAnswers).forEach(qid => {
+      const card = document.getElementById(qid);
+      card.querySelectorAll('.option-btn').forEach(btn => {
+        btn.classList.remove('selected','correct','wrong');
+      });
+      const note = document.getElementById(qid + '-note');
+      if (note) note.style.display = 'none';
+    });
+
+    Object.keys(matchAnswers).forEach(id => {
+      const sel = document.getElementById(id);
+      sel.value = '';
+      sel.className = 'match-select';
+      sel.disabled = false;
+      sel.title = '';
+    });
+
+    Object.keys(gapAnswers).forEach(id => {
+      const inp = document.getElementById(id);
+      inp.value = '';
+      inp.className = 'gap-input';
+      inp.disabled = false;
+      inp.placeholder = '________';
+    });
+
+    document.querySelectorAll('.word-chip').forEach(c => c.classList.remove('used'));
+    document.getElementById('score-panel').style.display = 'none';
+    document.querySelector('.submit-btn').disabled = false;
+    document.querySelector('.submit-btn').style.opacity = '1';
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

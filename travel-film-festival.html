@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Travel & Adventure Film Festival</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sand: #f0e8d5;
+    --deep: #1a1208;
+    --amber: #c8832a;
+    --amber-light: #e8a94a;
+    --rust: #8b3a1e;
+    --sage: #6d924e;
+    --cream: #faf6ee;
+    --ink: #2a1f0e;
+    --film: #0d0d0d;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--deep);
+    color: var(--sand);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Cinematic grain overlay ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.4;
+  }
+
+  /* ── Film strip header ── */
+  .filmstrip {
+    width: 100%;
+    height: 28px;
+    background: var(--film);
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .filmstrip::before, .filmstrip::after {
+    content: '▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪ ▪';
+    color: #333;
+    font-size: 10px;
+    letter-spacing: 6px;
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    animation: filmroll 12s linear infinite;
+    white-space: nowrap;
+  }
+
+  @keyframes filmroll {
+    from { left: 0; }
+    to { left: -50%; }
+  }
+
+  /* ── Hero ── */
+  .hero {
+    position: relative;
+    padding: 80px 40px 60px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,131,42,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 20% 80%, rgba(109,146,78,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 80% 60%, rgba(139,58,30,0.15) 0%, transparent 60%);
+  }
+
+  .hero-tag {
+    display: inline-block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    letter-spacing: 5px;
+    color: var(--amber);
+    border: 1px solid rgba(200,131,42,0.4);
+    padding: 5px 16px;
+    margin-bottom: 28px;
+    position: relative;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    line-height: 1;
+    letter-spacing: -1px;
+    position: relative;
+    margin-bottom: 4px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--amber-light);
+    display: block;
+  }
+
+  .hero-sub {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    color: rgba(240,232,213,0.6);
+    margin-top: 18px;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.7;
+    position: relative;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    max-width: 420px;
+    margin: 32px auto;
+    position: relative;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(200,131,42,0.5), transparent);
+  }
+  .divider-icon {
+    color: var(--amber);
+    font-size: 18px;
+  }
+
+  /* ── Form card ── */
+  .form-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  .scenario-card {
+    background: rgba(240,232,213,0.05);
+    border: 1px solid rgba(200,131,42,0.2);
+    border-radius: 2px;
+    padding: 28px 32px;
+    margin-bottom: 40px;
+    position: relative;
+    backdrop-filter: blur(2px);
+  }
+
+  .scenario-card::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 100px;
+    color: var(--amber);
+    opacity: 0.12;
+    position: absolute;
+    top: -10px;
+    left: 18px;
+    line-height: 1;
+  }
+
+  .scenario-card p {
+    font-size: 0.97rem;
+    line-height: 1.8;
+    color: rgba(240,232,213,0.85);
+    position: relative;
+  }
+
+  /* ── Questions ── */
+  .question-block {
+    margin-bottom: 36px;
+    animation: fadein 0.5s ease both;
+  }
+
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--amber);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .q-number::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(200,131,42,0.2);
+    max-width: 60px;
+  }
+
+  .q-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.18rem;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 18px;
+    line-height: 1.45;
+  }
+
+  .required-star {
+    color: var(--amber);
+    margin-left: 4px;
+  }
+
+  /* Radio & Checkbox options */
+  .options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .option-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 18px;
+    border: 1px solid rgba(240,232,213,0.1);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    background: rgba(255,255,255,0.02);
+  }
+
+  .option-item:hover {
+    border-color: rgba(200,131,42,0.5);
+    background: rgba(200,131,42,0.06);
+  }
+
+  .option-item input[type="radio"],
+  .option-item input[type="checkbox"] {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    border: 1.5px solid rgba(200,131,42,0.5);
+    border-radius: 50%;
+    margin-top: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .option-item input[type="checkbox"] {
+    border-radius: 2px;
+  }
+
+  .option-item input[type="radio"]:checked,
+  .option-item input[type="checkbox"]:checked {
+    background: var(--amber);
+    border-color: var(--amber);
+    box-shadow: 0 0 0 3px rgba(200,131,42,0.2);
+  }
+
+  .option-item input[type="radio"]:checked::after {
+    content: '';
+    position: absolute;
+    width: 6px; height: 6px;
+    background: var(--deep);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .option-item input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    font-size: 11px;
+    color: var(--deep);
+    font-weight: bold;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .option-label {
+    font-size: 0.94rem;
+    line-height: 1.5;
+    color: rgba(240,232,213,0.85);
+    cursor: pointer;
+    padding-top: 1px;
+  }
+
+  /* Text inputs */
+  .text-input, .textarea-input, .select-input {
+    width: 100%;
+    padding: 14px 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(200,131,42,0.25);
+    border-radius: 2px;
+    color: var(--sand);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 300;
+    transition: border-color 0.2s, background 0.2s;
+    outline: none;
+  }
+
+  .text-input:focus, .textarea-input:focus, .select-input:focus {
+    border-color: var(--amber);
+    background: rgba(200,131,42,0.06);
+  }
+
+  .text-input::placeholder, .textarea-input::placeholder {
+    color: rgba(240,232,213,0.3);
+  }
+
+  .textarea-input { resize: vertical; min-height: 120px; }
+
+  .select-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c8832a' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 18px center;
+    cursor: pointer;
+  }
+
+  .select-input option {
+    background: #1a1208;
+    color: var(--sand);
+  }
+
+  /* Scale */
+  .scale-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: rgba(240,232,213,0.4);
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .scale-btn {
+    flex: 1;
+    aspect-ratio: 1;
+    max-width: 52px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(200,131,42,0.2);
+    border-radius: 2px;
+    color: rgba(240,232,213,0.6);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .scale-btn:hover, .scale-btn.active {
+    background: var(--amber);
+    border-color: var(--amber);
+    color: var(--deep);
+    font-weight: 500;
+  }
+
+  /* Section break */
+  .section-break {
+    margin: 56px 0 40px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .section-break-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(200,131,42,0.3), rgba(200,131,42,0.05));
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 5px;
+    color: var(--amber);
+    white-space: nowrap;
+  }
+
+  /* Submit button */
+  .submit-area {
+    margin-top: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .btn-submit {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 4px;
+    color: var(--deep);
+    background: var(--amber);
+    border: none;
+    padding: 16px 48px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-submit::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--amber-light);
+    transform: translateX(-101%);
+    transition: transform 0.3s ease;
+  }
+
+  .btn-submit:hover::before { transform: translateX(0); }
+  .btn-submit span { position: relative; }
+
+  .btn-clear {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    color: rgba(240,232,213,0.4);
+    background: none;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s;
+  }
+  .btn-clear:hover { color: rgba(240,232,213,0.7); }
+
+  /* Footer filmstrip */
+  .footer-strip {
+    background: var(--film);
+    height: 28px;
+    margin-top: 40px;
+  }
+
+  .footer-note {
+    text-align: center;
+    font-size: 0.78rem;
+    color: rgba(240,232,213,0.25);
+    padding: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  /* Success state */
+  .success-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,18,8,0.97);
+    z-index: 1000;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+  }
+
+  .success-overlay.show { display: flex; }
+
+  .success-icon {
+    font-size: 4rem;
+    margin-bottom: 24px;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  @keyframes popIn {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .success-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--amber-light);
+    margin-bottom: 12px;
+  }
+
+  .success-msg {
+    color: rgba(240,232,213,0.7);
+    max-width: 400px;
+    line-height: 1.7;
+    font-size: 0.97rem;
+  }
+
+  @media (max-width: 600px) {
+    .hero { padding: 60px 20px 40px; }
+    .scenario-card { padding: 20px 20px; }
+    .scale-row { gap: 5px; }
+    .scale-btn { font-size: 0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="filmstrip"></div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-tag">1st Annual · Town Film Festival</div>
+  <h1>
+    Travel &amp;<br>
+    <em>Adventure</em>
+  </h1>
+  <div class="divider"><span class="divider-icon">✦</span></div>
+  <p class="hero-sub">
+    Your town is organising its first film festival and you are on the organising committee. The theme of the festival is travel and adventure films.
+  </p>
+</div>
+
+<!-- FORM -->
+<div class="form-wrap">
+
+  <!-- Scenario card -->
+  <div class="scenario-card">
+    <p>You must take decisions at several important steps in the project. If you succeed, there could be a fabulous new career ahead for you. If not, you might be run out of town!</p>
+  </div>
+
+  <form id="festivalForm" novalidate>
+
+    <!-- ── Section 1: About You ── -->
+    <div class="section-break">
+      <span class="section-title">Act I — Your Profile</span>
+      <div class="section-break-line"></div>
+    </div>
+
+    <div class="question-block">
+      <div class="q-number">Question 01</div>
+      <div class="q-label">What is your name?<span class="required-star">*</span></div>
+      <input class="text-input" type="text" name="name" placeholder="Your full name" required>
+    </div>
+
+    <div class="question-block">
+      <div class="q-number">Question 02</div>
+      <div class="q-label">What is your role on the organising committee?<span class="required-star">*</span></div>
+      <div class="options-list">
+        <label class="option-item">
+          <input type="radio" name="role" value="director"> <span class="option-label">Festival Director — overall leadership and vision</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="role" value="programming"> <span class="option-label">Head of Programming — film selection and scheduling</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="role" value="marketing"> <span class="option-label">Marketing Lead — promotion and audience development</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="role" value="logistics"> <span class="option-label">Logistics Coordinator — venues, equipment and operations</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="role" value="other"> <span class="option-label">Other / general committee member</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- ── Section 2: Programming Decisions ── -->
+    <div class="section-break">
+      <span class="section-title">Act II — Programming</span>
+      <div class="section-break-line"></div>
+    </div>
+
+    <div class="question-block">
+      <div class="q-number">Question 03</div>
+      <div class="q-label">The festival needs a headline film. Which genre of travel &amp; adventure do you prioritise?<span class="required-star">*</span></div>
+      <div class="options-list">
+        <label class="option-item">
+          <input type="radio" name="genre" value="expedition"> <span class="option-label">Grand expedition &amp; wilderness survival</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="genre" value="cultural"> <span class="option-label">Cultural immersion &amp; world-travel documentary</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="genre" value="action"> <span class="option-label">Action-adventure &amp; high-octane thrills</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="genre" value="road"> <span class="option-label">Road-movie &amp; coming-of-age journey</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="genre" value="scifi"> <span class="option-label">Space exploration &amp; science-fiction voyage</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <div class="q-number">Question 04</div>
+      <div class="q-label">How many films should the festival screen over three days?<span class="required-star">*</span></div>
+      <select class="select-input" name="numFilms">
+        <option value="" disabled selected>Select a number…</option>
+        <option value="6-10">6–10 films (intimate, curated selection)</option>
+        <option value="11-20">11–20 films (balanced programme)</option>
+        <option value="21-30">21–30 films (ambitious full schedule)</option>
+        <option value="30+">30+ films (full-scale festival)</option>
+      </select>
+    </div>
+
+    <div class="question-block">
+      <div class="q-number">Question 05</div>
+      <div class="q-label">Which additional programme elements would you include? (Select all that apply)</div>
+      <div class="options-list">
+        <label class="option-item">
+          <input type="checkbox" name="extras" value="qa"> <span class="option-label">Director &amp; filmmaker Q&amp;A sessions</span>
+        </label>
+        <label class="option-item">
+          <input type="checkbox" name="extras" value="workshops"> <span class="option-label">Filmmaking &amp; photography workshops</span>
+        </label>
+        <label class="option-item">
+          <input type="checkbox" name="extras" value="shorts"> <span class="option-label">Short film competition for local filmmakers</span>
+        </label>
+        <label class="option-item">
+          <input type="checkbox" name="extras" value="outdoor"> <span class="option-label">Outdoor evening screenings</span>
+        </label>
+        <label class="option-item">
+          <input type="checkbox" name="extras" value="exhibition"> <span class="option-label">Photography &amp; travel exhibition</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- ── Section 3: Venue & Logistics ── -->
+    <div class="section-break">
+      <span class="section-title">Act III — Venue &amp; Logistics</span>
+      <div class="section-break-line"></div>
+    </div>
+
+    <div class="question-block">
+      <div class="q-number">Question 06</div>
+      <div class="q-label">Where should the main screenings take place?<span class="required-star">*</span></div>
+      <div class="options-list">
+        <label class="option-item">
+          <input type="radio" name="venue" value="cinema"> <span class="option-label">Existing local cinema — ready infrastructure, familiar to audiences</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="venue" value="town_hall"> <span class="option-label">Town hall — central, free, community feel</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="venue" value="outdoor"> <span class="option-label">Open-air park — atmospheric but weather-dependent</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="venue" value="warehouse"> <span class="option-label">Repurposed industrial venue — edgy, flexible capacity</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <div class="q-number">Question 07</div>
+      <div class="q-label">A key sponsor withdraws two weeks before the festival, cutting your budget by 30%. What do you do?<span class="required-star">*</span></div>
+      <div class="options-list">
+        <label class="option-item">
+          <input type="radio" name="crisis" value="reduce"> <span class="option-label">Reduce the programme — drop the most expensive screenings</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="crisis" value="crowdfund"> <span class="option-label">Launch an emergency crowdfunding campaign</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="crisis" value="partners"> <span class="option-label">Rapidly seek new local business sponsors</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="crisis" value="tickets"> <span class="option-label">Increase ticket prices and reduce free events</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="crisis" value="proceed"> <span class="option-label">Proceed as planned and absorb the deficit</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- ── Section 4: Reflection ── -->
+    <div class="section-break">
+      <span class="section-title">Act IV — Reflection</span>
+      <div class="section-break-line"></div>
+    </div>
+
+    <div class="question-block">
+      <div class="q-number">Question 08</div>
+      <div class="q-label">On a scale of 1–5, how confident are you that the festival will be a success?<span class="required-star">*</span></div>
+      <div class="scale-row" id="confidenceScale">
+        <button type="button" class="scale-btn" data-val="1" onclick="setScale('confidence',1,this)">1</button>
+        <button type="button" class="scale-btn" data-val="2" onclick="setScale('confidence',2,this)">2</button>
+        <button type="button" class="scale-btn" data-val="3" onclick="setScale('confidence',3,this)">3</button>
+        <button type="button" class="scale-btn" data-val="4" onclick="setScale('confidence',4,this)">4</button>
+        <button type="button" class="scale-btn" data-val="5" onclick="setScale('confidence',5,this)">5</button>
+      </div>
+      <div class="scale-labels">
+        <span>Not at all confident</span>
+        <span>Completely confident</span>
+      </div>
+      <input type="hidden" name="confidence" id="confidenceVal">
+    </div>
+
+    <div class="question-block">
+      <div class="q-number">Question 09</div>
+      <div class="q-label">What would be the single most important measure of success for this festival?<span class="required-star">*</span></div>
+      <div class="options-list">
+        <label class="option-item">
+          <input type="radio" name="success_metric" value="attendance"> <span class="option-label">High attendance — sold-out screenings</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="success_metric" value="media"> <span class="option-label">Positive media coverage and national visibility</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="success_metric" value="community"> <span class="option-label">Strong community participation and local pride</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="success_metric" value="financial"> <span class="option-label">Breaking even financially</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="success_metric" value="return"> <span class="option-label">Securing commitments for a second edition</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <div class="q-number">Question 10</div>
+      <div class="q-label">Any final thoughts, ideas, or messages to the committee?</div>
+      <textarea class="textarea-input" name="comments" placeholder="Share your ideas, concerns, or vision for the festival…"></textarea>
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-area">
+      <button type="submit" class="btn-submit"><span>Submit Response</span></button>
+      <button type="button" class="btn-clear" onclick="clearForm()">Clear form</button>
+    </div>
+
+  </form>
+</div>
+
+<div class="filmstrip footer-strip"></div>
+<div class="footer-note">Travel &amp; Adventure Film Festival · Town Organising Committee</div>
+
+<!-- Success overlay -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-icon">🎬</div>
+  <div class="success-title">Response Recorded!</div>
+  <p class="success-msg">Thank you for your contribution to the organising committee. Your decisions will shape the festival — may it be a triumph for your town!</p>
+</div>
+
+<script>
+  // Scale selection
+  const scaleState = {};
+  function setScale(name, val, btn) {
+    scaleState[name] = val;
+    document.getElementById(name + 'Val').value = val;
+    const group = btn.closest('.scale-row');
+    group.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  // Clear form
+  function clearForm() {
+    document.getElementById('festivalForm').reset();
+    document.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('input[type=hidden]').forEach(h => h.value = '');
+  }
+
+  // Submit
+  document.getElementById('festivalForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    document.getElementById('successOverlay').classList.add('show');
+    setTimeout(() => {
+      document.getElementById('successOverlay').classList.remove('show');
+    }, 4000);
+  });
+
+  // Option item label syncs click to radio/checkbox
+  document.querySelectorAll('.option-item').forEach(item => {
+    item.addEventListener('click', function(e) {
+      if (e.target.tagName === 'INPUT') return;
+      const inp = this.querySelector('input');
+      if (inp.type === 'checkbox') {
+        inp.checked = !inp.checked;
+      } else {
+        inp.checked = true;
+      }
+    });
+  });
+</script>
+</body>
+</html>

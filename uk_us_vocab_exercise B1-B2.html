@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>American & British English – Advanced Vocabulary Mastery</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --us: #1a3a6b; --gb: #b22234; --us-light: #e8eef8; --gb-light: #f8e8ea;
+    --us-mid: #4a72b0; --gb-mid: #c0536a; --gold: #c8a84b; --cream: #faf8f3;
+    --dark: #1a1a2e; --mid: #4a4a6a; --light: #f0ede6;
+    --correct: #2e7d32; --correct-bg: #e8f5e9; --wrong: #c62828; --wrong-bg: #ffebee;
+    --radius: 10px; --shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--dark); min-height: 100vh; }
+  header { background: linear-gradient(135deg, var(--us) 0%, #0d2b55 50%, var(--gb) 100%); color: white; padding: 2.5rem 2rem; text-align: center; position: relative; overflow: hidden; }
+  header h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 900; }
+  .level-badge { display: inline-block; background: var(--gold); color: var(--dark); font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.8rem; border-radius: 20px; margin-top: 0.7rem; }
+  .tab-bar { display: flex; justify-content: center; background: var(--dark); flex-wrap: wrap; }
+  .tab-btn { background: none; border: none; color: rgba(255,255,255,0.55); font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600; padding: 1rem 1.4rem; cursor: pointer; border-bottom: 3px solid transparent; transition: 0.25s; }
+  .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .panel { display: none; padding: 2rem 1rem; max-width: 900px; margin: 0 auto; }
+  .panel.active { display: block; }
+  .vocab-table { width: 100%; border-collapse: collapse; box-shadow: var(--shadow); border-radius: var(--radius); overflow: hidden; }
+  .vocab-table thead { background: linear-gradient(90deg, var(--us) 50%, var(--gb) 50%); color: white; }
+  .vocab-table th, .vocab-table td { padding: 0.7rem 1.2rem; text-align: left; border-bottom: 1px solid #e8e3d8; }
+  .vocab-table td:first-child { border-right: 2px solid #e0dbd0; color: var(--us); font-weight: 600; }
+  .vocab-table td:last-child { color: var(--gb); font-weight: 600; }
+  .ex-header { background: white; border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: center; }
+  .score-display { background: var(--dark); color: var(--gold); padding: 0.5rem 1.2rem; border-radius: 30px; font-weight: 700; }
+  .question-card, .sentence-card { background: white; border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 1rem; }
+  .choice-btn { padding: 0.8rem; border: 2px solid var(--light); border-radius: 8px; background: var(--light); cursor: pointer; text-align: left; font-weight: 500; transition: 0.2s; }
+  .choice-btn:hover:not(:disabled) { border-color: var(--gold); }
+  .choice-btn.correct { background: var(--correct-bg); border-color: var(--correct); color: var(--correct); }
+  .choice-btn.wrong { background: var(--wrong-bg); border-color: var(--wrong); color: var(--wrong); }
+  .dialect-btns { display: flex; gap: 1rem; margin-top: 1rem; }
+  .dialect-btn { flex: 1; padding: 0.6rem; border: 2px solid; border-radius: 8px; cursor: pointer; font-weight: 700; background: white; }
+  .us-btn { border-color: var(--us); color: var(--us); }
+  .gb-btn { border-color: var(--gb); color: var(--gb); }
+  .dialect-btn.correct { background: var(--correct); color: white; border-color: var(--correct); }
+  .dialect-btn.wrong { background: var(--wrong); color: white; border-color: var(--wrong); }
+  .fill-input { border: 2px solid #d0ccc0; padding: 0.4rem; border-radius: 6px; width: 100%; }
+  .fill-input.correct { border-color: var(--correct); background: var(--correct-bg); }
+  .fill-input.wrong { border-color: var(--wrong); background: var(--wrong-bg); }
+  .final-score { text-align: center; padding: 2rem; display: none; }
+  .final-score.show { display: block; }
+  .big-score { font-size: 3rem; font-weight: 900; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🇺🇸 Vocab Duel 🇬🇧</h1>
+  <p>48 Words — Master the Atlantic Gap</p>
+  <div class="level-badge">Level B1 / B2</div>
+</header>
+
+<nav class="tab-bar">
+  <button class="tab-btn active" onclick="showPanel('home')">Word List</button>
+  <button class="tab-btn" onclick="showPanel('ex1')">Ex 1: 12 Choices</button>
+  <button class="tab-btn" onclick="showPanel('ex2')">Ex 2: Identify</button>
+  <button class="tab-btn" onclick="showPanel('ex3')">Ex 3: Fill</button>
+</nav>
+
+<div id="home" class="panel active">
+  <table class="vocab-table">
+    <thead><tr><th>American</th><th>British</th></tr></thead>
+    <tbody id="home-table-body"></tbody>
+  </table>
+</div>
+
+<div id="ex1" class="panel">
+  <div class="ex-header">
+    <h2>Multiple Choice</h2>
+    <div class="score-display" id="ex1-score">0 / 12</div>
+  </div>
+  <div id="ex1-questions"></div>
+  <div class="final-score" id="ex1-final">
+    <div class="big-score" id="ex1-big"></div>
+    <button onclick="initEx1()" style="margin-top:1rem; padding: 0.5rem 1rem; cursor:pointer">Retry</button>
+  </div>
+</div>
+
+<div id="ex2" class="panel">
+  <div class="ex-header">
+    <h2>American or British?</h2>
+    <div class="score-display" id="ex2-score">0 / 12</div>
+  </div>
+  <div id="ex2-questions"></div>
+  <div class="final-score" id="ex2-final">
+    <div class="big-score" id="ex2-big"></div>
+    <button onclick="initEx2()" style="margin-top:1rem; padding: 0.5rem 1rem; cursor:pointer">Retry</button>
+  </div>
+</div>
+
+<div id="ex3" class="panel">
+  <div class="ex-header">
+    <h2>Full Table Test</h2>
+    <div class="score-display" id="ex3-score">0 / 48</div>
+  </div>
+  <table class="vocab-table" style="margin-bottom: 1rem;">
+    <tbody id="ex3-body"></tbody>
+  </table>
+  <button onclick="checkEx3()" style="padding: 1rem 2rem; background: var(--us); color:white; border:none; border-radius:8px; cursor:pointer">Check All</button>
+</div>
+
+<script>
+const vocab = [
+  { us: "apartment", gb: "flat" }, { us: "elevator", gb: "lift" },
+  { us: "trash can", gb: "bin" }, { us: "subway", gb: "underground" },
+  { us: "truck", gb: "lorry" }, { us: "gas", gb: "petrol" },
+  { us: "faucet", gb: "tap" }, { us: "cookie", gb: "biscuit" },
+  { us: "candy", gb: "sweets" }, { us: "diaper", gb: "nappy" },
+  { us: "vacation", gb: "holiday" }, { us: "drugstore", gb: "chemist" },
+  { us: "sidewalk", gb: "pavement" }, { us: "parking lot", gb: "car park" },
+  { us: "cell phone", gb: "mobile" }, { us: "zip code", gb: "postcode" },
+  { us: "soccer", gb: "football" }, { us: "french fries", gb: "chips" },
+  { us: "eraser", gb: "rubber" }, { us: "fall", gb: "autumn" },
+  { us: "closet", gb: "wardrobe" }, { us: "attorney", gb: "solicitor" },
+  { us: "check", gb: "bill" }, { us: "band-aid", gb: "plaster" },
+  { us: "stroller", gb: "buggy" }, { us: "pacifier", gb: "dummy" },
+  { us: "sneakers", gb: "trainers" }, { us: "flashlight", gb: "torch" },
+  { us: "hood", gb: "bonnet" }, { us: "trunk", gb: "boot" },
+  { us: "intersection", gb: "junction" }, { us: "overpass", gb: "flyover" },
+  { us: "eggplant", gb: "aubergine" }, { us: "zucchini", gb: "courgette" },
+  { us: "mailman", gb: "postman" }, { us: "clutter", gb: "knick-knacks" },
+  { us: "slingshot", gb: "catapult" }, { us: "thumbtack", gb: "drawing pin" },
+  { us: "windshield", gb: "windscreen" }, { us: "muffler", gb: "silencer" },
+  { us: "vest", gb: "waistcoat" }, { us: "suspenders", gb: "braces" },
+  { us: "sweater", gb: "jumper" }, { us: "bathrobe", gb: "dressing gown" },
+  { us: "curtain", gb: "drape" }, { us: "pitcher", gb: "jug" },
+  { us: "silverware", gb: "cutlery" }, { us: "stove", gb: "cooker" }
+];
+
+function fisherYates(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function showPanel(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const btnIdx = ['home', 'ex1', 'ex2', 'ex3'].indexOf(id);
+  document.querySelectorAll('.tab-btn')[btnIdx].classList.add('active');
+}
+
+// Build Word List
+const tbody = document.getElementById('home-table-body');
+vocab.forEach(v => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${v.us}</td><td>${v.gb}</td>`;
+  tbody.appendChild(tr);
+});
+
+// Exercise 1: Tightened Multiple Choice
+function initEx1() {
+  const container = document.getElementById('ex1-questions');
+  container.innerHTML = '';
+  document.getElementById('ex1-final').style.display = 'none';
+  const pool = fisherYates([...vocab]).slice(0, 12);
+  let score = 0;
+  let answered = 0;
+
+  pool.forEach((q, i) => {
+    const isUSHead = Math.random() > 0.5;
+    const headword = isUSHead ? q.us : q.gb;
+    const correctAns = isUSHead ? q.gb : q.us;
+    
+    // Distractors from same side
+    let distractors = fisherYates(vocab.map(v => isUSHead ? v.gb : v.us))
+                      .filter(word => word !== correctAns)
+                      .slice(0, 3);
+    
+    const options = fisherYates([correctAns, ...distractors]);
+    
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.innerHTML = `
+      <p><strong>${i+1}.</strong> What is the ${isUSHead ? 'British' : 'American'} equivalent of <strong>${headword}</strong>?</p>
+      <div class="choices">
+        ${options.map(opt => `<button class="choice-btn" onclick="checkEx1(this, '${opt}', '${correctAns}', ${i})">${opt}</button>`).join('')}
+      </div>
+    `;
+    container.appendChild(card);
+  });
+
+  window.checkEx1 = (btn, chosen, correct, idx) => {
+    const btns = btn.parentElement.querySelectorAll('button');
+    btns.forEach(b => b.disabled = true);
+    if (chosen === correct) {
+      btn.classList.add('correct');
+      score++;
+    } else {
+      btn.classList.add('wrong');
+      btns.forEach(b => { if(b.textContent === correct) b.classList.add('correct'); });
+    }
+    answered++;
+    document.getElementById('ex1-score').textContent = `${score} / 12`;
+    if(answered === 12) {
+      document.getElementById('ex1-big').textContent = `Final Score: ${score}/12`;
+      document.getElementById('ex1-final').style.display = 'block';
+    }
+  };
+}
+
+// Exercise 2: Natural Sentences (No Bolds)
+const sentPool = [
+  { s: "I left the groceries in the trunk and went inside.", d: "US" },
+  { s: "He needs a new pair of trainers for the marathon.", d: "GB" },
+  { s: "The plumber fixed the leaking tap in the kitchen.", d: "GB" },
+  { s: "Please put the dirty diapers in the bin outside.", d: "US" }, // Tricky: Diapers (US) + Bin (GB) -> Illogical? Let's fix.
+  { s: "She forgot her cell phone on the kitchen counter.", d: "US" },
+  { s: "We should take the lift instead of the stairs.", d: "GB" },
+  { s: "The mailman delivered a package this morning.", d: "US" },
+  { s: "I need to buy a new jumper for the winter.", d: "GB" },
+  { s: "The kids want some candy from the store.", d: "US" },
+  { s: "Watch out for the puddle on the pavement.", d: "GB" },
+  { s: "They took the subway to get to the stadium.", d: "US" },
+  { s: "He checked his reflection in the windscreen.", d: "GB" },
+  { s: "The attorney argued the case effectively.", d: "US" },
+  { s: "Can you pass me the jug of water?", d: "GB" },
+  { s: "The fall leaves are beautiful this time of year.", d: "US" }
+];
+
+function initEx2() {
+  const container = document.getElementById('ex2-questions');
+  container.innerHTML = '';
+  const selected = fisherYates([...sentPool]).slice(0, 12);
+  let score = 0;
+  let answered = 0;
+
+  selected.forEach((item, i) => {
+    const card = document.createElement('div');
+    card.className = 'sentence-card';
+    card.innerHTML = `
+      <p>${item.s}</p>
+      <div class="dialect-btns">
+        <button class="dialect-btn us-btn" onclick="checkEx2(this, 'US', '${item.d}')">American</button>
+        <button class="dialect-btn gb-btn" onclick="checkEx2(this, 'GB', '${item.d}')">British</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+
+  window.checkEx2 = (btn, chosen, correct) => {
+    const btns = btn.parentElement.querySelectorAll('button');
+    btns.forEach(b => b.disabled = true);
+    if(chosen === correct) {
+      btn.classList.add('correct');
+      score++;
+    } else {
+      btn.classList.add('wrong');
+      btns.forEach(b => { if(b.textContent.includes(correct === 'US' ? 'American' : 'British')) b.classList.add('correct'); });
+    }
+    answered++;
+    document.getElementById('ex2-score').textContent = `${score} / 12`;
+    if(answered === 12) {
+      document.getElementById('ex2-big').textContent = `Final Score: ${score}/12`;
+      document.getElementById('ex2-final').style.display = 'block';
+    }
+  };
+}
+
+// Exercise 3: Full Table
+function initEx3() {
+  const tbody = document.getElementById('ex3-body');
+  tbody.innerHTML = '';
+  const list = fisherYates([...vocab]);
+  list.forEach((v, i) => {
+    const hideUS = Math.random() > 0.5;
+    const tr = document.createElement('tr');
+    tr.innerHTML = hideUS ? 
+      `<td><input class="fill-input" data-ans="${v.us}"></td><td>${v.gb}</td>` :
+      `<td>${v.us}</td><td><input class="fill-input" data-ans="${v.gb}"></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function checkEx3() {
+  let score = 0;
+  const inputs = document.querySelectorAll('.fill-input');
+  inputs.forEach(input => {
+    const val = input.value.trim().toLowerCase();
+    const ans = input.dataset.ans.toLowerCase();
+    if(val === ans) {
+      input.classList.add('correct');
+      score++;
+    } else {
+      input.classList.add('wrong');
+      input.value = `${val} → ${ans}`;
+    }
+    input.disabled = true;
+  });
+  document.getElementById('ex3-score').textContent = `${score} / 48`;
+}
+
+initEx1(); initEx2(); initEx3();
+</script>
+</body>
+</html>

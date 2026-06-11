@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Always & Still — English Grammar Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --paper: #f5f0e8;
+    --cream: #ede8dc;
+    --accent: #c8553d;
+    --accent2: #3d7ab5;
+    --gold: #d4a843;
+    --light-rule: #ddd5c0;
+    --correct: #2d6a4f;
+    --wrong: #c8553d;
+    --correct-bg: #d8f3dc;
+    --wrong-bg: #fde8e4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* Ruled paper texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      transparent,
+      transparent 31px,
+      var(--light-rule) 31px,
+      var(--light-rule) 32px
+    );
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 48px 32px 80px;
+  }
+
+  /* Red margin line */
+  .page::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: calc(50% - 390px + 68px);
+    width: 2px;
+    height: 100vh;
+    background: rgba(200, 85, 61, 0.18);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  header {
+    text-align: center;
+    padding-bottom: 40px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 48px;
+  }
+
+  .subtitle {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 2px;
+  }
+
+  .instructions {
+    background: var(--cream);
+    border-left: 3px solid var(--gold);
+    padding: 18px 22px;
+    margin-bottom: 48px;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .instructions strong { font-weight: 600; }
+
+  /* Progress */
+  .progress-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 48px;
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--light-rule);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--accent);
+    min-width: 60px;
+    text-align: right;
+  }
+
+  /* Questions */
+  .question-block {
+    margin-bottom: 36px;
+    padding-bottom: 36px;
+    border-bottom: 1px solid var(--light-rule);
+  }
+
+  .question-block:last-of-type { border-bottom: none; }
+
+  .q-header {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .q-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    color: var(--accent);
+    min-width: 32px;
+    line-height: 1;
+    padding-top: 2px;
+  }
+
+  .q-context {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #888;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .q-text {
+    font-size: 16px;
+    line-height: 1.65;
+    font-weight: 400;
+  }
+
+  .blank {
+    display: inline-block;
+    border-bottom: 2px solid var(--ink);
+    min-width: 80px;
+    text-align: center;
+    font-style: italic;
+    color: #888;
+    vertical-align: bottom;
+    padding: 0 4px;
+  }
+
+  /* Options */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-left: 46px;
+  }
+
+  .option-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 12px 16px;
+    border: 1.5px solid var(--light-rule);
+    border-radius: 4px;
+    transition: all 0.18s ease;
+    background: rgba(255,255,255,0.5);
+    font-size: 15px;
+  }
+
+  .option-label:hover {
+    border-color: var(--accent2);
+    background: rgba(61,122,181,0.06);
+  }
+
+  .option-label input[type="radio"] { display: none; }
+
+  .option-label.selected {
+    border-color: var(--ink);
+    background: rgba(26,26,46,0.06);
+    font-weight: 500;
+  }
+
+  .option-label.correct {
+    border-color: var(--correct);
+    background: var(--correct-bg);
+    color: var(--correct);
+    font-weight: 500;
+  }
+
+  .option-label.wrong {
+    border-color: var(--wrong);
+    background: var(--wrong-bg);
+    color: var(--wrong);
+  }
+
+  .opt-letter {
+    width: 24px;
+    height: 24px;
+    border: 1.5px solid currentColor;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    flex-shrink: 0;
+    letter-spacing: 0;
+  }
+
+  /* Feedback */
+  .feedback {
+    margin-left: 46px;
+    margin-top: 12px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    padding: 12px 16px;
+    border-radius: 4px;
+    display: none;
+  }
+
+  .feedback.show { display: block; }
+  .feedback.correct-fb { background: var(--correct-bg); color: var(--correct); border-left: 3px solid var(--correct); }
+  .feedback.wrong-fb { background: var(--wrong-bg); color: var(--wrong); border-left: 3px solid var(--wrong); }
+
+  /* Submit & Results */
+  .submit-wrap {
+    text-align: center;
+    margin: 48px 0 24px;
+  }
+
+  .btn {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 16px 48px;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .btn-primary:hover {
+    background: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(200,85,61,0.25);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 2px solid var(--ink);
+  }
+
+  .btn-secondary:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  /* Results panel */
+  #results-panel {
+    display: none;
+    text-align: center;
+    padding: 48px 32px;
+    background: var(--cream);
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+    margin-top: 32px;
+  }
+
+  #results-panel.show { display: block; }
+
+  .score-display {
+    font-family: 'DM Serif Display', serif;
+    font-size: 5rem;
+    color: var(--accent);
+    line-height: 1;
+    margin: 16px 0;
+  }
+
+  .score-label {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #888;
+    font-weight: 500;
+  }
+
+  .score-message {
+    font-size: 18px;
+    font-family: 'DM Serif Display', serif;
+    margin: 20px 0 8px;
+    line-height: 1.4;
+  }
+
+  .score-sub {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 32px;
+  }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 6px;
+    margin: 24px 0;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .summary-dot {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    color: white;
+  }
+
+  .summary-dot.c { background: var(--correct); }
+  .summary-dot.w { background: var(--wrong); }
+
+  @media (max-width: 600px) {
+    .page { padding: 32px 20px 60px; }
+    .page::before { left: 60px; }
+    .options { margin-left: 0; }
+    .feedback { margin-left: 0; }
+    .summary-grid { grid-template-columns: repeat(5, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="subtitle">English Grammar Practice</div>
+    <h1><em>Always</em> & <em>Still</em></h1>
+    <div class="level-badge">A2 / B1 &nbsp;·&nbsp; 20 Questions</div>
+  </header>
+
+  <div class="instructions">
+    <strong>How to use this quiz:</strong> Choose the best word — <em>always</em> or <em>still</em> — to complete each sentence. Read the context carefully before answering. Click <strong>Submit Quiz</strong> when you have answered all 20 questions to see your score and feedback.
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="progress-label" id="progress-label">0 / 20</div>
+  </div>
+
+  <form id="quiz-form">
+
+    <!-- Q1 -->
+    <div class="question-block" data-q="1" data-answer="b">
+      <div class="q-header">
+        <div class="q-num">1.</div>
+        <div>
+          <div class="q-context">🏢 Office — New employee</div>
+          <div class="q-text">The team manager <span class="blank">______</span> sends a welcome email to new members on their first day.</div>
+        </div>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q1" value="a"><span class="opt-letter">A</span> still</label>
+        <label class="option-label"><input type="radio" name="q1" value="b"><span class="opt-letter">B</span> always</label>
+      </div>
+      <div class="feedback">✅ <strong>Always</strong> is correct. We use <em>always</em> for a habitual action that happens every time — sending a welcome email is a consistent routine.</div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question-block" data-q="2" data-answer="a">
+      <div class="q-header">
+        <div class="q-num">2.</div>
+        <div>
+          <div class="q-context">💼 Project management</div>
+          <div class="q-text">We submitted the proposal two weeks ago, but the client hasn't replied <span class="blank">______</span>.</div>
+        </div>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q2" value="a"><span class="opt-letter">A</span> still</label>
+        <label class="option-label"><input type="radio" name="q2" value="b"><span class="opt-letter">B</span> always</label>
+      </div>
+      <div class="feedback">✅ <strong>Still</strong> is correct. We use <em>still</em> with a negative to show something hasn't changed when we expected it to. The client's silence continues — it's ongoing and unexpected.</div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question-block" data-q="3" data-answer="b">
+      <div class="q-header">
+        <div class="q-num">3.</div>
+        <div>
+          <div class="q-context">🏥 Healthcare — Admin</div>
+          <div class="q-text">The receptionist <span class="blank">______</span> confirms appointments by phone 24 hours before.</div>
+        </div>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q3" value="a"><span class="opt-letter">A</span> still</label>
+        <label class="option-label"><input type="radio" name="q3" value="b"><span class="opt-letter">B</span> always</label>
+      </div>
+      <div class="feedback">✅ <strong>Always</strong> is correct. Confirming appointments 24 hours before is a regular procedure — it happens every time. That's a perfect use of <em>always</em>.</div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question-block" data-q="4" data-answer="a">
+      <div class="q-header">
+        <div class="q-num">4.</div>
+        <div>
+          <div class="q-context">📊 Sales meeting</div>
+          <div class="q-text">It's nearly the end of the quarter and we're <span class="blank">______</span> waiting for the sales figures from the Paris office.</div>
+        </div>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q4" value="a"><span class="opt-letter">A</span> still</label>
+        <label class="option-label"><input type="radio" name="q4" value="b"><span class="opt-letter">B</span> always</label>
+      </div>
+      <div class="feedback">✅ <strong>Still</strong> is correct. <em>Still</em> shows that a situation continues longer than expected. The team expected the figures to arrive earlier.</div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question-block" data-q="5" data-answer="b">
+      <div class="q-header">
+        <div class="q-num">5.</div>
+        <div>
+          <div class="q-context">🏠 Everyday life — Flatmates</div>
+          <div class="q-text">My flatmate <span class="blank">______</span> leaves dirty dishes in the sink. It's so frustrating!</div>
+        </div>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q5" value="a"><span class="opt-letter">A</span> still</label>
+        <label class="option-label"><input type="radio" name="q5" value="b"><span class="opt-letter">B</span> always</label>
+      </div>
+      <div class="feedback">✅ <strong>Always</strong> is correct. When we describe a repeated, annoying habit with frustration, we often use <em>always</em> with a continuous verb. It emphasises the repeated pattern.</div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="question-block" data-q="6" data-answer="a">
+      <div class="q-header">
+        <div class="q-num">6.</div>
+        <div>
+          <div class="q-context">🔧 IT department</div>
+          <div class="q-text">The server upgrade started on Monday and the technicians are <span class="blank">______</span> working on it.</div>
+        </div>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q6" value="a"><span class="opt-letter">A</span> still</label>
+        <label class="option-label"><input type="radio" name="q6" value="b"><span class="opt-letter">B</span> always</label>
+      </div>
+      <div class="feedback">✅ <strong>Still</strong> is correct. <em>Still</em> with a continuous verb shows an action that started in the past and is continuing now — the upgrade hasn't finished yet.</div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="question-block" data-q="7" data-answer="b">
+      <div class="q-header">
+        <div class="q-num">7.</div>
+        <div>
+          <div class="q-context">✈️ Business travel</div>
+          <div class="q-text">Our head of operations <span class="blank">______</span> checks the team's workload before going abroad.</div>
+        </div>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q7" value="a"><span class="opt-letter">A</span> still</label>
+        <label class="option-label"><input type="radio" name="q7" value="b"><span class="opt-letter">B</span> always</label>
+      </div>
+      <div class="feedback">✅ <strong>Always</strong> is correct. This describes a reliable habit — something she does every single time before travelling. <em>Always</em> expresses that regularity.</div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="question-block" data-q="8" data-answer="a">
+      <div class="q-header">
+        <div class="q-num">8.</div>
+        <div>
+          <div class="q-context">🎓 Professional development</div>
+          <div class="q-text">I enrolled in that online course six months ago and I'm <span class="blank">______</span> on module 3.</div>
+        </div>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q8" value="a"><span class="opt-letter">A</span> still</label>
+        <label class="option-label"><input type="radio" name="q8" value="b"><span class="opt-letter">B</span> always</label>
+      </div>
+      <div class="feedback">✅ <strong>Still</strong> is correct. Being on module 3 after six months suggests progress is slower than expected. <em>Still</em> highlights that the situation hasn't changed as much as hoped.</div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="question-block" data-q="9" data-answer="b">
+      <div class="q-header">
+        <div class="q-num">9.</div>
+        <div>
+          <div class="q-context">📋 HR department</div>
+          <div class="q-text">Human Resources <span class="blank">______</span> sends a survey to employees after training sessions.</div>
+        </div>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q9" value="a"><span class="opt-letter">A</span> still</label>
+        <label class="option-label"><input type="radio" name="q9" value="b"><span class="opt-letter">B</span> always</label>
+      </div>
+      <div class="feedback">✅ <strong>Always</strong> is correct. Sending a survey after every training session is a fixed company procedure — it never changes. <em>Always</em> describes this kind of consistent policy.</div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="question-block" data-q="10" data-answer="a">
+      <div class="q-header">
+        <div class="q-num">10.</div>
+        <div>
+          <div class="q-context">🏠 Everyday life — Family</div>
+          <div class="q-text">My brother is 35 and he's <span class="blank">______</span> living with our parents. He can't afford his own flat.</div>
+        </div>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q10" value="a"><span class="opt-letter">A</span> still</label>
+        <label class="option-label"><input type="radio" name="q10" value="b"><span class="opt-letter">B</span> always</label>
+      </div>
+      <div class="feedback">✅ <strong>Still</strong> is correct. The speaker implies it's surprising for a 35-year-old to live with his parents. <em>Still</em> shows the situation continues, and there's a slight sense that it's unexpected.</div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="question-block" data-q="11" data-answer="b">
+      <div class="q-header">
+        <div class="q-num">11.</div>
+        <div>
+          <div class="q-context">📦 Logistics & Supply chain</div>
+          <div class="q-text">The warehouse team <span class="blank">______</span> double-checks orders before they are dispatched.</div>
+        </div>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q11" value="a"><span class="opt-letter">A</span> still</label>
+        <label class="option-label"><input type="radio" name="q11" value="b"><span class="opt-letter">B</span> always</label>
+      </div>
+      <div class="feedback">✅ <strong>Always</strong> is correct. Double-checking every order is a standard quality control step — a procedure that happens without exception. <em>Always</em> is the right word for a non-negotiable routine.</div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="question-block" data-q="12" data-answer="a">
+      <div class="q-header">
+        <div class="q-num">12.</div>
+        <div>
+          <div class="q-context">💰 Finance — Budget review</div>
+          <div class="q-text">It's December and the finance team is <span class="blank">______</span> trying to reconcile the October accounts.</div>
+        </div>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q12" value="a"><span class="opt-letter">A</span> still</label>
+        <label class="option-label"><input type="radio" name="q12" value="b"><span class="opt-letter">B</span> always</label>
+      </div>
+      <div class="feedback">✅ <strong>Still</strong> is correct. Working on October accounts in December implies the task is taking much longer than expected. <em>Still</em> emphasises that the situation continues beyond the expected time.</div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="question-block" data-q="13" data-answer="b">
+      <div class="q-header">
+        <div class="q-num">13.</div>
+        <div>
+          <div class="q-context">🌐 Customer service</div>
+          <div class="q-text">Our support team <span class="blank">______</span> responds to complaints within 24 hours — it's company policy.</div>
+        </div>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q13" value="a"><span class="opt-letter">A</span> still</label>
+        <label class="option-label"><input type="radio" name="q13" value="b"><span class="opt-letter">B</span> always</label>
+      </div>
+      <div class="feedback">✅ <strong>Always</strong> is correct. "It's company policy" confirms this is a rule that applies every time — a regular, predictable action. Use <em>always</em> for guaranteed, repeated behaviours.</div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="question-block" data-q="14" data-answer="a">
+      <div class="q-header">
+        <div class="q-num">14.</div>
+        <div>
+          <div class="q-context">🏠 Everyday life — Technology</div>
+          <div class="q-text">I updated my phone's software last week but it's <span class="blank">______</span> very slow.</div>
+        </div>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q14" value="a"><span class="opt-letter">A</span> still</label>
+        <label class="option-label"><input type="radio" name="q14" value="b"><span class="opt-letter">B</span> always</label>
+      </div>
+      <div class="feedback">✅ <strong>Still</strong> is correct. The speaker did something to fix a problem (updated the software) but the problem continues. <em>Still</em> shows that the situation hasn't improved as expected.</div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="question-block" data-q="15" data-answer="b">
+      <div class="q-header">
+        <div class="q-num">15.</div>
+        <div>
+          <div class="q-context">🏢 Legal department</div>
+          <div class="q-text">Our legal team <span class="blank">______</span> reviews contracts before they are signed.</div>
+        </div>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q15" value="a"><span class="opt-letter">A</span> still</label>
+        <label class="option-label"><input type="radio" name="q15" value="b"><span class="opt-letter">B</span> always</label>
+      </div>
+      <div class="feedback">✅ <strong>Always</strong> is correct. Contract review before signing is an essential, invariable step in the process — something that must happen every time. <em>Always</em> expresses this kind of non-negotiable rule.</div>
+    </div>
+
+    <!-- Q16 -->
+    <div class="question-block" data-q="16" data-answer="a">
+      <div class="q-header">
+        <div class="q-num">16.</div>
+        <div>
+          <div class="q-context">🏠 Everyday life — Health</div>
+          <div class="q-text">She had an operation three months ago and she's <span class="blank">______</span> not able to go back to work.</div>
+        </div>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q16" value="a"><span class="opt-letter">A</span> still</label>
+        <label class="option-label"><input type="radio" name="q16" value="b"><span class="opt-letter">B</span> always</label>
+      </div>
+      <div class="feedback">✅ <strong>Still</strong> is correct. Three months after surgery, the speaker implies she should be recovered by now. <em>Still</em> with a negative structure shows something expected has not yet happened.</div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="question-block" data-q="17" data-answer="b">
+      <div class="q-header">
+        <div class="q-num">17.</div>
+        <div>
+          <div class="q-context">📣 Marketing</div>
+          <div class="q-text">Our marketing director <span class="blank">______</span> insists on seeing the data before approving a campaign.</div>
+        </div>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q17" value="a"><span class="opt-letter">A</span> still</label>
+        <label class="option-label"><input type="radio" name="q17" value="b"><span class="opt-letter">B</span> always</label>
+      </div>
+      <div class="feedback">✅ <strong>Always</strong> is correct. The director insists on this every single time — it's a characteristic habit or working style. <em>Always</em> describes a person's consistent behaviour or personality trait.</div>
+    </div>
+
+    <!-- Q18 -->
+    <div class="question-block" data-q="18" data-answer="a">
+      <div class="q-header">
+        <div class="q-num">18.</div>
+        <div>
+          <div class="q-context">🏗️ Construction project</div>
+          <div class="q-text">The building permit was applied for in February and we're <span class="blank">______</span> waiting for approval.</div>
+        </div>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q18" value="a"><span class="opt-letter">A</span> still</label>
+        <label class="option-label"><input type="radio" name="q18" value="b"><span class="opt-letter">B</span> always</label>
+      </div>
+      <div class="feedback">✅ <strong>Still</strong> is correct. The wait has been going on since February — longer than expected. <em>Still</em> shows that an ongoing situation has continued beyond what was anticipated.</div>
+    </div>
+
+    <!-- Q19 -->
+    <div class="question-block" data-q="19" data-answer="b">
+      <div class="q-header">
+        <div class="q-num">19.</div>
+        <div>
+          <div class="q-context">🚉 Everyday life — Commuting</div>
+          <div class="q-text">I <span class="blank">______</span> leave home at 7 a.m. to avoid the rush hour — it works every time.</div>
+        </div>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q19" value="a"><span class="opt-letter">A</span> still</label>
+        <label class="option-label"><input type="radio" name="q19" value="b"><span class="opt-letter">B</span> always</label>
+      </div>
+      <div class="feedback">✅ <strong>Always</strong> is correct. Leaving at 7 a.m. every day to avoid traffic is a consistent personal routine. <em>Always</em> is the right choice for a regular habit that gives reliable results.</div>
+    </div>
+
+    <!-- Q20 -->
+    <div class="question-block" data-q="20" data-answer="a">
+      <div class="q-header">
+        <div class="q-num">20.</div>
+        <div>
+          <div class="q-context">🗓️ Meetings & Scheduling</div>
+          <div class="q-text">We had the kick-off meeting on Monday. On Thursday, the team lead hasn't <span class="blank">______</span> shared the action points.</div>
+        </div>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q20" value="a"><span class="opt-letter">A</span> still</label>
+        <label class="option-label"><input type="radio" name="q20" value="b"><span class="opt-letter">B</span> always</label>
+      </div>
+      <div class="feedback">✅ <strong>Still</strong> is correct. Several days after the meeting, the action points haven't been shared — this is taking longer than expected. <em>Still</em> with a negative emphasises that something which should have happened hasn't happened yet.</div>
+    </div>
+
+  </form>
+
+  <div class="submit-wrap">
+    <button class="btn btn-primary" id="submit-btn" onclick="submitQuiz()">Submit Quiz</button>
+  </div>
+
+  <div id="results-panel">
+    <div class="score-label">Your Score</div>
+    <div class="score-display" id="score-num">—</div>
+    <div class="score-label">out of 20</div>
+    <div class="score-message" id="score-msg"></div>
+    <div class="score-sub" id="score-sub"></div>
+    <div class="summary-grid" id="summary-grid"></div>
+    <button class="btn btn-secondary" onclick="resetQuiz()" style="margin-top:16px;">Try Again</button>
+  </div>
+
+</div>
+
+<script>
+const answers = {
+  q1:'b', q2:'a', q3:'b', q4:'a', q5:'b',
+  q6:'a', q7:'b', q8:'a', q9:'b', q10:'a',
+  q11:'b', q12:'a', q13:'b', q14:'a', q15:'b',
+  q16:'a', q17:'b', q18:'a', q19:'b', q20:'a'
+};
+
+let answered = 0;
+
+// Track selection for progress
+document.querySelectorAll('input[type="radio"]').forEach(radio => {
+  radio.addEventListener('change', () => {
+    const name = radio.name;
+    const block = radio.closest('.question-block');
+    const wasAnswered = block.dataset.answered;
+
+    // Highlight selected
+    block.querySelectorAll('.option-label').forEach(l => l.classList.remove('selected'));
+    radio.closest('.option-label').classList.add('selected');
+
+    if (!wasAnswered) {
+      block.dataset.answered = '1';
+      answered++;
+      updateProgress();
+    }
+  });
+});
+
+function updateProgress() {
+  const pct = (answered / 20) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = answered + ' / 20';
+}
+
+function submitQuiz() {
+  let score = 0;
+  const results = [];
+
+  for (let i = 1; i <= 20; i++) {
+    const name = 'q' + i;
+    const correctAns = answers[name];
+    const selected = document.querySelector(`input[name="${name}"]:checked`);
+    const block = document.querySelector(`[data-q="${i}"]`);
+    const labels = block.querySelectorAll('.option-label');
+    const feedback = block.querySelector('.feedback');
+
+    labels.forEach(l => {
+      l.style.pointerEvents = 'none';
+      const val = l.querySelector('input').value;
+      if (val === correctAns) l.classList.add('correct');
+    });
+
+    if (selected) {
+      const userAns = selected.value;
+      if (userAns === correctAns) {
+        score++;
+        results.push('c');
+        selected.closest('.option-label').classList.add('correct');
+        feedback.classList.add('show','correct-fb');
+      } else {
+        results.push('w');
+        selected.closest('.option-label').classList.add('wrong');
+        feedback.classList.add('show','wrong-fb');
+      }
+    } else {
+      results.push('w');
+      feedback.classList.add('show','wrong-fb');
+      feedback.innerHTML = '⚠️ No answer selected. ' + feedback.innerHTML.replace(/^[✅⚠️]\s*/,'');
+    }
+  }
+
+  // Show results
+  document.getElementById('score-num').textContent = score;
+
+  let msg, sub;
+  if (score === 20) { msg = 'Perfect! Outstanding work.'; sub = 'You have excellent command of always and still.'; }
+  else if (score >= 17) { msg = 'Excellent — almost perfect!'; sub = 'Review the questions you missed and you\'ll master this soon.'; }
+  else if (score >= 14) { msg = 'Good work — well done!'; sub = 'You understand the main difference. Keep practising with the feedback below.'; }
+  else if (score >= 10) { msg = 'A solid start.'; sub = 'Read the feedback carefully — the patterns will become clear with more practice.'; }
+  else { msg = 'Keep going — you can improve!'; sub = 'Focus on the explanation for each question. Try again when you\'re ready.'; }
+
+  document.getElementById('score-msg').textContent = msg;
+  document.getElementById('score-sub').textContent = sub;
+
+  const grid = document.getElementById('summary-grid');
+  grid.innerHTML = '';
+  results.forEach((r, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'summary-dot ' + r;
+    dot.title = 'Q' + (i+1) + ': ' + (r==='c' ? 'Correct' : 'Incorrect');
+    dot.textContent = i+1;
+    grid.appendChild(dot);
+  });
+
+  document.getElementById('results-panel').classList.add('show');
+  document.getElementById('submit-btn').style.display = 'none';
+  document.getElementById('results-panel').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function resetQuiz() {
+  document.getElementById('quiz-form').reset();
+  answered = 0;
+  updateProgress();
+
+  document.querySelectorAll('.option-label').forEach(l => {
+    l.classList.remove('selected','correct','wrong');
+    l.style.pointerEvents = '';
+  });
+  document.querySelectorAll('.feedback').forEach(f => {
+    f.className = 'feedback';
+  });
+  document.querySelectorAll('.question-block').forEach(b => {
+    delete b.dataset.answered;
+  });
+
+  document.getElementById('results-panel').classList.remove('show');
+  document.getElementById('submit-btn').style.display = '';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
+</body>
+</html>

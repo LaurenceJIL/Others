@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glow-Tech Audit Pro - Expanded Edition</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #2980b9;
+            --accent: #e67e22;
+            --success: #27ae60;
+            --error: #c0392b;
+            --light: #f4f7f6;
+        }
+
+        body { font-family: 'Segoe UI', sans-serif; background: #dcdde1; margin: 0; padding: 10px; }
+        .container { max-width: 1000px; margin: auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        
+        .header { background: var(--primary); color: white; padding: 15px; text-align: center; }
+        .header h2 { margin: 0; font-size: 1.4rem; color: var(--accent); }
+
+        /* Tabs Navigation */
+        .tabs { display: flex; background: #eee; border-bottom: 2px solid #ddd; }
+        .tab-btn { flex: 1; padding: 12px; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; border-right: 1px solid #ddd; outline: none; }
+        .tab-btn:hover { background: #e2e2e2; }
+        .tab-btn.active { background: white; color: var(--secondary); border-bottom: 3px solid var(--secondary); }
+
+        /* Content Sections */
+        .content-section { display: none; padding: 20px; max-height: 75vh; overflow-y: auto; }
+        .content-section.active { display: block; }
+
+        .tables-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; font-size: 0.8rem; }
+        table { width: 100%; border-collapse: collapse; background: #fff; }
+        th, td { border: 1px solid #ddd; padding: 6px; text-align: left; }
+        th { background: #f1f3f5; color: var(--primary); }
+
+        /* Questions & Buttons */
+        .quiz-card { background: var(--light); padding: 15px; border-radius: 6px; margin-bottom: 12px; border-left: 4px solid var(--secondary); font-size: 0.9rem; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+        
+        .btn-opt { background: white; border: 1px solid #ccc; padding: 10px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; text-align: left; transition: 0.2s; }
+        .btn-opt:hover { border-color: var(--secondary); background: #edf2f7; }
+        .btn-opt.selected { background: var(--secondary); color: white; border-color: var(--secondary); }
+        .btn-opt.correct { background: var(--success) !important; color: white; border-color: var(--success); }
+        .btn-opt.wrong { background: var(--error) !important; color: white; border-color: var(--error); }
+
+        /* Draggables */
+        .drag-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; background: #fff; padding: 15px; border: 1px dashed #aaa; min-height: 60px; border-radius: 6px; }
+        .draggable { background: var(--primary); color: white; padding: 6px 14px; border-radius: 20px; cursor: grab; font-size: 0.8rem; }
+        .drop-zones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .zone { min-height: 110px; background: #fdfdfd; border: 2px solid #eee; padding: 10px; border-radius: 8px; font-size: 0.8rem; }
+        .zone strong { display: block; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 4px; color: var(--primary); }
+
+        /* Footer Action */
+        .feedback-btn { width: 100%; padding: 20px; background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
+        .feedback-btn:hover { background: #1a252f; }
+        .gap-fill-text { line-height: 2.5; }
+        input { border: none; border-bottom: 2px solid var(--secondary); width: 120px; text-align: center; font-weight: bold; background: transparent; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2>GLOW-TECH AUDIT TERMINAL</h2>
+        <p style="margin:5px 0 0; font-size:0.85rem;">Compliance Review: March Production vs. Sales Discrepancy</p>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-target="data">Reference Data</button>
+        <button class="tab-btn" data-target="mcq">Full MCQs</button>
+        <button class="tab-btn" data-target="tf">Audit T/F</button>
+        <button class="tab-btn" data-target="gap">Statements</button>
+        <button class="tab-btn" data-target="drag">Ledger Sort</button>
+    </div>
+
+    <div id="data" class="content-section active">
+        <div class="tables-grid">
+            <div>
+                <strong>Production Log (March)</strong>
+                <table>
+                    <tr><th>ID</th><th>Description</th><th>Qty</th><th>Unit Cost</th><th>Total</th></tr>
+                    <tr><td>RM-001</td><td>LED Chips</td><td>2,000</td><td>4.00</td><td>8,000</td></tr>
+                    <tr><td>RM-002</td><td>Alum. Housing</td><td>500</td><td>12.00</td><td>6,000</td></tr>
+                    <tr><td>LB-100</td><td>Labor Hours</td><td>400</td><td>25.00</td><td>10,000</td></tr>
+                    <tr><td>PK-050</td><td>Shipping Boxes</td><td>300</td><td>2.00</td><td>750*</td></tr>
+                    <tr><td>UT-999</td><td>Electricity Bill</td><td>1</td><td>14,500</td><td>14,500</td></tr>
+                    <tr style="font-weight:bold;"><td>TOTAL</td><td colspan="3">Production Costs</td><td>$39,250</td></tr>
+                </table>
+            </div>
+            <div>
+                <strong>Sales Record (April Error)</strong>
+                <table>
+                    <tr><th>Product</th><th>Units Sold</th><th>Price</th><th>Revenue</th></tr>
+                    <tr><td>Desk Lamp</td><td>250</td><td>45.00</td><td>11,250</td></tr>
+                    <tr><td>Floodlight</td><td>120</td><td>150.00</td><td>18,000</td></tr>
+                    <tr><td>Eco-Bulb 4pk</td><td>600</td><td>10.00</td><td>5,000*</td></tr>
+                    <tr><td>Returns</td><td>-80</td><td>VARIES</td><td>-2,400</td></tr>
+                    <tr style="font-weight:bold;"><td>TOTAL</td><td colspan="2">Net Revenue</td><td>$31,850</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="mcq" class="content-section"><div id="mcq-list"></div></div>
+    <div id="tf" class="content-section"><div id="tf-list"></div></div>
+
+    <div id="gap" class="content-section">
+        <div class="quiz-card gap-fill-text">
+            <strong>Executive Summary:</strong> For the period of March, Glow-Tech recorded a net loss of $<input type="text" data-ans="7400">. 
+            This was driven by an Electricity Bill that was 10x higher than the usual $<input type="text" data-ans="1500">. 
+            Additionally, the math for shipping boxes (PK-050) was incorrect; the total should be $<input type="text" data-ans="600">.
+        </div>
+        <div class="quiz-card gap-fill-text">
+            <strong>Inventory Discrepancy:</strong> The warehouse produced <input type="text" data-ans="500"> Aluminum Housings, but only <input type="text" data-ans="120"> Floodlights were sold. 
+            Furthermore, Eco-Bulb revenue was understated by $<input type="text" data-ans="1000">. 
+            Finally, the Sales report title incorrectly lists the month as <input type="text" data-ans="April">.
+        </div>
+    </div>
+
+    <div id="drag" class="content-section">
+        <div class="drag-container" id="pool"></div>
+        <div class="drop-zones">
+            <div class="zone" id="z-mat"><strong>Direct Materials (COGS)</strong></div>
+            <div class="zone" id="z-rev"><strong>Revenue & Sales</strong></div>
+            <div class="zone" id="z-over"><strong>Manufacturing Overhead</strong></div>
+        </div>
+    </div>
+
+    <button class="feedback-btn" onclick="checkAll()">VALIDATE AUDIT ENTRIES</button>
+</div>
+
+<script>
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    const mcqData = [
+        {q: "According to the Production sheet, what is the verified hourly rate (Unit Cost) for manual labor?", a: ["$25.00 per hour", "$400.00 per shift", "$10,000 per month", "$12.00 per hour"], c: "$25.00 per hour"},
+        {q: "Which specific inventory ID corresponds to the packaging used for shipping finished products?", a: ["PK-050", "RM-001", "LB-100", "UT-999"], c: "PK-050"},
+        {q: "What was the total volume of LED Chips allocated for the March production run?", a: ["2,000 units", "500 units", "300 units", "120 units"], c: "2,000 units"},
+        {q: "What is the gross revenue generated specifically from the sale of Desk Lamps?", a: ["$11,250", "$18,000", "$5,000", "$31,850"], c: "$11,250"},
+        {q: "If the standard Electricity budget is $1,500, by how much did March's utility bill exceed the forecast?", a: ["$13,000", "$14,500", "$1,500", "$10,000"], c: "$13,000"},
+        {q: "Based on 'Units Sold' in the Sales Record, which product line had the highest customer demand?", a: ["Eco-Bulb 4pk", "Floodlight", "Desk Lamp", "LED Chips"], c: "Eco-Bulb 4pk"},
+        {q: "The shipping boxes total is listed as $750. Performing a recalculation (300 units x $2.00), what is the correct value?", a: ["$600.00", "$750.00", "$300.00", "$500.00"], c: "$600.00"},
+        {q: "Given the production dates and title errors, which fiscal month is currently under audit?", a: ["March", "April", "January", "May"], c: "March"},
+        {q: "At what individual price point are Floodlights being sold to customers?", a: ["$150.00 each", "$45.00 each", "$10.00 each", "$25.00 each"], c: "$150.00 each"},
+        {q: "How many Eco-Bulb 4-packs were sold during the reporting period?", a: ["600 units", "250 units", "120 units", "80 units"], c: "600 units"},
+        {q: "What is the raw material unit cost for one Aluminum Housing?", a: ["$12.00", "$4.00", "$25.00", "$2.00"], c: "$12.00"},
+        {q: "What was the total financial impact of customer returns on the net revenue?", a: ["-$2,400", "$2,400", "-$80", "$5,000"], c: "-$2,400"},
+        {q: "How many total labor hours were billed to production in the month of March?", a: ["400 hours", "25 hours", "10,000 hours", "300 hours"], c: "400 hours"},
+        {q: "Which Reference ID is assigned to Aluminum Housing in the raw materials inventory?", a: ["RM-002", "RM-001", "LB-100", "PK-050"], c: "RM-002"},
+        {q: "The Eco-Bulb revenue is listed as $5,000 for 600 units at $10 each. What is the calculated understatement error?", a: ["$1,000 error", "$500 error", "$2,400 error", "$0 error"], c: "$1,000 error"},
+        {q: "What was the final Net Revenue reported on the Sales sheet before corrections?", a: ["$31,850", "$39,250", "$7,400", "$11,250"], c: "$31,850"}
+    ];
+
+    const tfData = [
+        {q: "The 'April' heading on the Sales spreadsheet is a clerical error since production was in March.", c: true},
+        {q: "The company produced fewer Aluminum Housings than the total number of Floodlights sold.", c: false},
+        {q: "The revenue calculation for Eco-Bulbs (600 x $10 = $5,000) is mathematically sound.", c: false},
+        {q: "Customer returns are correctly categorized as a reduction in total monthly revenue.", c: true},
+        {q: "Direct Labor is the single most expensive line item on the March Production sheet.", c: false},
+        {q: "There are currently 380 Aluminum Housings remaining in ending inventory.", c: true},
+        {q: "Glow-Tech achieved a positive Net Profit of $7,400 for the month of March.", c: false},
+        {q: "The Electricity utility expense is tracked under Item Reference ID UT-999.", c: true},
+        {q: "The mathematical calculation for Shipping Boxes (300 x $2 = $750) is correct as listed.", c: false},
+        {q: "The total quantity of products returned by customers was 80 units.", c: true},
+        {q: "Total raw material costs for LED Chips amounted to exactly $8,000.", c: true},
+        {q: "The unit selling price for a Desk Lamp is recorded as $50.00.", c: false},
+        {q: "Electricity is listed as a single unit with a cost of $14,500.", c: true},
+        {q: "Total gross revenue generated by Floodlight sales reached $18,000.", c: true},
+        {q: "Item ID RM-001 refers to Labor Wages on the ledger.", c: false},
+        {q: "Total production costs ($39,250) exceeded net revenue ($31,850) for the period.", c: true}
+    ];
+
+    const dragItems = [
+        {t: "LED Chips (RM-001)", z: "z-mat"}, {t: "Alum. Housing", z: "z-mat"}, {t: "Shipping Boxes", z: "z-mat"}, {t: "Solder Paste", z: "z-mat"},
+        {t: "Desk Lamp Sales", z: "z-rev"}, {t: "Eco-Bulb Sales", z: "z-rev"}, {t: "Floodlight Sales", z: "z-rev"}, {t: "Customer Refunds", z: "z-rev"},
+        {t: "Labor Wages", z: "z-over"}, {t: "Electricity Bill", z: "z-over"}, {t: "Factory Rent", z: "z-over"}, {t: "Quality Control", z: "z-over"},
+        {t: "Glass Panes", z: "z-mat"}, {t: "Service Fees", z: "z-rev"}, {t: "Facility Cleaning", z: "z-over"}, {t: "Equipment Repair", z: "z-over"}
+    ];
+
+    // Tab Navigation Logic
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn, .content-section').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.target).classList.add('active');
+        });
+    });
+
+    function init() {
+        // Render MCQs with full text and shuffled options
+        const mcqCont = document.getElementById('mcq-list');
+        shuffle(mcqData).forEach((m, i) => {
+            let opts = shuffle([...m.a]);
+            mcqCont.innerHTML += `
+                <div class="quiz-card">
+                    <p><strong>Audit Query ${i+1}:</strong> ${m.q}</p>
+                    <div class="options-grid">
+                        ${opts.map(o => `<button class="btn-opt" onclick="sel(this, '${m.c}')">${o}</button>`).join('')}
+                    </div>
+                </div>`;
+        });
+
+        // Render T/F questions
+        const tfCont = document.getElementById('tf-list');
+        shuffle(tfData).forEach((t, i) => {
+            tfCont.innerHTML += `
+                <div class="quiz-card" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="max-width:75%;">${t.q}</span>
+                    <div style="min-width:120px; text-align:right;">
+                        <button class="btn-opt" onclick="sel(this, ${t.c})">True</button>
+                        <button class="btn-opt" onclick="sel(this, ${!t.c})">False</button>
+                    </div>
+                </div>`;
+        });
+
+        // Render Draggables
+        const pool = document.getElementById('pool');
+        shuffle(dragItems).forEach((d, i) => {
+            const el = document.createElement('div');
+            el.className = 'draggable';
+            el.draggable = true;
+            el.id = 'drg-' + i;
+            el.innerText = d.t;
+            el.dataset.target = d.z;
+            el.ondragstart = e => e.dataTransfer.setData('text', e.target.id);
+            pool.appendChild(el);
+        });
+
+        // Drop Zone Logic
+        document.querySelectorAll('.zone').forEach(z => {
+            z.ondragover = e => e.preventDefault();
+            z.ondrop = e => {
+                e.preventDefault();
+                const id = e.dataTransfer.getData('text');
+                z.appendChild(document.getElementById(id));
+            };
+        });
+    }
+
+    // Selection Handler
+    window.sel = (btn, cor) => {
+        btn.parentElement.querySelectorAll('.btn-opt').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        // Logic check: "True" maps to boolean true, options map to string match
+        btn.dataset.isCorrect = (btn.innerText === 'True' && cor === true) || (btn.innerText === 'False' && cor === false) || (btn.innerText === cor);
+    };
+
+    function checkAll() {
+        // Grade MCQs & T/F
+        document.querySelectorAll('.btn-opt.selected').forEach(b => {
+            b.classList.add(b.dataset.isCorrect === "true" ? 'correct' : 'wrong');
+        });
+        // Grade Gap Fills
+        document.querySelectorAll('input').forEach(i => {
+            const correct = i.value.trim().toLowerCase() === i.dataset.ans.toLowerCase();
+            i.style.color = correct ? 'var(--success)' : 'var(--error)';
+            i.style.borderBottomColor = correct ? 'var(--success)' : 'var(--error)';
+        });
+        // Grade Draggables
+        document.querySelectorAll('.draggable').forEach(d => {
+            d.style.background = d.parentElement.id === d.dataset.target ? 'var(--success)' : 'var(--error)';
+        });
+        alert("Audit feedback generated. Review color-coding on all tabs: Green (Pass), Red (Fail).");
+    }
+
+    init();
+</script>
+</body>
+</html>

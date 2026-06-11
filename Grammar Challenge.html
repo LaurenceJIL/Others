@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grammar Challenge</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #2a7a4b;
+    --green-light: #3da066;
+    --gold: #c8a435;
+    --gold-light: #e8c24a;
+    --cream: #faf7f0;
+    --cream-dark: #f0ead8;
+    --brown: #5a3e1b;
+    --brown-dark: #3a2610;
+    --text: #2c1f0e;
+    --text-muted: #7a6040;
+    --red: #b83232;
+    --red-light: #d94444;
+    --blue: #2455a0;
+    --shadow: 0 4px 24px rgba(60,40,10,0.13);
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    background-color: var(--cream);
+    color: var(--text);
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .game-container {
+    background: white;
+    width: 100%;
+    max-width: 600px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    border: 1px solid var(--cream-dark);
+    position: relative;
+  }
+
+  /* Screens */
+  .screen {
+    display: none;
+    padding: 40px;
+    flex-direction: column;
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  .screen.active {
+    display: flex;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Landing Screen */
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 2.5rem;
+    color: var(--brown-dark);
+    margin-bottom: 10px;
+    line-height: 1.1;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 30px;
+  }
+
+  .level-select {
+    display: grid;
+    gap: 15px;
+  }
+
+  .level-card {
+    background: var(--cream);
+    border: 2px solid var(--cream-dark);
+    padding: 20px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .level-card:hover {
+    border-color: var(--gold);
+    background: white;
+    transform: translateX(5px);
+  }
+
+  .level-info h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+  }
+
+  .level-info p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  .badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .badge.b2 { background: #e3f2fd; color: #1976d2; }
+  .badge.c1 { background: #f3e5f5; color: #7b1fa2; }
+  .badge.c2 { background: #fff3e0; color: #e65100; }
+
+  /* Game Screen Elements */
+  .game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+
+  .stat-box {
+    text-align: center;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+  }
+
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--brown);
+  }
+
+  .progress-container {
+    height: 6px;
+    background: var(--cream-dark);
+    border-radius: 3px;
+    margin-bottom: 40px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--gold);
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  .round-indicator {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  .statement-card {
+    background: var(--cream);
+    padding: 30px;
+    border-radius: var(--radius);
+    margin-bottom: 30px;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-left: 4px solid var(--gold);
+  }
+
+  #statementText {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.25rem;
+    color: var(--brown-dark);
+  }
+
+  .betting-area {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .slider-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+  }
+
+  input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 8px;
+    cursor: pointer;
+    background: var(--cream-dark);
+    border-radius: 4px;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    background: var(--brown);
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+
+  .btn {
+    padding: 16px;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .btn-correct {
+    background: var(--green);
+    color: white;
+  }
+
+  .btn-incorrect {
+    background: var(--red);
+    color: white;
+  }
+
+  .btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .feedback-area {
+    display: none;
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: var(--radius);
+    text-align: center;
+  }
+
+  .feedback-area.visible {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .feedback-correct { background: #e8f5e9; color: var(--green); border: 1px solid #c8e6c9; }
+  .feedback-incorrect { background: #ffebee; color: var(--red); border: 1px solid #ffcdd2; }
+
+  .feedback-title {
+    font-weight: 700;
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+  }
+
+  .feedback-explanation {
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+    color: var(--text);
+  }
+
+  .btn-primary {
+    background: var(--brown);
+    color: white;
+    width: 100%;
+  }
+
+  /* Result Screen */
+  .result-score {
+    padding: 30px;
+    border-radius: var(--radius);
+    text-align: center;
+    margin-bottom: 25px;
+  }
+
+  .result-score.great { background: #e8f5e9; }
+  .result-score.ok { background: #fff8e1; }
+  .result-score.poor { background: #ffebee; }
+
+  .result-icon { font-size: 3rem; margin-bottom: 10px; }
+  .result-score-value {
+    font-size: 4rem;
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 5px;
+  }
+
+  #resultTitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+  }
+
+  #resultFeedback {
+    margin-bottom: 30px;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 480px) {
+    .screen { padding: 25px; }
+    h1 { font-size: 2rem; }
+    .actions { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="game-container">
+  <div id="landingScreen" class="screen active">
+    <h1>The Grammar Librarian</h1>
+    <p class="subtitle">A game of nuance, precision, and confidence. How sharp is your eye?</p>
+    
+    <div class="level-select">
+      <button class="level-card b2" onclick="startGame('B2')">
+        <div class="level-info">
+          <h3>Upper Intermediate</h3>
+          <p>Complex structures & common nuances.</p>
+        </div>
+        <span class="badge b2">B2</span>
+      </button>
+
+      <button class="level-card c1" onclick="startGame('C1')">
+        <div class="level-info">
+          <h3>Advanced</h3>
+          <p>Professional & sophisticated usage.</p>
+        </div>
+        <span class="badge c1">C1</span>
+      </button>
+
+      <button class="level-card c2" onclick="startGame('C2')">
+        <div class="level-info">
+          <h3>Proficiency</h3>
+          <p>Mastery of subtle & literary forms.</p>
+        </div>
+        <span class="badge c2">C2</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="gameScreen" class="screen">
+    <div class="game-header">
+      <div class="stat-box">
+        <div class="stat-label">Your Pool</div>
+        <div class="stat-value" id="currentScore">10</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Level</div>
+        <div class="stat-value" id="displayLevel">B2</div>
+      </div>
+    </div>
+
+    <div class="round-indicator" id="roundIndicator">Statement 1 of 10</div>
+    <div class="progress-container">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="statement-card">
+      <p id="statementText">Loading statement...</p>
+    </div>
+
+    <div id="interactionArea">
+      <div class="betting-area">
+        <div class="slider-label">
+          <span>Lower Confidence</span>
+          <span>Higher Confidence</span>
+        </div>
+        <input type="range" id="betSlider" min="1" max="10" value="5" oninput="updateBetValue(this.value)">
+        <div style="text-align: center; font-weight: 700;">
+          Betting: <span id="betValueDisplay">5</span> points
+        </div>
+        
+        <div class="actions">
+          <button class="btn btn-correct" onclick="checkAnswer(true)">Correct</button>
+          <button class="btn btn-incorrect" onclick="checkAnswer(false)">Incorrect</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="feedbackArea" class="feedback-area">
+      <div class="feedback-title" id="feedbackTitle">Correct!</div>
+      <p class="feedback-explanation" id="feedbackText"></p>
+      <button class="btn btn-primary" onclick="nextRound()">Continue</button>
+    </div>
+  </div>
+
+  <div id="resultScreen" class="screen">
+    <h1>Review Complete</h1>
+    <div id="resultScore" class="result-score">
+      <div class="result-icon" id="resultIcon">🏆</div>
+      <div class="result-score-value" id="finalScore">0</div>
+      <div id="resultTitle">Excellent!</div>
+    </div>
+    <p id="resultFeedback"></p>
+    <button class="btn btn-primary" onclick="location.reload()">Try Another Level</button>
+  </div>
+</div>
+
+<script>
+const allStatements = [
+  // B2 Statements
+  { level: 'B2', text: "By the time we arrived, they'd been waiting for an hour.", correct: true, explanation: "Correct. Past Perfect Continuous describes an action in progress up to a point in the past." },
+  { level: 'B2', text: "If I was you, I would take the job offer.", correct: false, explanation: "Incorrect. In the second conditional, 'If I were you' is grammatically standard." },
+  { level: 'B2', text: "The movie was so bored that I fell asleep.", correct: false, explanation: "Incorrect. The movie was 'boring'; I was 'bored'." },
+  { level: 'B2', text: "She's used to getting up early for work.", correct: true, explanation: "Correct. 'Used to' followed by a gerund (-ing) describes a habit or familiarity." },
+  { level: 'B2', text: "I've been knowing him since we were children.", correct: false, explanation: "Incorrect. 'Know' is a stative verb and is rarely used in continuous forms." },
+  { level: 'B2', text: "He suggested that we should go to the park.", correct: true, explanation: "Correct. 'Suggest' can be followed by a 'that' clause." },
+  { level: 'B2', text: "Despite it was raining, they went for a walk.", correct: false, explanation: "Incorrect. 'Despite' is followed by a noun or gerund. Use 'Although' before a clause." },
+  { level: 'B2', text: "I look forward to meeting you next week.", correct: true, explanation: "Correct. 'Look forward to' is followed by the -ing form." },
+  { level: 'B2', text: "Neither of the candidates are suitable for the role.", correct: false, explanation: "Incorrect. 'Neither' is formally singular: 'Neither of the candidates is...'" },
+  { level: 'B2', text: "I wish I had more free time.", correct: true, explanation: "Correct. 'Wish' + past simple expresses a desire for a different present situation." },
+  { level: 'B2', text: "He's not used to get up so early.", correct: false, explanation: "Incorrect. After 'be used to', we use the -ing form: 'getting up'." },
+  { level: 'B2', text: "If only I had listened to her advice.", correct: true, explanation: "Correct. 'If only' + past perfect expresses regret about the past." },
+
+  // C1 Statements
+  { level: 'C1', text: "Hardly had the meeting started when the fire alarm rang.", correct: true, explanation: "Correct. Negative inversion (Hardly + auxiliary + subject) is used for emphasis." },
+  { level: 'C1', text: "I'd rather you didn't tell anyone about this.", correct: true, explanation: "Correct. 'I'd rather' + subject + past simple is used to express a preference for someone else's action." },
+  { level: 'C1', text: "The research suggests that the benefits are twofold: improved health and increased productivity.", correct: true, explanation: "Correct. 'Twofold' is used correctly here as an adjective/adverb." },
+  { level: 'C1', text: "It's high time we start thinking about our retirement.", correct: false, explanation: "Incorrect. 'It's high time' is followed by the past simple: 'we started'." },
+  { level: 'C1', text: "Little did I know that my life was about to change.", correct: true, explanation: "Correct. Negative inversion used correctly for dramatic effect." },
+  { level: 'C1', text: "They recommended me to see a specialist.", correct: false, explanation: "Incorrect. 'Recommend' is not used with 'object + to-infinitive'. Use 'recommended that I see'." },
+  { level: 'C1', text: "Supposing you won the lottery, what would you do?", correct: true, explanation: "Correct. 'Supposing' is used to set up a hypothetical second conditional." },
+  { level: 'C1', text: "No sooner I had left the house than it began to pour.", correct: false, explanation: "Incorrect. Needs inversion: 'No sooner had I left...'" },
+  { level: 'C1', text: "Should you require further assistance, do not hesitate to contact us.", correct: true, explanation: "Correct. Inversion in the first conditional for formal tone." },
+  { level: 'C1', text: "Were it not for his help, I wouldn't have finished on time.", correct: true, explanation: "Correct. Inversion in the second conditional (formal)." },
+  
+  // C2 Statements
+  { level: 'C2', text: "Had I known about the closure, I would have taken the alternative route.", correct: true, explanation: "Correct. Inversion in the third conditional is used for formal emphasis." },
+  { level: 'C2', text: "The committee's decision was based on a premise that proved to be faulty.", correct: true, explanation: "Correct. 'Premise' is the standard spelling for this context." },
+  { level: 'C2', text: "Try as he might, he couldn't convince her to stay.", correct: true, explanation: "Correct. 'Try as he might' is a formal way to express 'although he tried hard'." },
+  { level: 'C2', text: "It is imperative that the documents be signed immediately.", correct: true, explanation: "Correct. This uses the present subjunctive ('be') required by 'imperative'." },
+  { level: 'C2', text: "Such was the intensity of the storm that the trees were uprooted.", correct: true, explanation: "Correct. 'Such' + inversion is used for emphasis." },
+  { level: 'C2', text: "He was accused of having embezzled the funds.", correct: true, explanation: "Correct. 'Embezzle' is the correct term for misappropriating funds." },
+  { level: 'C2', text: "But for his intervention, the deal would have fallen through.", correct: true, explanation: "Correct. 'But for' is a formal alternative to 'If it hadn't been for'." },
+  { level: 'C2', text: "The defendant claimed he was elsewhere at the time of the crime.", correct: true, explanation: "Correct. 'Elsewhere' is used correctly as an adverb." },
+  { level: 'C2', text: "Lest we forget the sacrifices made by our ancestors.", correct: true, explanation: "Correct. 'Lest' is a formal conjunction used to prevent an undesirable outcome." },
+  { level: 'C2', text: "Under no circumstances should you open that door.", correct: true, explanation: "Correct. Negative inversion after a restrictive prepositional phrase." }
+];
+
+let currentScore = 10;
+let roundNumber = 0;
+let pool = [];
+let currentStatement = null;
+let level = '';
+
+function startGame(selectedLevel) {
+  level = selectedLevel;
+  currentScore = 10;
+  roundNumber = 0;
+  
+  initPool(level);
+  
+  if (pool.length === 0) {
+    alert("Question pool for this level is empty.");
+    return;
+  }
+  
+  document.getElementById('displayLevel').textContent = level;
+  document.getElementById('landingScreen').classList.remove('active');
+  document.getElementById('gameScreen').classList.add('active');
+  
+  updateScoreDisplay();
+  nextRound();
+}
+
+function initPool(lvl) {
+  const filtered = allStatements.filter(s => s.level === lvl);
+  // Shuffle and pick 10
+  pool = filtered.sort(() => 0.5 - Math.random()).slice(0, 10);
+}
+
+function nextRound() {
+  if (roundNumber >= 10 || roundNumber >= pool.length) {
+    endGame();
+    return;
+  }
+
+  // Reset UI
+  document.getElementById('feedbackArea').classList.remove('visible');
+  document.getElementById('interactionArea').style.display = 'block';
+  
+  currentStatement = pool[roundNumber];
+  document.getElementById('statementText').textContent = currentStatement.text;
+  
+  // Reset slider
+  document.getElementById('betSlider').value = 5;
+  updateBetValue(5);
+  
+  updateScoreDisplay();
+  roundNumber++;
+}
+
+function updateBetValue(val) {
+  document.getElementById('betValueDisplay').textContent = val;
+}
+
+function updateScoreDisplay() {
+  document.getElementById('currentScore').textContent = currentScore;
+  document.getElementById('roundIndicator').textContent = `Statement ${roundNumber + 1} of 10`;
+  
+  const progress = (roundNumber / 10) * 100;
+  document.getElementById('progressFill').style.width = progress + '%';
+}
+
+function checkAnswer(userSaysCorrect) {
+  const bet = parseInt(document.getElementById('betSlider').value);
+  const isCorrect = (userSaysCorrect === currentStatement.correct);
+  
+  const feedbackArea = document.getElementById('feedbackArea');
+  const feedbackTitle = document.getElementById('feedbackTitle');
+  const feedbackText = document.getElementById('feedbackText');
+  
+  if (isCorrect) {
+    currentScore += bet;
+    feedbackArea.className = 'feedback-area visible feedback-correct';
+    feedbackTitle.textContent = 'Correct!';
+  } else {
+    currentScore -= bet;
+    feedbackArea.className = 'feedback-area visible feedback-incorrect';
+    feedbackTitle.textContent = 'Incorrect';
+  }
+  
+  feedbackText.textContent = currentStatement.explanation;
+  
+  // Hide interaction, show feedback
+  document.getElementById('interactionArea').style.display = 'none';
+  document.getElementById('currentScore').textContent = currentScore;
+}
+
+function endGame() {
+  document.getElementById('gameScreen').classList.remove('active');
+  document.getElementById('resultScreen').classList.add('active');
+  document.getElementById('finalScore').textContent = currentScore;
+  calculateRank(currentScore);
+}
+
+function calculateRank(score) {
+  let icon, title, feedback, cls;
+  
+  if (score >= 70) {
+    cls = 'great'; icon = '🏆'; title = 'Excellent Work!';
+    feedback = 'You have a sharp eye for grammatical errors and excellent confidence in your choices. Your knowledge at this level is impressive — keep challenging yourself!';
+  } else if (score >= 40) {
+    cls = 'great'; icon = '🎯'; title = 'Well Done!';
+    feedback = 'A solid performance. You correctly identified most errors and managed your bets sensibly. Review the statements you missed to build even greater accuracy.';
+  } else if (score >= 10) {
+    cls = 'ok'; icon = '📚'; title = 'Good Effort';
+    feedback = 'You identified a good number of errors, but some tricky ones caught you out — or perhaps some bold bets didn\'t pay off. Try again to improve your score.';
+  } else if (score >= -20) {
+    cls = 'ok'; icon = '🔍'; title = 'Keep Practising';
+    feedback = 'Grammar at this level can be subtle. Review the explanations for the statements you missed, and try again — each attempt builds your accuracy.';
+  } else {
+    cls = 'poor'; icon = '📝'; title = 'Room to Grow';
+    feedback = 'This level tested some challenging grammar points. Don\'t be discouraged — try a lower level to build confidence, then come back to this one.';
+  }
+
+  const rs = document.getElementById('resultScore');
+  rs.className = 'result-score ' + cls;
+  document.getElementById('resultIcon').textContent  = icon;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultFeedback').textContent = feedback;
+}
+</script>
+</body>
+</html>

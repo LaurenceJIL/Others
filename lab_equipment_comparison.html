@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratory Equipment Comparison Exercise</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .instructions {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .exercise-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .text-area {
+            flex: 2;
+            min-width: 300px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .drag-items {
+            flex: 1;
+            min-width: 250px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .drag-item {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            padding: 8px 12px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: grab;
+            display: inline-block;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+        .drag-item:hover {
+            background: #bbdefb;
+            transform: scale(1.05);
+        }
+        .drag-item.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+        .drop-zone {
+            display: inline-block;
+            min-width: 80px;
+            min-height: 25px;
+            border: 2px dashed #ccc;
+            border-radius: 4px;
+            padding: 4px 8px;
+            margin: 0 2px;
+            vertical-align: baseline;
+            background: #fafafa;
+            transition: all 0.3s ease;
+        }
+        .drop-zone.drag-over {
+            border-color: #2196f3;
+            background: #e3f2fd;
+        }
+        .drop-zone.correct {
+            background: #c8e6c9;
+            border-color: #4caf50;
+            color: #2e7d32;
+        }
+        .drop-zone.incorrect {
+            background: #ffcdd2;
+            border-color: #f44336;
+            color: #c62828;
+            animation: shake 0.5s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 20%, 40%, 60%, 80% { transform: translateX(-2px); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(2px); }
+        }
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .completion-message.show {
+            display: block;
+            animation: fadeInScale 0.8s ease-out;
+        }
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .progress {
+            background: #e0e0e0;
+            border-radius: 10px;
+            padding: 3px;
+            margin: 10px 0;
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #4caf50, #45a049);
+            height: 20px;
+            border-radius: 7px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 5px;
+        }
+        .equipment-section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Laboratory Equipment Comparison Exercise</h1>
+        <p>B1 English Level - Comparative Forms Practice</p>
+    </div>
+
+    <div class="instructions">
+        <h2>Instructions</h2>
+        <p><strong>Drag and drop</strong> the correct comparative forms into the blank spaces in the report below. The report compares four different laboratory microscopes. You have <strong>unlimited attempts</strong> - correct answers will turn <span style="color: #4caf50; font-weight: bold;">green</span> and incorrect answers will turn <span style="color: #f44336; font-weight: bold;">red</span>.</p>
+        <div class="progress">
+            <div class="progress-bar"></div>
+        </div>
+        <p id="progress-text">Progress: 0/20 completed</p>
+    </div>
+
+    <div class="exercise-container">
+        <div class="text-area">
+            <h2>Laboratory Microscope Comparison Report</h2>
+            
+            <div class="equipment-section">
+                <h3>1. BasicScope Pro</h3>
+                <p>The BasicScope Pro is the <span class="drop-zone" data-answer="cheapest"></span> option among the four microscopes we tested. However, it is also <span class="drop-zone" data-answer="less reliable"></span> than the other models. The image quality is <span class="drop-zone" data-answer="worse"></span> compared to professional-grade equipment, but it remains <span class="drop-zone" data-answer="more affordable"></span> than most competitors in its price range.</p>
+            </div>
+
+            <div class="equipment-section">
+                <h3>2. AdvancedView 3000</h3>
+                <p>This microscope offers <span class="drop-zone" data-answer="better"></span> magnification capabilities and is <span class="drop-zone" data-answer="more user-friendly"></span> than the BasicScope Pro. The focusing mechanism is <span class="drop-zone" data-answer="smoother"></span> and the overall build quality is <span class="drop-zone" data-answer="higher"></span>. However, it is significantly <span class="drop-zone" data-answer="more expensive"></span> than the basic model.</p>
+            </div>
+
+            <div class="equipment-section">
+                <h3>3. PrecisionMax Elite</h3>
+                <p>The PrecisionMax Elite is the <span class="drop-zone" data-answer="most advanced"></span> microscope in our comparison. It provides the <span class="drop-zone" data-answer="clearest"></span> images and has <span class="drop-zone" data-answer="more features"></span> than any other model tested. The digital interface is <span class="drop-zone" data-answer="more intuitive"></span> and the resolution is <span class="drop-zone" data-answer="sharper"></span> than traditional optical systems.</p>
+            </div>
+
+            <div class="equipment-section">
+                <h3>4. CompactLab Mini</h3>
+                <p>Despite being the <span class="drop-zone" data-answer="smallest"></span> microscope, the CompactLab Mini is <span class="drop-zone" data-answer="more portable"></span> than its competitors. It weighs <span class="drop-zone" data-answer="less"></span> than other models and is <span class="drop-zone" data-answer="easier"></span> to transport. The battery life is <span class="drop-zone" data-answer="longer"></span> than expected for such a compact device, making it <span class="drop-zone" data-answer="more convenient"></span> for fieldwork.</p>
+            </div>
+        </div>
+
+        <div class="drag-items">
+            <h2>Drag these words:</h2>
+            <div id="drag-container">
+                <!-- Items will be inserted here in random order -->
+            </div>
+        </div>
+    </div>
+
+    <div class="completion-message" id="completion-message">
+        <h2>🎉 Congratulations! 🎉</h2>
+        <p>You have successfully completed the exercise!</p>
+        <p>Great job practicing comparative forms in English!</p>
+    </div>
+
+    <script>
+        // Define all the drag items and their correct answers
+        const dragItems = [
+            'cheapest', 'less reliable', 'worse', 'more affordable', 'better',
+            'more user-friendly', 'smoother', 'higher', 'more expensive', 'most advanced',
+            'clearest', 'more features', 'more intuitive', 'sharper', 'smallest',
+            'more portable', 'less', 'easier', 'longer', 'more convenient'
+        ];
+
+        // Shuffle the drag items for random order
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Initialize the exercise
+        function initializeExercise() {
+            const dragContainer = document.getElementById('drag-container');
+            const shuffledItems = shuffleArray(dragItems);
+            
+            shuffledItems.forEach(item => {
+                const dragElement = document.createElement('div');
+                dragElement.className = 'drag-item';
+                dragElement.draggable = true;
+                dragElement.textContent = item;
+                dragElement.dataset.value = item;
+                dragContainer.appendChild(dragElement);
+            });
+
+            // Add event listeners
+            addDragEventListeners();
+            addDropEventListeners();
+        }
+
+        function addDragEventListeners() {
+            const dragElements = document.querySelectorAll('.drag-item');
+            dragElements.forEach(element => {
+                element.addEventListener('dragstart', handleDragStart);
+                element.addEventListener('dragend', handleDragEnd);
+            });
+        }
+
+        function addDropEventListeners() {
+            const dropZones = document.querySelectorAll('.drop-zone');
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', handleDragOver);
+                zone.addEventListener('dragenter', handleDragEnter);
+                zone.addEventListener('dragleave', handleDragLeave);
+                zone.addEventListener('drop', handleDrop);
+            });
+        }
+
+        let draggedElement = null;
+
+        function handleDragStart(e) {
+            draggedElement = e.target;
+            e.target.classList.add('dragging');
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+        }
+
+        function handleDragEnter(e) {
+            e.preventDefault();
+            e.target.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            e.target.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.target.classList.remove('drag-over');
+            
+            const dropZone = e.target;
+            const draggedValue = draggedElement.dataset.value;
+            const correctAnswer = dropZone.dataset.answer;
+            
+            // Clear previous content and classes
+            dropZone.textContent = draggedValue;
+            dropZone.classList.remove('correct', 'incorrect');
+            
+            if (draggedValue === correctAnswer) {
+                dropZone.classList.add('correct');
+                dropZone.dataset.filled = 'true';
+                draggedElement.style.display = 'none';
+                playSound('correct');
+            } else {
+                dropZone.classList.add('incorrect');
+                dropZone.dataset.filled = 'false';
+                playSound('incorrect');
+                // Clear the incorrect answer after animation
+                setTimeout(() => {
+                    dropZone.textContent = '';
+                    dropZone.classList.remove('incorrect');
+                }, 1000);
+            }
+            
+            updateProgress();
+            checkCompletion();
+        }
+
+        function playSound(type) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            if (type === 'correct') {
+                // Pleasant chime sound
+                oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+                oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+                oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+            } else {
+                // Buzz sound
+                oscillator.frequency.setValueAtTime(150, audioContext.currentTime);
+                oscillator.type = 'sawtooth';
+            }
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        }
+
+        function updateProgress() {
+            const totalZones = document.querySelectorAll('.drop-zone').length;
+            const completedZones = document.querySelectorAll('.drop-zone.correct').length;
+            const percentage = (completedZones / totalZones) * 100;
+            
+            document.querySelector('.progress-bar').style.width = percentage + '%';
+            document.getElementById('progress-text').textContent = `Progress: ${completedZones}/${totalZones} completed`;
+        }
+
+        function checkCompletion() {
+            const totalZones = document.querySelectorAll('.drop-zone').length;
+            const completedZones = document.querySelectorAll('.drop-zone.correct').length;
+            
+            if (completedZones === totalZones) {
+                setTimeout(() => {
+                    document.getElementById('completion-message').classList.add('show');
+                    playCompletionSound();
+                }, 500);
+            }
+        }
+
+        function playCompletionSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+            
+            notes.forEach((frequency, index) => {
+                setTimeout(() => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.4);
+                }, index * 200);
+            });
+        }
+
+        // Initialize the exercise when the page loads
+        document.addEventListener('DOMContentLoaded', initializeExercise);
+    </script>
+</body>
+</html>

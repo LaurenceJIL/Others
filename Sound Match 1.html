@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoundMatch — English Pronunciation Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1a1a2e;--paper:#f5f0e8;--cream:#ede8dc;--accent:#c0392b;--gold:#d4a017;--green:#2e7d32;--red:#c62828;--soft:#7a7a8c;--card:#faf7f2;--border:#d9d3c7}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 16px 80px}
+.wrap{width:100%;max-width:620px}
+header{text-align:center;margin-bottom:32px}
+.logo{font-family:'Playfair Display',serif;font-size:clamp(2rem,6vw,3rem);font-weight:900;color:var(--ink);letter-spacing:-0.02em;line-height:1}
+.logo span{color:var(--accent)}
+.tagline{font-size:0.85rem;color:var(--soft);letter-spacing:0.12em;text-transform:uppercase;margin-top:6px}
+.pbwrap{background:var(--border);border-radius:99px;height:6px;margin-bottom:20px;overflow:hidden}
+.pbfill{height:100%;background:linear-gradient(90deg,var(--gold),var(--accent));border-radius:99px;transition:width .5s ease}
+.stats{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;font-size:0.82rem;font-weight:500;color:var(--soft);letter-spacing:0.06em;text-transform:uppercase}
+.snum{font-size:1.1rem;font-weight:700;color:var(--ink)}
+.lvdot{display:inline-block;width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.lv-a2{background:#2e7d32}
+.lv-b1{background:#e65100}
+.lv-b1b2{background:#e65100}
+.lv-c1{background:#6a1b9a}
+.qcard{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:36px 32px 28px;box-shadow:0 4px 24px rgba(0,0,0,0.07);margin-bottom:16px;position:relative;overflow:hidden}
+.qcard::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--accent))}
+.card-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.qlabel{font-size:0.75rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--soft)}
+.headword{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,7vw,3.2rem);font-weight:700;color:var(--ink);margin-bottom:6px;line-height:1}
+.instr{font-size:0.88rem;color:var(--soft);margin-bottom:28px}
+.instr em{font-style:normal;color:var(--accent);font-weight:600}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cbtn{background:var(--paper);border:1.5px solid var(--border);border-radius:10px;padding:18px 14px;font-family:'DM Sans',sans-serif;font-size:1.05rem;font-weight:500;color:var(--ink);cursor:pointer;transition:all .18s ease;text-align:center}
+.cbtn:hover:not(:disabled){background:var(--ink);color:var(--paper);border-color:var(--ink);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+.cbtn.correct{background:#e8f5e9;border-color:#2e7d32;color:#2e7d32;font-weight:700}
+.cbtn.wrong{background:#ffebee;border-color:var(--red);color:var(--red);font-weight:700}
+.cbtn:disabled{cursor:default;transform:none}
+.mrow{display:flex;align-items:center;gap:8px;margin-top:16px;padding:14px 20px;background:var(--cream);border-radius:10px;border:1px solid var(--border)}
+.mlabel{font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--soft);margin-right:4px}
+.pine{font-size:1.1rem;transition:all .3s ease}
+.pine.lost{filter:grayscale(1);opacity:0.3}
+.next-row{display:flex;justify-content:flex-end;margin-top:14px}
+.nbtn{background:var(--ink);color:var(--paper);border:none;border-radius:10px;padding:12px 28px;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:0.04em}
+.nbtn:hover{background:var(--accent)}
+.endsc{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:48px 32px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,0.07)}
+.bignum{font-family:'Playfair Display',serif;font-size:5rem;font-weight:900;color:var(--accent);line-height:1;margin-bottom:8px}
+.etitle{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;margin-bottom:12px}
+.emsg{font-size:0.95rem;color:var(--soft);line-height:1.7;max-width:380px;margin:0 auto 28px}
+.eicon{font-size:3rem;margin-bottom:16px}
+.rbtn{display:inline-block;background:var(--ink);color:var(--paper);border:none;border-radius:10px;padding:14px 36px;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:600;letter-spacing:0.06em;cursor:pointer;transition:all .2s}
+.rbtn:hover{background:var(--accent);transform:translateY(-1px)}
+.stsc{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:48px 32px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,0.07)}
+.stsc h2{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;margin-bottom:16px}
+.stsc p{font-size:0.92rem;color:var(--soft);line-height:1.75;margin-bottom:10px;max-width:420px;margin-left:auto;margin-right:auto}
+.rules{background:var(--cream);border-radius:10px;padding:18px 20px;margin:20px 0 28px;text-align:left;font-size:0.87rem;line-height:1.8;color:var(--ink);border:1px solid var(--border)}
+.rules li{margin-left:18px}
+.qctr{font-size:0.78rem;color:var(--soft);font-weight:500;letter-spacing:0.08em;text-align:right;margin-bottom:6px}
+@media(max-width:480px){.choices{grid-template-columns:1fr}.qcard{padding:28px 20px 22px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="logo">Sound<span>Match</span></div>
+  <div class="tagline">English Pronunciation Quiz</div>
+</header>
+<div id="app"></div>
+</div>
+<script>
+// Questions carefully vetted:
+// - No homophones as distractors
+// - Rhyme answers are unambiguous across major English accents (British RP, General American, Australian)
+// - No minimal pairs that vary by accent (e.g. no cot/caught merger issues, no trap-bath split ambiguity)
+const Q=[
+// A2 — simple, clear rhymes only
+{l:'A2',q:'CAT',o:['hat','coat','boot','cot'],a:0},
+{l:'A2',q:'BED',o:['bad','said','bid','bud'],a:1},
+{l:'A2',q:'SIT',o:['set','suit','bit','bat'],a:2},
+{l:'A2',q:'RUN',o:['ran','rain','fun','fine'],a:2},
+{l:'A2',q:'DAY',o:['die','dew','say','sow'],a:2},
+{l:'A2',q:'BOOK',o:['back','bike','look','lock'],a:2},
+{l:'A2',q:'TREE',o:['try','tray','free','threw'],a:2},
+{l:'A2',q:'FACE',o:['fuss','place','floss','force'],a:1},
+{l:'A2',q:'HAND',o:['hound','hind','sand','send'],a:2},
+{l:'A2',q:'MAKE',o:['mock','milk','take','talk'],a:2},
+{l:'A2',q:'NICE',o:['noise','nurse','mice','moss'],a:2},
+{l:'A2',q:'SING',o:['ring','rang','rung','wrong'],a:0},
+{l:'A2',q:'FEEL',o:['fall','foil','full','real'],a:3},
+{l:'A2',q:'BACK',o:['black','block','bloke','bleach'],a:0},
+{l:'A2',q:'TOWN',o:['tone','teen','crown','crane'],a:2},
+{l:'A2',q:'FIRE',o:['fir','fair','hire','here'],a:2},
+{l:'A2',q:'HOME',o:['ham','him','hum','foam'],a:3},
+{l:'A2',q:'RAIN',o:['run','rein','ring','rod'],a:1},
+{l:'A2',q:'WENT',o:['want','wine','sent','saint'],a:2},
+{l:'A2',q:'COOK',o:['cork','core','hook','hike'],a:2},
+{l:'A2',q:'FIND',o:['fond','fend','fund','mind'],a:3},
+{l:'A2',q:'LONG',o:['lung','lane','song','sang'],a:2},
+{l:'A2',q:'FOOD',o:['fad','fed','mood','mud'],a:2},
+{l:'A2',q:'NIGHT',o:['knit','neat','note','light'],a:3},
+{l:'A2',q:'BLUE',o:['blow','blew','blab','bled'],a:1},
+{l:'A2',q:'COLD',o:['could','called','told','tiled'],a:2},
+// B1
+{l:'B1',q:'BREAK',o:['brick','brace','steak','streak'],a:2},
+{l:'B1',q:'BLOOD',o:['blond','flood','blued','bloke'],a:1},
+{l:'B1',q:'ROUGH',o:['route','rout','ruff','rouge'],a:2},
+{l:'B1',q:'LAUGH',o:['latch','lath','staff','loft'],a:2},
+{l:'B1',q:'THOUGHT',o:['though','through','taught','thorough'],a:2},
+{l:'B1',q:'WEAK',o:['wake','work','week','wick'],a:2},
+{l:'B1',q:'LOSE',o:['louse','lost','fuse','loss'],a:2},
+{l:'B1',q:'WASTE',o:['washed','wrist','taste','toast'],a:2},
+{l:'B1',q:'PIECE',o:['place','price','peace','poise'],a:2},
+{l:'B1',q:'BREAD',o:['braid','breed','dead','dread'],a:3},
+{l:'B1',q:'WEIGHT',o:['width','wait','wit','white'],a:1},
+{l:'B1',q:'GUEST',o:['gust','ghost','best','boost'],a:2},
+{l:'B1',q:'WHOLE',o:['while','will','hole','hull'],a:2},
+{l:'B1',q:'STARE',o:['store','stir','star','there'],a:3},
+{l:'B1',q:'MONTH',o:['mouth','moat','front','mount'],a:2},
+{l:'B1',q:'BUILT',o:['bolt','belt','guilt','gild'],a:2},
+{l:'B1',q:'SIGN',o:['sing','scene','line','loin'],a:2},
+{l:'B1',q:'BEAN',o:['bane','bin','barn','clean'],a:3},
+{l:'B1',q:'COUGH',o:['cow','cob','off','cove'],a:2},
+{l:'B1',q:'STEAK',o:['stick','stack','sake','stoke'],a:2},
+{l:'B1',q:'ISLE',o:['ice','ease','while','oil'],a:2},
+{l:'B1',q:'ISLE',o:['inch','oil','while','ice'],a:2},
+{l:'B1',q:'PLOUGH',o:['plop','plow','plot','plume'],a:1},
+{l:'B1',q:'TONGUE',o:['long','tong','young','song'],a:2},
+{l:'B1',q:'ACHE',o:['each','arch','cake','catch'],a:2},
+{l:'B1',q:'DOUGH',o:['through','rough','go','cough'],a:2},
+// B1B2
+{l:'B1B2',q:'GAUGE',o:['gorge','grudge','page','sage'],a:2},
+{l:'B1B2',q:'SCHEME',o:['scream','scrim','team','trim'],a:2},
+{l:'B1B2',q:'FIERCE',o:['farce','force','pierce','worse'],a:2},
+{l:'B1B2',q:'RECEIPT',o:['recite','recede','defeat','conceit'],a:3},
+{l:'B1B2',q:'CHAOS',o:['case','days','maze','pays'],a:2},
+{l:'B1B2',q:'HEIR',o:['here','hire','air','oar'],a:2},
+{l:'B1B2',q:'YOLK',o:['yell','folk','silk','hulk'],a:1},
+{l:'B1B2',q:'DROUGHT',o:['droop','trout','drove','drown'],a:1},
+{l:'B1B2',q:'PALM',o:['pram','calm','camp','clamp'],a:1},
+{l:'B1B2',q:'CLOTHES',o:['cloths','close','clots','cloves'],a:1},
+{l:'B1B2',q:'QUEUE',o:['quirk','quote','cure','cue'],a:3},
+{l:'B1B2',q:'LEAGUE',o:['ledge','vague','plague','plaque'],a:2},
+{l:'B1B2',q:'SUBTLE',o:['stubble','bottle','puddle','title'],a:0},
+{l:'B1B2',q:'NAÏVE',o:['knave','leave','believe','deceive'],a:2},
+{l:'B1B2',q:'BROCHURE',o:['manure','butcher','teacher','creature'],a:0},
+{l:'B1B2',q:'PHLEGM',o:['stem','claim','them','psalm'],a:2},
+{l:'B1B2',q:'GENRE',o:['yonder','ponder','wonder','under'],a:2},
+{l:'B1B2',q:'OPAQUE',o:['unique','break','steak','mistake'],a:3},
+{l:'B1B2',q:'SLEUTH',o:['south','smooth','youth','sooth'],a:2},
+{l:'B1B2',q:'CACHE',o:['catch','cash','cage','case'],a:1},
+{l:'B1B2',q:'CHIC',o:['check','cheap','sleek','chick'],a:2},
+{l:'B1B2',q:'PSALM',o:['plum','pram','balm','blank'],a:2},
+{l:'B1B2',q:'MERINGUE',o:['arrange','campaign','orange','harangue'],a:3},
+{l:'B1B2',q:'DISGUISE',o:['disease','displease','skies','devise'],a:2},
+// B2
+{l:'B2',q:'COLONEL',o:['colonial','kernel','tunnel','counsel'],a:1},
+{l:'B2',q:'DEBRIS',o:['tambourine','caffeine','canteen','submarine'],a:1},
+{l:'B2',q:'INDICT',o:['inflict','invite','inside','insight'],a:1},
+{l:'B2',q:'PLATEAU',o:['porthole','chateau','patron','patio'],a:1},
+{l:'B2',q:'BOUQUET',o:['croquet','bucket','bracket','blanket'],a:0},
+{l:'B2',q:'FAÇADE',o:['arcade','brigade','tirade','masquerade'],a:0},
+{l:'B2',q:'LIAISON',o:['canyon','raisin','horizon','garrison'],a:1},
+{l:'B2',q:'SOVEREIGN',o:['raven','cavern','govern','siren'],a:2},
+{l:'B2',q:'CAMOUFLAGE',o:['montage','massage','garage','marriage'],a:2},
+{l:'B2',q:'CONNOISSEUR',o:['amateur','chauffeur','voyeur','entrepreneur'],a:1},
+{l:'B2',q:'RESERVOIR',o:['corridor','repertoire','director','senator'],a:1},
+{l:'B2',q:'SATIRE',o:['sapphire','admire','require','acquire'],a:0},
+{l:'B2',q:'CHASM',o:['spasm','plasma','sarcasm','orgasm'],a:0},
+{l:'B2',q:'POSTHUMOUS',o:['hummus','anonymous','synonymous','infamous'],a:0},
+{l:'B2',q:'VEHEMENT',o:['clement','implement','cement','ferment'],a:0},
+{l:'B2',q:'AWRY',o:['awfully','airy','cry','away'],a:2},
+{l:'B2',q:'LACQUER',o:['liquor','bicker','thicker','nicker'],a:0},
+{l:'B2',q:'MAUVE',o:['grove','drove','stove','cove'],a:0},
+{l:'B2',q:'ENNUI',o:['annoy','renew','construe','pursue'],a:2},
+{l:'B2',q:'LITHE',o:['writhe','tithe','swathe','bathe'],a:0},
+{l:'B2',q:'SEGUE',o:['plague','vogue','beg','egg'],a:3},
+{l:'B2',q:'HIATUS',o:['apparatus','stratus','status','gratis'],a:0},
+{l:'B2',q:'SWATHE',o:['scathe','bathe','wraith','faith'],a:1},
+{l:'B2',q:'MELEE',o:['allay','ballet','relay','portray'],a:2},
+// C1
+{l:'C1',q:'EPITOME',o:['chrome','gnome','autonomy','home'],a:2},
+{l:'C1',q:'PARADIGM',o:['time','dime','climb','rhyme'],a:1},
+{l:'C1',q:'MNEMONIC',o:['demonic','historic','harmonic','chronic'],a:0},
+{l:'C1',q:'PSYCHE',o:['cycle','pickle','likely','trickle'],a:0},
+{l:'C1',q:'ARCHIPELAGO',o:['logo','cargo','embargo','flamingo'],a:2},
+{l:'C1',q:'DENOUEMENT',o:['movement','document','tournament','government'],a:0},
+{l:'C1',q:'HYPERBOLE',o:['solely','holy','monopoly','lowly'],a:2},
+{l:'C1',q:'BOURGEOIS',o:['furious','glorious','gorgeous','raucous'],a:0},
+{l:'C1',q:'SOLILOQUY',o:['obloquy','biography','philosophy','geography'],a:0},
+{l:'C1',q:'CLIQUE',o:['creek','unique','oblique','antique'],a:2},
+{l:'C1',q:'SYCOPHANT',o:['deodorant','elephant','relevant','pheasant'],a:1},
+{l:'C1',q:'IMBROGLIO',o:['folio','portfolio','olio','polio'],a:3},
+{l:'C1',q:'PUSILLANIMOUS',o:['magnanimous','unanimous','infamous','bigamous'],a:1},
+{l:'C1',q:'MISOGYNY',o:['agony','mahogany','progeny','colony'],a:1},
+{l:'C1',q:'RENEGE',o:['fatigue','antique','league','intrigue'],a:0},
+{l:'C1',q:'SUBTLETY',o:['motley','costly','ghostly','brightly'],a:0},
+{l:'C1',q:'DEIGN',o:['feign','sign','line','mine'],a:0},
+{l:'C1',q:'LIMN',o:['limb','him','hymn','gym'],a:2},
+{l:'C1',q:'PRESTIGE',o:['fatigue','unique','oblige','league'],a:0},
+{l:'C1',q:'INTRIGUE',o:['antique','fatigue','oblique','unique'],a:1},
+];
+
+// Remove duplicate isle question
+const seen=new Set();
+const QALL=Q.filter(q=>{const k=q.q+q.l;if(seen.has(k))return false;seen.add(k);return true});
+
+const GOAL=20, MAX_ERR=3;
+const STRUCT=[{l:'A2',n:4},{l:'B1',n:4},{l:'B1B2',n:4},{l:'B2',n:4},{l:'C1',n:4}];
+
+function dotClass(l){
+  if(l==='A2')return'lv-a2';
+  if(l==='C1')return'lv-c1';
+  return'lv-b1b2';
+}
+
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+
+function buildDeck(){
+  const byL={};
+  QALL.forEach(q=>{if(!byL[q.l])byL[q.l]=[];byL[q.l].push(q)});
+  const deck=[];
+  STRUCT.forEach(({l,n})=>{
+    const pool=shuffle(byL[l]||[]);
+    for(let i=0;i<Math.min(n,pool.length);i++)deck.push(pool[i]);
+  });
+  return deck;
+}
+
+let S={screen:'start',deck:[],cur:0,score:0,err:0,ans:false,sel:null,showNext:false};
+
+function init(){
+  S={screen:'quiz',deck:buildDeck(),cur:0,score:0,err:0,ans:false,sel:null,showNext:false};
+  render();
+}
+
+function nextQ(){
+  S.cur++;S.ans=false;S.sel=null;S.showNext=false;
+  if(S.cur>=S.deck.length){S.screen='end';S.reason='end';}
+  render();
+}
+
+function pct(){return Math.min(100,Math.round(S.score/GOAL*100))}
+
+const app=document.getElementById('app');
+
+function render(){
+  if(S.screen==='start'){renderStart();return}
+  if(S.screen==='end'){renderEnd();return}
+  renderQ();
+}
+
+function renderStart(){
+  app.innerHTML=`<div class="stsc"><div style="font-size:2.4rem;margin-bottom:16px">🎧</div><h2>Welcome to SoundMatch</h2><p>Test your knowledge of English rhymes — from everyday words to advanced vocabulary.</p><div class="rules"><ul><li>Each question shows a word. Pick the option that <strong>rhymes</strong> with it.</li><li>Questions get progressively more challenging.</li><li>You have <strong>3 lives</strong> 🍍 — lose them all and the quiz ends.</li><li>Reach <strong>20 correct answers</strong> to complete the quiz!</li></ul></div><button class="rbtn" onclick="init()">Start Quiz →</button></div>`;
+}
+
+function renderEnd(){
+  const won=S.reason==='done';
+  const died=S.err>=MAX_ERR;
+  app.innerHTML=`<div class="endsc"><div class="eicon">${won?'🏆':died?'🍍':'📋'}</div><div class="bignum">${S.score}</div><div class="etitle">${won?'Congratulations!':died?'Game Over':'Quiz Complete'}</div><p class="emsg">${won?'Brilliant! You matched all 60 words correctly. Your pronunciation knowledge is at an impressive level!':died?`You scored <strong>${S.score}</strong> / ${GOAL} before running out of lives. Keep practising and try to beat that score!`:`You scored <strong>${S.score}</strong> / ${GOAL}. Can you do even better next time?`}</p><button class="rbtn" onclick="init()">Play Again</button></div>`;
+}
+
+function renderQ(){
+  const q=S.deck[S.cur];
+  if(!q){S.screen='end';S.reason='end';render();return}
+
+  let pines='';
+  for(let i=0;i<MAX_ERR;i++)pines+=`<span class="pine${i<S.err?' lost':''}">🍍</span>`;
+
+  const btns=q.o.map((opt,i)=>{
+    let c='cbtn',d='';
+    if(S.ans){d='disabled';if(i===q.a)c+=' correct';else if(i===S.sel&&i!==q.a)c+=' wrong'}
+    return`<button class="${c}" ${d} onclick="choose(${i})">${opt}</button>`;
+  }).join('');
+
+  const nextBtn=S.showNext?`<div class="next-row"><button class="nbtn" onclick="nextQ()">Next →</button></div>`:'';
+
+  app.innerHTML=`
+<div class="pbwrap"><div class="pbfill" style="width:${pct()}%"></div></div>
+<div class="stats"><span>Score <span class="snum">${S.score}</span> / ${GOAL}</span><span style="font-size:0.78rem;color:var(--soft)">Q ${S.cur+1} of ${S.deck.length}</span></div>
+<div class="qcard">
+  <div class="card-top">
+    <span class="lvdot ${dotClass(q.l)}" title="Difficulty level"></span>
+    <div class="qlabel">Which word rhymes with…</div>
+  </div>
+  <div class="headword">${q.q}</div>
+  <div class="instr">Choose the word that sounds the same at the end as <em>${q.q}</em></div>
+  <div class="choices">${btns}</div>
+</div>
+<div class="mrow"><span class="mlabel">Lives</span>${pines}<span style="margin-left:auto;font-size:0.78rem;color:var(--soft);font-weight:500">Goal: ${GOAL} correct ✔</span></div>
+${nextBtn}`;
+}
+
+function choose(i){
+  if(S.ans)return;
+  const q=S.deck[S.cur];
+  S.ans=true;S.sel=i;
+  if(i===q.a){
+    S.score++;
+    if(S.score>=GOAL){
+      render();
+      setTimeout(()=>{S.screen='end';S.reason='done';render()},1800);
+      return;
+    }
+  }else{
+    S.err++;
+    if(S.err>=MAX_ERR){
+      render();
+      setTimeout(()=>{S.screen='end';S.reason='out';render()},1800);
+      return;
+    }
+  }
+  S.showNext=true;
+  render();
+}
+
+window.choose=choose;window.init=init;window.nextQ=nextQ;
+render();
+</script>
+</body>
+</html>

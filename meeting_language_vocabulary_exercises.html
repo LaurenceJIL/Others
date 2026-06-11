@@ -1,0 +1,453 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--color-text-primary)}
+.app{max-width:860px;margin:0 auto;padding:1.5rem 1rem}
+.header{text-align:center;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:0.5px solid var(--color-border-tertiary)}
+.header h1{font-size:22px;font-weight:500;margin-bottom:4px}
+.header p{font-size:14px;color:var(--color-text-secondary)}
+.tabs{display:flex;gap:4px;margin-bottom:1.5rem;overflow-x:auto;padding-bottom:2px}
+.tab{padding:8px 14px;font-size:13px;font-weight:500;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);cursor:pointer;white-space:nowrap;background:var(--color-background-primary);color:var(--color-text-secondary);transition:all 0.15s}
+.tab.active{background:#185FA5;color:#fff;border-color:#185FA5}
+.tab:hover:not(.active){background:var(--color-background-secondary)}
+.section{display:none}.section.active{display:block}
+.phrase-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1rem}
+.func-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem}
+.func-card h3{font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:10px;padding-bottom:8px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.func-card ul{list-style:none;padding:0}
+.func-card li{font-size:13.5px;padding:4px 0;color:var(--color-text-primary);border-bottom:0.5px solid var(--color-border-tertiary);line-height:1.4}
+.func-card li:last-child{border-bottom:none}
+.func-card li::before{content:"•";color:var(--color-text-secondary);margin-right:6px}
+.cat-agree{border-top:3px solid #1D9E75}
+.cat-partial-agree{border-top:3px solid #378ADD}
+.cat-partial-dis{border-top:3px solid #BA7517}
+.cat-polite-dis{border-top:3px solid #D85A30}
+.cat-strong-dis{border-top:3px solid #E24B4A}
+.cat-clarify{border-top:3px solid #7F77DD}
+.cat-suggest{border-top:3px solid #D4537E}
+.ex-header{margin-bottom:1.5rem}
+.ex-header h2{font-size:18px;font-weight:500;margin-bottom:4px}
+.ex-header p{font-size:13.5px;color:var(--color-text-secondary)}
+.question-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;margin-bottom:1rem}
+.q-num{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px}
+.q-stem{font-size:15px;font-weight:500;margin-bottom:12px;line-height:1.4}
+.q-headword{font-size:18px;font-weight:500;color:#185FA5;margin-bottom:12px;padding:8px 12px;background:#E6F1FB;border-radius:var(--border-radius-md);display:inline-block}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt{padding:10px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);cursor:pointer;font-size:13.5px;background:var(--color-background-primary);color:var(--color-text-primary);transition:all 0.15s;text-align:left;line-height:1.3}
+.opt:hover:not(.disabled){background:var(--color-background-secondary);border-color:var(--color-border-primary)}
+.opt.correct{background:#EAF3DE;border-color:#639922;color:#27500A}
+.opt.incorrect{background:#FCEBEB;border-color:#A32D2D;color:#501313}
+.opt.reveal{background:#EAF3DE;border-color:#639922;color:#27500A}
+.opt.disabled{cursor:default}
+.feedback{margin-top:10px;font-size:13px;padding:8px 12px;border-radius:var(--border-radius-md);display:none}
+.feedback.show{display:block}
+.feedback.correct-fb{background:#EAF3DE;color:#27500A}
+.feedback.incorrect-fb{background:#FCEBEB;color:#501313}
+.score-bar{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.score-display{font-size:20px;font-weight:500}
+.score-label{font-size:13px;color:var(--color-text-secondary)}
+.btn-reset{padding:8px 16px;font-size:13px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary)}
+.btn-reset:hover{background:var(--color-background-secondary)}
+.tf-opt{padding:10px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);cursor:pointer;font-size:13.5px;background:var(--color-background-primary);color:var(--color-text-primary);transition:all 0.15s;min-width:80px;text-align:center}
+.tf-opts{display:flex;gap:8px}
+.tf-opt:hover:not(.disabled){background:var(--color-background-secondary)}
+.drag-area{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:1rem}
+.word-bank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1rem}
+.drag-word{padding:6px 12px;background:#E6F1FB;border:0.5px solid #B5D4F4;border-radius:var(--border-radius-md);cursor:grab;font-size:13.5px;color:#0C447C;font-weight:500;user-select:none}
+.drag-word.used{opacity:0.35;cursor:default}
+.drag-word:active{cursor:grabbing}
+.drop-zone{display:inline-block;min-width:110px;padding:2px 8px;border-bottom:2px solid #378ADD;color:#185FA5;font-weight:500;font-size:14px;cursor:pointer;margin:0 2px;vertical-align:middle;background:transparent;border-radius:0;text-align:center;min-height:24px}
+.drop-zone.filled{background:#E6F1FB;border-radius:4px;border-bottom:2px solid #1D9E75;color:#0F6E56}
+.drop-zone.drag-over{background:#B5D4F4;border-radius:4px}
+.passage{font-size:14.5px;line-height:1.9;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;margin-bottom:1rem}
+.check-btn{padding:10px 20px;background:#185FA5;color:#fff;border:none;border-radius:var(--border-radius-md);cursor:pointer;font-size:14px;font-weight:500;margin-top:8px}
+.check-btn:hover{background:#0C447C}
+.result-badge{display:inline-block;padding:3px 10px;border-radius:var(--border-radius-md);font-size:12px;font-weight:500;margin-left:8px}
+.badge-correct{background:#EAF3DE;color:#27500A}
+.badge-incorrect{background:#FCEBEB;color:#501313}
+</style>
+
+<div class="app">
+<div class="header">
+<h1>Meeting Language</h1>
+<p>Vocabulary exercises for B1/B2 professional English learners</p>
+</div>
+
+<div class="tabs">
+<button class="tab active" onclick="showTab('phrases')">Reference phrases</button>
+<button class="tab" onclick="showTab('ex1')">Exercise 1 — synonyms</button>
+<button class="tab" onclick="showTab('ex2')">Exercise 2 — definitions</button>
+<button class="tab" onclick="showTab('ex3')">Exercise 3 — gap fill</button>
+<button class="tab" onclick="showTab('ex4')">Exercise 4 — true / false</button>
+</div>
+
+<div id="phrases" class="section active">
+<div class="phrase-grid">
+<div class="func-card cat-agree">
+<h3 style="color:#0F6E56">Agreeing</h3>
+<ul>
+<li>That's exactly my thinking.</li>
+<li>I couldn't agree more.</li>
+<li>Absolutely — that's a solid point.</li>
+<li>You're right, and I'd add that…</li>
+<li>That aligns perfectly with our goals.</li>
+</ul>
+</div>
+<div class="func-card cat-partial-agree">
+<h3 style="color:#185FA5">Partially agreeing</h3>
+<ul>
+<li>I see where you're coming from, although…</li>
+<li>That's a fair point, but there's another side.</li>
+<li>I agree up to a point, however…</li>
+<li>You make a valid case, though I'd qualify that.</li>
+<li>Largely yes, but I'd nuance it slightly.</li>
+</ul>
+</div>
+<div class="func-card cat-partial-dis">
+<h3 style="color:#854F0B">Partial disagreement</h3>
+<ul>
+<li>I take your point, but I'm not fully convinced.</li>
+<li>That may be true in theory, but in practice…</li>
+<li>I'm not entirely sure I'd go that far.</li>
+<li>There's merit there, yet the data suggests otherwise.</li>
+</ul>
+</div>
+<div class="func-card cat-polite-dis">
+<h3 style="color:#993C1D">Polite disagreement</h3>
+<ul>
+<li>I understand your perspective, but I see it differently.</li>
+<li>With respect, I'd have to disagree on that.</li>
+<li>I appreciate your view; mine is somewhat different.</li>
+<li>I'm afraid I can't quite go along with that.</li>
+</ul>
+</div>
+<div class="func-card cat-strong-dis">
+<h3 style="color:#A32D2D">Strong disagreement</h3>
+<ul>
+<li>I have to strongly disagree — the evidence shows…</li>
+<li>That's fundamentally at odds with what we know.</li>
+<li>I really can't accept that position.</li>
+<li>With all due respect, that simply doesn't hold up.</li>
+</ul>
+</div>
+<div class="func-card cat-clarify">
+<h3 style="color:#534AB7">Asking for clarification</h3>
+<ul>
+<li>Could you elaborate on what you mean by that?</li>
+<li>Would you mind clarifying that last point?</li>
+<li>Could you walk us through the reasoning?</li>
+<li>Just to be clear — are you saying that…?</li>
+<li>What exactly do you mean in practical terms?</li>
+</ul>
+</div>
+<div class="func-card cat-suggest">
+<h3 style="color:#993556">Suggesting an alternative</h3>
+<ul>
+<li>What if we approached it from a different angle?</li>
+<li>Could we consider another option here?</li>
+<li>Have we thought about doing it this way instead?</li>
+<li>I'd like to propose a different course of action.</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="ex1" class="section">
+<div class="ex-header">
+<h2>Exercise 1 — synonyms</h2>
+<p>Choose the word closest in meaning to the headword as used in professional meeting contexts.</p>
+</div>
+<div class="score-bar">
+<div><div class="score-label">Score</div><div class="score-display" id="s1">0 / 12</div></div>
+<button class="btn-reset" onclick="resetEx(1)">Reset</button>
+</div>
+<div id="ex1-questions"></div>
+</div>
+
+<div id="ex2" class="section">
+<div class="ex-header">
+<h2>Exercise 2 — definitions</h2>
+<p>Read the definition and choose the word that best matches it.</p>
+</div>
+<div class="score-bar">
+<div><div class="score-label">Score</div><div class="score-display" id="s2">0 / 12</div></div>
+<button class="btn-reset" onclick="resetEx(2)">Reset</button>
+</div>
+<div id="ex2-questions"></div>
+</div>
+
+<div id="ex3" class="section">
+<div class="ex-header">
+<h2>Exercise 3 — gap fill</h2>
+<p>Drag the words from the bank into the correct gaps in the text. Words are listed alphabetically.</p>
+</div>
+<div id="ex3-content"></div>
+</div>
+
+<div id="ex4" class="section">
+<div class="ex-header">
+<h2>Exercise 4 — true / false</h2>
+<p>Decide whether each statement is true or false.</p>
+</div>
+<div class="score-bar">
+<div><div class="score-label">Score</div><div class="score-display" id="s4">0 / 12</div></div>
+<button class="btn-reset" onclick="resetEx(4)">Reset</button>
+</div>
+<div id="ex4-questions"></div>
+</div>
+</div>
+
+<script>
+const ex1Data = [
+  {stem:"ELABORATE",opts:["ignore","expand on","repeat","deny"],correct:1,fb:"To elaborate means to explain or develop an idea in more detail."},
+  {stem:"CONSENSUS",opts:["confusion","conflict","agreement","decision"],correct:2,fb:"Consensus means a general agreement reached by a group."},
+  {stem:"CONCEDE",opts:["insist","demand","admit","reject"],correct:2,fb:"To concede is to acknowledge that something is true, often reluctantly."},
+  {stem:"ADVOCATE",opts:["oppose","support","question","ignore"],correct:1,fb:"To advocate means to strongly support or recommend something."},
+  {stem:"CLARIFY",opts:["complicate","misrepresent","explain clearly","summarise"],correct:2,fb:"To clarify means to make something easier to understand."},
+  {stem:"PROPOSE",opts:["withdraw","suggest","criticise","delay"],correct:1,fb:"To propose means to put forward an idea or course of action."},
+  {stem:"RATIONALE",opts:["outcome","emotion","reasoning","budget"],correct:2,fb:"A rationale is the set of reasons behind a decision or action."},
+  {stem:"DEFER",opts:["decide quickly","prioritise","put off","enforce"],correct:2,fb:"To defer means to postpone or delay something to a later time."},
+  {stem:"SUBSTANTIATE",opts:["question","back up","ignore","summarise"],correct:1,fb:"To substantiate means to provide evidence that supports a claim."},
+  {stem:"TENTATIVE",opts:["decisive","firm","provisional","final"],correct:2,fb:"Tentative means not definite or certain; subject to change."},
+  {stem:"MERIT",opts:["flaw","worth","cost","risk"],correct:1,fb:"Merit means the quality of being particularly good or worthy."},
+  {stem:"NUANCE",opts:["simplicity","certainty","subtle distinction","strong opinion"],correct:2,fb:"A nuance is a subtle difference in meaning, tone, or expression."}
+];
+
+const ex2Data = [
+  {def:"The quality of being open to change or new conditions, especially in a negotiation",opts:["rigidity","flexibility","persistence","clarity"],correct:1,fb:"Flexibility refers to the willingness to adapt or compromise when needed."},
+  {def:"A short statement that sums up the main points discussed in a meeting",opts:["agenda","minutes","synopsis","proposal"],correct:2,fb:"A synopsis (or summary) concisely captures the key points made."},
+  {def:"To officially support or approve of a suggestion made by someone else",opts:["table","second","oppose","chair"],correct:1,fb:"To second a motion means to formally support it so it can be discussed."},
+  {def:"The person responsible for leading and managing a meeting",opts:["delegate","chairperson","stakeholder","facilitator"],correct:1,fb:"A chairperson (or chair) leads the meeting and manages discussion."},
+  {def:"A point of view held by a person or organisation on a particular issue",opts:["assumption","standpoint","outcome","criterion"],correct:1,fb:"A standpoint is the position or perspective from which someone argues."},
+  {def:"To set aside a discussion item for consideration at a later meeting",opts:["defer","resolve","endorse","escalate"],correct:0,fb:"To defer an item means to postpone it to a future meeting or date."},
+  {def:"A course of action agreed upon as the best solution to a problem",opts:["objection","resolution","brief","benchmark"],correct:1,fb:"A resolution is a formal decision made after discussion."},
+  {def:"The ability to express ideas in a clear and convincing way",opts:["brevity","diplomacy","articulation","persistence"],correct:2,fb:"Articulation refers to the clear and effective expression of ideas."},
+  {def:"A possible negative result that must be considered before deciding",opts:["caveat","agenda","consensus","mandate"],correct:0,fb:"A caveat is a warning about a possible problem or limitation."},
+  {def:"To give someone the authority or confidence to act independently",opts:["restrict","empower","defer","qualify"],correct:1,fb:"To empower means to give someone the tools, confidence, or authority to act."},
+  {def:"The main subject or area of concern that a meeting intends to address",opts:["minutes","scope","quorum","motion"],correct:1,fb:"Scope defines the range or extent of what a meeting or project covers."},
+  {def:"A formal written list of items to be discussed at a meeting",opts:["synopsis","resolution","agenda","debrief"],correct:2,fb:"An agenda is the list of topics that will be covered in a meeting."}
+];
+
+const passageWords = ["advocate","articulate","caveat","clarify","consensus","defer","elaborate","empower"];
+const passageTemplate = `Presenting your ideas effectively in a meeting requires both confidence and preparation. Before you speak, take a moment to <span class="drop-zone" data-idx="0" onclick="handleDropClick(this)">___</span> your thinking so that your argument is logical and easy to follow.
+
+When you begin, <span class="drop-zone" data-idx="1" onclick="handleDropClick(this)">___</span> your key point clearly in the first sentence. Do not assume everyone shares your background knowledge. If your audience looks uncertain, <span class="drop-zone" data-idx="2" onclick="handleDropClick(this)">___</span> by giving a concrete example or rephrasing your idea in simpler terms.
+
+It is equally important to <span class="drop-zone" data-idx="3" onclick="handleDropClick(this)">___</span> for your position with evidence. Citing data or real examples makes your argument far more persuasive than relying on opinion alone. However, always acknowledge any <span class="drop-zone" data-idx="4" onclick="handleDropClick(this)">___</span> — if your proposal has limitations or relies on certain conditions, say so upfront. Honesty builds credibility.
+
+Try to build <span class="drop-zone" data-idx="5" onclick="handleDropClick(this)">___</span> where possible. If colleagues raise concerns, do not dismiss them. Listen carefully, and be willing to <span class="drop-zone" data-idx="6" onclick="handleDropClick(this)">___</span> to their point of view if their evidence is strong. Finally, a well-presented argument should <span class="drop-zone" data-idx="7" onclick="handleDropClick(this)">___</span> others to act — so end with a clear, confident call to action.`;
+
+const passageAnswers = ["clarify","articulate","elaborate","advocate","caveat","consensus","defer","empower"];
+
+const ex4Data = [
+  {stmt:"To 'concede a point' means to agree that someone else is right about something.",answer:true,fb:"Correct. To concede means to admit that something is true, even if you previously disagreed."},
+  {stmt:"A 'tentative' agreement is one that is final and cannot be changed.",answer:false,fb:"False. Tentative means provisional — it is subject to change and not yet confirmed."},
+  {stmt:"When you 'substantiate' a claim, you provide evidence or facts to support it.",answer:true,fb:"Correct. To substantiate is to back up a statement with solid evidence."},
+  {stmt:"The 'rationale' behind a decision refers to the emotional reasons for it.",answer:false,fb:"False. Rationale refers to the logical or reasoned justification, not emotional reasons."},
+  {stmt:"To 'advocate' a position means to support it strongly and publicly.",answer:true,fb:"Correct. An advocate actively promotes or defends a cause or idea."},
+  {stmt:"If a topic is 'deferred', it is discussed and resolved at the same meeting.",answer:false,fb:"False. To defer something means to postpone it — it is moved to a later meeting."},
+  {stmt:"A 'nuance' in an argument is a small but important difference in meaning.",answer:true,fb:"Correct. A nuance is a subtle distinction that adds depth to an idea."},
+  {stmt:"'Flexibility' in a negotiation means refusing to change your original position.",answer:false,fb:"False. Flexibility means being willing to adapt or compromise."},
+  {stmt:"'Articulation' in a professional context refers to the clear expression of ideas.",answer:true,fb:"Correct. To articulate something is to express it clearly and effectively."},
+  {stmt:"A 'caveat' is a warning about a possible problem or limitation.",answer:true,fb:"Correct. A caveat alerts others to conditions or potential drawbacks."},
+  {stmt:"To 'empower' colleagues in a meeting is to give them the confidence and authority to contribute.",answer:true,fb:"Correct. Empowering people means enabling them to act with confidence and autonomy."},
+  {stmt:"When a chairperson 'tables' an item, it always means they want to discuss it immediately.",answer:false,fb:"False. To table an item means to postpone or set aside discussion — not to discuss it immediately."}
+];
+
+let scores = {1:0,2:0,4:0};
+let answered = {1:[],2:[],4:[]};
+let dragSelected = null;
+
+function showTab(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function buildEx1(){
+  const container = document.getElementById('ex1-questions');
+  container.innerHTML = '';
+  ex1Data.forEach((q,i)=>{
+    const card = document.createElement('div');
+    card.className='question-card';
+    card.id='ex1-q'+i;
+    card.innerHTML=`<div class="q-num">Question ${i+1} of 12</div>
+<div style="margin-bottom:8px;font-size:13px;color:var(--color-text-secondary)">Which word is closest in meaning to:</div>
+<div class="q-headword">${q.stem}</div>
+<div class="options">
+${q.opts.map((o,j)=>`<button class="opt" onclick="answerEx1(${i},${j})" id="ex1-q${i}-o${j}"><span style="font-weight:500;color:var(--color-text-secondary);margin-right:6px">${String.fromCharCode(65+j)}.</span>${o}</button>`).join('')}
+</div>
+<div class="feedback" id="ex1-fb${i}"></div>`;
+    container.appendChild(card);
+  });
+}
+
+function answerEx1(qi,oi){
+  if(answered[1].includes(qi))return;
+  answered[1].push(qi);
+  const q=ex1Data[qi];
+  for(let j=0;j<4;j++){
+    const btn=document.getElementById(`ex1-q${qi}-o${j}`);
+    btn.classList.add('disabled');
+    if(j===q.correct)btn.classList.add(oi===q.correct?'correct':'reveal');
+    else if(j===oi)btn.classList.add('incorrect');
+  }
+  const fb=document.getElementById(`ex1-fb${qi}`);
+  if(oi===q.correct){scores[1]++;fb.className='feedback show correct-fb';fb.textContent='Correct! '+q.fb;}
+  else{fb.className='feedback show incorrect-fb';fb.textContent='Not quite. '+q.fb;}
+  document.getElementById('s1').textContent=scores[1]+' / 12';
+}
+
+function buildEx2(){
+  const container=document.getElementById('ex2-questions');
+  container.innerHTML='';
+  ex2Data.forEach((q,i)=>{
+    const card=document.createElement('div');
+    card.className='question-card';
+    card.innerHTML=`<div class="q-num">Question ${i+1} of 12</div>
+<div class="q-stem">${q.def}</div>
+<div class="options">
+${q.opts.map((o,j)=>`<button class="opt" onclick="answerEx2(${i},${j})" id="ex2-q${i}-o${j}"><span style="font-weight:500;color:var(--color-text-secondary);margin-right:6px">${String.fromCharCode(65+j)}.</span>${o}</button>`).join('')}
+</div>
+<div class="feedback" id="ex2-fb${i}"></div>`;
+    container.appendChild(card);
+  });
+}
+
+function answerEx2(qi,oi){
+  if(answered[2].includes(qi))return;
+  answered[2].push(qi);
+  const q=ex2Data[qi];
+  for(let j=0;j<4;j++){
+    const btn=document.getElementById(`ex2-q${qi}-o${j}`);
+    btn.classList.add('disabled');
+    if(j===q.correct)btn.classList.add(oi===q.correct?'correct':'reveal');
+    else if(j===oi)btn.classList.add('incorrect');
+  }
+  const fb=document.getElementById(`ex2-fb${qi}`);
+  if(oi===q.correct){scores[2]++;fb.className='feedback show correct-fb';fb.textContent='Correct! '+q.fb;}
+  else{fb.className='feedback show incorrect-fb';fb.textContent='Not quite. '+q.fb;}
+  document.getElementById('s2').textContent=scores[2]+' / 12';
+}
+
+function buildEx3(){
+  const container=document.getElementById('ex3-content');
+  const sortedWords=[...passageWords].sort();
+  container.innerHTML=`
+<div class="drag-area">
+<div style="font-size:13px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em">Word bank</div>
+<div class="word-bank" id="word-bank">
+${sortedWords.map(w=>`<div class="drag-word" id="dw-${w}" draggable="true" ondragstart="dragStart(event,'${w}')" onclick="selectWord('${w}')">${w}</div>`).join('')}
+</div>
+</div>
+<div class="passage" id="passage-text">${passageTemplate}</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="check-btn" onclick="checkEx3()">Check answers</button>
+<button class="btn-reset" style="margin-top:8px" onclick="resetEx3()">Reset</button>
+</div>
+<div id="ex3-result" style="margin-top:12px;font-size:14px;display:none"></div>`;
+  setupDropZones();
+}
+
+function setupDropZones(){
+  document.querySelectorAll('.drop-zone').forEach(dz=>{
+    dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag-over');});
+    dz.addEventListener('dragleave',()=>dz.classList.remove('drag-over'));
+    dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag-over');const w=e.dataTransfer.getData('text');fillDrop(dz,w);});
+  });
+}
+
+let selectedWord=null;
+function selectWord(w){
+  if(document.getElementById('dw-'+w).classList.contains('used'))return;
+  if(selectedWord){document.getElementById('dw-'+selectedWord).style.outline='none';}
+  selectedWord=w;
+  document.getElementById('dw-'+w).style.outline='2px solid #378ADD';
+}
+
+function handleDropClick(dz){
+  if(selectedWord){fillDrop(dz,selectedWord);selectedWord=null;}
+  else if(dz.classList.contains('filled')){
+    const w=dz.textContent.trim();
+    dz.textContent='___';dz.classList.remove('filled');
+    const dwEl=document.getElementById('dw-'+w);
+    if(dwEl){dwEl.classList.remove('used');dwEl.style.outline='none';}
+  }
+}
+
+function dragStart(e,w){e.dataTransfer.setData('text',w);}
+
+function fillDrop(dz,w){
+  const prev=dz.textContent.trim();
+  if(dz.classList.contains('filled')&&prev!=='___'){
+    const dwEl=document.getElementById('dw-'+prev);
+    if(dwEl){dwEl.classList.remove('used');dwEl.style.outline='none';}
+  }
+  dz.textContent=w;dz.classList.add('filled');
+  const dwEl=document.getElementById('dw-'+w);
+  if(dwEl){dwEl.classList.add('used');dwEl.style.outline='none';}
+  selectedWord=null;
+}
+
+function checkEx3(){
+  const zones=document.querySelectorAll('.drop-zone');
+  let correct=0;
+  zones.forEach((dz,i)=>{
+    const val=dz.textContent.trim();
+    if(val===passageAnswers[i]){dz.style.color='#0F6E56';dz.style.borderBottomColor='#1D9E75';correct++;}
+    else{dz.style.color='#A32D2D';dz.style.borderBottomColor='#E24B4A';}
+  });
+  const res=document.getElementById('ex3-result');
+  res.style.display='block';
+  res.innerHTML=`Score: <strong>${correct} / 8</strong> — ${correct===8?'Excellent work! All gaps correct.':correct>=6?'Good effort! Review the highlighted gaps.':'Keep practising — the feedback colours show correct (green) and incorrect (red).'}`;
+}
+
+function resetEx3(){
+  buildEx3();
+}
+
+function buildEx4(){
+  const container=document.getElementById('ex4-questions');
+  container.innerHTML='';
+  ex4Data.forEach((q,i)=>{
+    const card=document.createElement('div');
+    card.className='question-card';
+    card.id='ex4-q'+i;
+    card.innerHTML=`<div class="q-num">Statement ${i+1} of 12</div>
+<div class="q-stem">${q.stmt}</div>
+<div class="tf-opts">
+<button class="tf-opt" onclick="answerEx4(${i},true)" id="ex4-q${i}-t">True</button>
+<button class="tf-opt" onclick="answerEx4(${i},false)" id="ex4-q${i}-f">False</button>
+</div>
+<div class="feedback" id="ex4-fb${i}"></div>`;
+    container.appendChild(card);
+  });
+}
+
+function answerEx4(qi,choice){
+  if(answered[4].includes(qi))return;
+  answered[4].push(qi);
+  const q=ex4Data[qi];
+  const tBtn=document.getElementById(`ex4-q${qi}-t`);
+  const fBtn=document.getElementById(`ex4-q${qi}-f`);
+  tBtn.classList.add('disabled');fBtn.classList.add('disabled');
+  const correct=choice===q.answer;
+  if(correct){scores[4]++;(choice?tBtn:fBtn).classList.add('correct');}
+  else{(choice?tBtn:fBtn).classList.add('incorrect');(q.answer?tBtn:fBtn).classList.add('reveal');}
+  const fb=document.getElementById(`ex4-fb${qi}`);
+  fb.className='feedback show '+(correct?'correct-fb':'incorrect-fb');
+  fb.textContent=(correct?'Correct! ':'Incorrect. ')+q.fb;
+  document.getElementById('s4').textContent=scores[4]+' / 12';
+}
+
+function resetEx(n){
+  scores[n]=0;answered[n]=[];
+  document.getElementById('s'+n).textContent='0 / 12';
+  if(n===1)buildEx1();
+  if(n===2)buildEx2();
+  if(n===4)buildEx4();
+}
+
+buildEx1();buildEx2();buildEx3();buildEx4();
+</script>

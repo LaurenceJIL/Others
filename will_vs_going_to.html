@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Will or Going To? — A2 Grammar Exercise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1714;
+    --paper: #f5f0e8;
+    --cream: #ede7d8;
+    --accent: #c84b2f;
+    --accent-light: #f0cfc8;
+    --green: #2d6a4f;
+    --green-light: #d8ede5;
+    --muted: #6b635a;
+    --border: #ccc4b6;
+    --card: #faf7f2;
+    --radius: 6px;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 3.5rem 2rem 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 18px,
+      rgba(255,255,255,0.025) 18px,
+      rgba(255,255,255,0.025) 19px
+    );
+  }
+  .header-tag {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 4px 14px;
+    border-radius: 100px;
+    margin-bottom: 1.25rem;
+  }
+  header h1 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.75rem;
+  }
+  header h1 em {
+    font-style: italic;
+    color: #e8a090;
+  }
+  header p {
+    font-size: 14px;
+    color: rgba(245,240,232,0.6);
+    letter-spacing: 0.02em;
+  }
+  .header-pills {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+  .pill {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(245,240,232,0.75);
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 100px;
+  }
+
+  /* ── LAYOUT ── */
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+  }
+
+  /* ── SECTION DIVIDER ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 3rem 0 1.5rem;
+  }
+  .section-header::before, .section-header::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .section-title {
+    font-family: var(--serif);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* ── QUESTION CARD ── */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 14px;
+    transition: border-color 0.25s, background 0.25s;
+  }
+  .q-card.correct {
+    border-color: var(--green);
+    background: var(--green-light);
+  }
+  .q-card.incorrect {
+    border-color: var(--accent);
+    background: #faeae7;
+  }
+  .q-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .q-num {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.25s;
+    flex-shrink: 0;
+  }
+  .q-card.correct .status-dot { background: var(--green); }
+  .q-card.incorrect .status-dot { background: var(--accent); }
+
+  .q-text {
+    font-size: 16px;
+    color: var(--ink);
+    margin-bottom: 14px;
+    line-height: 1.55;
+  }
+  .q-text em {
+    font-style: normal;
+    color: var(--muted);
+    border-bottom: 2px dashed var(--border);
+    padding-bottom: 1px;
+  }
+
+  /* ── MC OPTIONS ── */
+  .options { display: flex; flex-direction: column; gap: 7px; }
+  .opt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    background: var(--paper);
+    font-size: 14.5px;
+    color: var(--ink);
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .opt:hover { background: var(--cream); border-color: #b0a898; }
+  .opt.selected { border-color: #8b7355; background: #ede7d8; color: var(--ink); }
+  .opt.correct-ans { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .opt.wrong-ans { border-color: var(--accent); background: #faeae7; color: var(--accent); }
+  .opt-marker {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    transition: all 0.15s;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .opt.selected .opt-marker { border-color: #8b7355; background: #8b7355; color: white; }
+  .opt.correct-ans .opt-marker { border-color: var(--green); background: var(--green); color: white; }
+  .opt.wrong-ans .opt-marker { border-color: var(--accent); background: var(--accent); color: white; }
+
+  /* ── FILL INPUT ── */
+  .fill-input {
+    width: 100%;
+    padding: 9px 14px;
+    font-size: 14.5px;
+    font-family: var(--sans);
+    font-weight: 300;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--paper);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .fill-input:focus { border-color: #8b7355; box-shadow: 0 0 0 3px rgba(139,115,85,0.12); }
+  .fill-input.correct { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .fill-input.incorrect { border-color: var(--accent); background: #faeae7; color: var(--accent); }
+
+  /* ── CI BUTTONS ── */
+  .ci-options { display: flex; gap: 8px; }
+  .ci-btn {
+    padding: 9px 22px;
+    font-size: 14px;
+    font-family: var(--sans);
+    font-weight: 400;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    background: var(--paper);
+    color: var(--ink);
+    transition: all 0.15s;
+  }
+  .ci-btn:hover { background: var(--cream); border-color: #b0a898; }
+  .ci-btn.selected { border-color: #8b7355; background: var(--cream); }
+  .ci-btn.correct-ans { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .ci-btn.wrong-ans { border-color: var(--accent); background: #faeae7; color: var(--accent); }
+
+  /* ── FEEDBACK ── */
+  .feedback {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-top: 10px;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.ok { background: rgba(45,106,79,0.08); color: #1e5238; border-left: 3px solid var(--green); }
+  .feedback.bad { background: rgba(200,75,47,0.08); color: #9e3520; border-left: 3px solid var(--accent); }
+
+  /* ── SUBMIT ── */
+  .actions {
+    margin-top: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .submit-btn {
+    padding: 13px 34px;
+    font-size: 15px;
+    font-family: var(--sans);
+    font-weight: 500;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    letter-spacing: 0.01em;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  .submit-btn:hover { opacity: 0.88; }
+  .submit-btn:active { transform: scale(0.98); }
+  .reset-btn {
+    padding: 13px 24px;
+    font-size: 14px;
+    font-family: var(--sans);
+    font-weight: 400;
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: none;
+  }
+  .reset-btn:hover { background: var(--cream); color: var(--ink); }
+  .reset-btn.show { display: block; }
+
+  /* ── SCORE ── */
+  .score-box {
+    margin-top: 2.5rem;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 10px;
+    padding: 2rem 2rem 1.75rem;
+    display: none;
+    position: relative;
+    overflow: hidden;
+  }
+  .score-box::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg, transparent, transparent 18px,
+      rgba(255,255,255,0.02) 18px, rgba(255,255,255,0.02) 19px
+    );
+  }
+  .score-box.show { display: block; animation: slideUp 0.35s ease; }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .score-inner { position: relative; }
+  .score-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(245,240,232,0.5); margin-bottom: 8px; }
+  .score-num {
+    font-family: var(--serif);
+    font-size: 3.5rem;
+    font-weight: 300;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+  .score-num span { font-size: 1.4rem; color: rgba(245,240,232,0.5); }
+  .score-msg { font-size: 15px; color: rgba(245,240,232,0.75); line-height: 1.5; }
+  .score-bar-wrap { margin-top: 1.5rem; background: rgba(255,255,255,0.1); border-radius: 100px; height: 5px; overflow: hidden; }
+  .score-bar { height: 100%; background: #e8a090; border-radius: 100px; transition: width 0.6s ease; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 520px) {
+    header { padding: 2.5rem 1.25rem 2rem; }
+    main { padding: 2rem 1rem 4rem; }
+    .q-card { padding: 1rem 1.1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-tag">A2 Grammar</div>
+  <h1>Will or <em>Going To?</em></h1>
+  <p>20 questions · Three exercise types · Instant feedback</p>
+  <div class="header-pills">
+    <span class="pill">8 Multiple Choice</span>
+    <span class="pill">8 Fill in the Gap</span>
+    <span class="pill">4 Correct or Incorrect</span>
+  </div>
+</header>
+
+<main>
+
+  <div class="section-header">
+    <span class="section-title">Part 1 — Multiple Choice</span>
+  </div>
+  <div id="mc-container"></div>
+
+  <div class="section-header">
+    <span class="section-title">Part 2 — Fill in the Gap</span>
+  </div>
+  <p style="font-size:13.5px; color:var(--muted); margin-bottom:1.25rem; margin-top:-0.5rem;">Write the correct form of the verb in brackets.</p>
+  <div id="fill-container"></div>
+
+  <div class="section-header">
+    <span class="section-title">Part 3 — Correct or Incorrect?</span>
+  </div>
+  <p style="font-size:13.5px; color:var(--muted); margin-bottom:1.25rem; margin-top:-0.5rem;">Is the use of <em>will</em> or <em>going to</em> correct in the sentence?</p>
+  <div id="ci-container"></div>
+
+  <div class="actions">
+    <button class="submit-btn" onclick="checkAll()">Check my answers</button>
+    <button class="reset-btn" id="reset-btn" onclick="resetAll()">Try again</button>
+  </div>
+
+  <div class="score-box" id="score-box">
+    <div class="score-inner">
+      <div class="score-label">Your score</div>
+      <div class="score-num" id="score-num">— <span>/ 20</span></div>
+      <div class="score-msg" id="score-msg"></div>
+      <div class="score-bar-wrap"><div class="score-bar" id="score-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+
+</main>
+
+<footer>Will vs Going To &nbsp;·&nbsp; A2 English Grammar &nbsp;·&nbsp; 20 Questions</footer>
+
+<script>
+const mcQuestions = [
+  { q: "Look at those clouds! It _____ rain soon.", opts: ["will", "is going to"], ans: 1, hint: "We can see the clouds — this is a prediction based on visible evidence, so we use <em>going to</em>." },
+  { q: "A: Why are you saving money? B: I _____ buy a new phone.", opts: ["will", "am going to"], ans: 1, hint: "This is a plan already decided before the conversation, so we use <em>going to</em>." },
+  { q: "Don't worry, I _____ help you with your bags!", opts: ["will", "am going to"], ans: 0, hint: "This is a spontaneous offer made at the moment of speaking — we use <em>will</em>." },
+  { q: "She _____ start her new job next Monday. She's very excited.", opts: ["will", "is going to"], ans: 1, hint: "This is a firm, pre-arranged plan — we use <em>going to</em>." },
+  { q: "I promise I _____ call you tomorrow.", opts: ["will", "am going to"], ans: 0, hint: "Promises always use <em>will</em>." },
+  { q: "Watch out! That glass _____ fall!", opts: ["will", "is going to"], ans: 1, hint: "We can see it's about to happen right now — evidence-based prediction uses <em>going to</em>." },
+  { q: "A: The phone is ringing. B: I _____ get it!", opts: ["will", "am going to"], ans: 0, hint: "This is a spontaneous decision made at the moment of speaking — we use <em>will</em>." },
+  { q: "They _____ get married in the summer. They've already booked the venue.", opts: ["will", "are going to"], ans: 1, hint: "The venue is already booked — this is a firm, pre-arranged plan, so we use <em>going to</em>." },
+];
+
+const fillQuestions = [
+  { q: "I think he _____ (win) the competition. He's very talented.", ans: ["will win"], hint: "<strong>will win</strong> — this is a personal opinion or prediction without any direct evidence." },
+  { q: "Be careful! You _____ (fall) — the floor is very wet.", ans: ["are going to fall", "going to fall"], hint: "<strong>are going to fall</strong> — we can see the danger right now." },
+  { q: "We _____ (visit) my grandparents this weekend. We've already planned it.", ans: ["are going to visit", "going to visit"], hint: "<strong>are going to visit</strong> — it's a pre-arranged plan." },
+  { q: "A: I can't open this jar. B: Give it to me. I _____ (open) it.", ans: ["will open", "'ll open"], hint: "<strong>will open</strong> — spontaneous offer made in the moment." },
+  { q: "She _____ (not come) to the party. She told me yesterday.", ans: ["isn't going to come", "is not going to come", "not going to come"], hint: "<strong>isn't going to come</strong> — she already decided before this conversation." },
+  { q: "I think it _____ (be) a great movie!", ans: ["will be", "'ll be"], hint: "<strong>will be</strong> — a personal opinion about the future." },
+  { q: "They _____ (paint) the living room next week. They've bought the paint.", ans: ["are going to paint", "going to paint"], hint: "<strong>are going to paint</strong> — they've already bought the paint, so it's a firm plan." },
+  { q: "Don't eat all the cake or you _____ (feel) sick!", ans: ["will feel", "'ll feel"], hint: "<strong>will feel</strong> — a warning about a future consequence." },
+];
+
+const ciQuestions = [
+  { q: '"I am going to call you back in five minutes," she promised.', correct: false, hint: "Promises use <em>will</em>: <em>'I will call you back in five minutes.'</em>" },
+  { q: '"Look at him — he\'s going to drop everything!" Tom shouted.', correct: true, hint: "Correct! We can see it's about to happen — evidence-based prediction uses <em>going to</em>." },
+  { q: '"Will you visit Paris next summer? You already bought the tickets!"', correct: false, hint: "A firm plan with advance arrangements uses <em>going to</em>: <em>'Are you going to visit Paris?'</em>" },
+  { q: '"I\'ll get you a coffee — you look tired," said Ana.', correct: true, hint: "Correct! This is a spontaneous offer made at the moment of speaking — <em>will</em> is correct." },
+];
+
+const mcSelected = {};
+const ciSelected = {};
+
+function buildMC() {
+  const c = document.getElementById('mc-container');
+  c.innerHTML = '';
+  mcQuestions.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'q-card';
+    div.id = 'mc-' + i;
+    div.innerHTML = `
+      <div class="q-meta">
+        <div class="status-dot" id="mc-dot-${i}"></div>
+        <span class="q-num">Question ${i + 1}</span>
+      </div>
+      <div class="q-text">${q.q.replace('_____', '<em>_____</em>')}</div>
+      <div class="options">
+        ${q.opts.map((o, j) => `
+          <div class="opt" id="mc-opt-${i}-${j}" onclick="selectMC(${i},${j})">
+            <div class="opt-marker">${String.fromCharCode(65+j)}</div>
+            ${o}
+          </div>`).join('')}
+      </div>
+      <div class="feedback" id="mc-fb-${i}"></div>`;
+    c.appendChild(div);
+  });
+}
+
+function buildFill() {
+  const c = document.getElementById('fill-container');
+  c.innerHTML = '';
+  fillQuestions.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'q-card';
+    div.id = 'fill-' + i;
+    const num = i + mcQuestions.length + 1;
+    div.innerHTML = `
+      <div class="q-meta">
+        <div class="status-dot" id="fill-dot-${i}"></div>
+        <span class="q-num">Question ${num}</span>
+      </div>
+      <div class="q-text">${q.q.replace('_____', '<em>_____</em>')}</div>
+      <input class="fill-input" id="fill-inp-${i}" placeholder="Type your answer…" type="text" autocomplete="off" spellcheck="false">
+      <div class="feedback" id="fill-fb-${i}"></div>`;
+    c.appendChild(div);
+  });
+}
+
+function buildCI() {
+  const c = document.getElementById('ci-container');
+  c.innerHTML = '';
+  ciQuestions.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'q-card';
+    div.id = 'ci-' + i;
+    const num = i + mcQuestions.length + fillQuestions.length + 1;
+    div.innerHTML = `
+      <div class="q-meta">
+        <div class="status-dot" id="ci-dot-${i}"></div>
+        <span class="q-num">Question ${num}</span>
+      </div>
+      <div class="q-text">${q.q}</div>
+      <div class="ci-options">
+        <button class="ci-btn" id="ci-btn-${i}-t" onclick="selectCI(${i}, true)">Correct</button>
+        <button class="ci-btn" id="ci-btn-${i}-f" onclick="selectCI(${i}, false)">Incorrect</button>
+      </div>
+      <div class="feedback" id="ci-fb-${i}"></div>`;
+    c.appendChild(div);
+  });
+}
+
+function selectMC(q, opt) {
+  mcSelected[q] = opt;
+  mcQuestions[q].opts.forEach((_, j) => {
+    const el = document.getElementById(`mc-opt-${q}-${j}`);
+    el.className = 'opt' + (j === opt ? ' selected' : '');
+    el.querySelector('.opt-marker').textContent = String.fromCharCode(65 + j);
+  });
+}
+
+function selectCI(q, val) {
+  ciSelected[q] = val;
+  [['t', true], ['f', false]].forEach(([k, v]) => {
+    document.getElementById(`ci-btn-${q}-${k}`).className = 'ci-btn' + (v === val ? ' selected' : '');
+  });
+}
+
+function normalize(s) {
+  return s.trim().toLowerCase().replace(/['']/g, "'").replace(/\s+/g, ' ');
+}
+
+function checkAll() {
+  let score = 0;
+
+  mcQuestions.forEach((q, i) => {
+    const card = document.getElementById('mc-' + i);
+    const fb = document.getElementById('mc-fb-' + i);
+    const sel = mcSelected[i];
+    q.opts.forEach((_, j) => {
+      const el = document.getElementById(`mc-opt-${i}-${j}`);
+      const marker = el.querySelector('.opt-marker');
+      el.className = 'opt';
+      if (j === q.ans) { el.classList.add('correct-ans'); marker.textContent = '✓'; }
+      else if (j === sel && j !== q.ans) { el.classList.add('wrong-ans'); marker.textContent = '✕'; }
+      else marker.textContent = String.fromCharCode(65 + j);
+    });
+    const ok = sel === q.ans;
+    if (ok) score++;
+    card.className = 'q-card ' + (ok ? 'correct' : 'incorrect');
+    fb.className = 'feedback show ' + (ok ? 'ok' : 'bad');
+    fb.innerHTML = (ok ? '✓ Correct! ' : '✕ Not quite. ') + q.hint;
+  });
+
+  fillQuestions.forEach((q, i) => {
+    const inp = document.getElementById('fill-inp-' + i);
+    const card = document.getElementById('fill-' + i);
+    const fb = document.getElementById('fill-fb-' + i);
+    const userAns = normalize(inp.value);
+    const ok = q.ans.some(a => normalize(a) === userAns);
+    if (ok) score++;
+    card.className = 'q-card ' + (ok ? 'correct' : 'incorrect');
+    inp.className = 'fill-input ' + (ok ? 'correct' : 'incorrect');
+    inp.disabled = true;
+    fb.className = 'feedback show ' + (ok ? 'ok' : 'bad');
+    fb.innerHTML = ok ? '✓ Correct! ' + q.hint : '✕ The answer is: ' + q.hint;
+  });
+
+  ciQuestions.forEach((q, i) => {
+    const card = document.getElementById('ci-' + i);
+    const fb = document.getElementById('ci-fb-' + i);
+    const sel = ciSelected[i];
+    const ok = sel === q.correct;
+    if (ok) score++;
+    [['t', true], ['f', false]].forEach(([k, v]) => {
+      const el = document.getElementById(`ci-btn-${i}-${k}`);
+      el.className = 'ci-btn';
+      if (v === q.correct) el.classList.add('correct-ans');
+      else if (v === sel && !ok) el.classList.add('wrong-ans');
+      el.disabled = true;
+    });
+    card.className = 'q-card ' + (ok ? 'correct' : 'incorrect');
+    fb.className = 'feedback show ' + (ok ? 'ok' : 'bad');
+    const verdict = q.correct ? 'correct' : 'incorrect';
+    if (sel === undefined) fb.innerHTML = '✕ No answer selected. The sentence is <strong>' + verdict + '</strong>. ' + q.hint;
+    else fb.innerHTML = (ok ? '✓ Correct! ' : '✕ The sentence is <strong>' + verdict + '</strong>. ') + q.hint;
+  });
+
+  const box = document.getElementById('score-box');
+  box.className = 'score-box show';
+  document.getElementById('score-num').innerHTML = score + ' <span>/ 20</span>';
+  const pct = Math.round((score / 20) * 100);
+  const msgs = [
+    [20, 20, 'Perfect score! Outstanding work — you have mastered the difference.'],
+    [16, 19, 'Excellent! You have a strong grasp of will vs going to.'],
+    [12, 15, 'Good effort. Review the feedback above and try again to improve.'],
+    [0, 11, 'Keep practising! Read each hint carefully and try again.'],
+  ];
+  const msg = msgs.find(([lo, hi]) => score >= lo && score <= hi);
+  document.getElementById('score-msg').textContent = msg ? msg[2] : '';
+  setTimeout(() => { document.getElementById('score-bar').style.width = pct + '%'; }, 100);
+  document.getElementById('reset-btn').className = 'reset-btn show';
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function resetAll() {
+  Object.keys(mcSelected).forEach(k => delete mcSelected[k]);
+  Object.keys(ciSelected).forEach(k => delete ciSelected[k]);
+  document.getElementById('score-box').className = 'score-box';
+  document.getElementById('score-bar').style.width = '0%';
+  document.getElementById('reset-btn').className = 'reset-btn';
+  buildMC(); buildFill(); buildCI();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildMC(); buildFill(); buildCI();
+</script>
+</body>
+</html>

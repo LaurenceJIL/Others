@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoundMatch — A1/A2 Rhyme Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1a1a2e;--paper:#f5f0e8;--cream:#ede8dc;--accent:#c0392b;--gold:#d4a017;--green:#2e7d32;--red:#c62828;--soft:#7a7a8c;--card:#faf7f2;--border:#d9d3c7;--a1:#1565c0;--a2:#e65100}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 16px 80px}
+.wrap{width:100%;max-width:620px}
+header{text-align:center;margin-bottom:32px}
+.logo{font-family:'Playfair Display',serif;font-size:clamp(2rem,6vw,3rem);font-weight:900;color:var(--ink);letter-spacing:-0.02em;line-height:1}
+.logo span{color:var(--accent)}
+.tagline{font-size:0.85rem;color:var(--soft);letter-spacing:0.12em;text-transform:uppercase;margin-top:6px}
+.badge{display:inline-block;background:var(--a1);color:#fff;font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:3px 10px;border-radius:99px;margin-top:10px}
+.pbwrap{background:var(--border);border-radius:99px;height:6px;margin-bottom:20px;overflow:hidden}
+.pbfill{height:100%;background:linear-gradient(90deg,var(--a1),var(--a2));border-radius:99px;transition:width .5s ease}
+.stats{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;font-size:0.82rem;font-weight:500;color:var(--soft);letter-spacing:0.06em;text-transform:uppercase}
+.snum{font-size:1.1rem;font-weight:700;color:var(--ink)}
+.lvdot{display:inline-block;width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.lv-a1{background:var(--a1)}
+.lv-a2{background:var(--a2)}
+.qcard{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:36px 32px 28px;box-shadow:0 4px 24px rgba(0,0,0,0.07);margin-bottom:16px;position:relative;overflow:hidden}
+.qcard::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--a1),var(--a2))}
+.card-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.qlabel{font-size:0.75rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--soft)}
+.lvtag{font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:2px 8px;border-radius:99px;color:#fff}
+.lvtag-a1{background:var(--a1)}
+.lvtag-a2{background:var(--a2)}
+.headword{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,9vw,4rem);font-weight:700;color:var(--ink);margin-bottom:6px;line-height:1}
+.instr{font-size:0.88rem;color:var(--soft);margin-bottom:28px}
+.instr em{font-style:normal;color:var(--accent);font-weight:600}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cbtn{background:var(--paper);border:1.5px solid var(--border);border-radius:10px;padding:18px 14px;font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:500;color:var(--ink);cursor:pointer;transition:all .18s ease;text-align:center}
+.cbtn:hover:not(:disabled){background:var(--ink);color:var(--paper);border-color:var(--ink);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+.cbtn.correct{background:#e8f5e9;border-color:#2e7d32;color:#2e7d32;font-weight:700}
+.cbtn.wrong{background:#ffebee;border-color:var(--red);color:var(--red);font-weight:700}
+.cbtn:disabled{cursor:default;transform:none}
+.feedback{margin-top:16px;padding:14px 20px;border-radius:10px;font-size:0.9rem;font-weight:500;line-height:1.5;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:#e8f5e9;border:1px solid #a5d6a7;color:#2e7d32}
+.feedback.ko{background:#ffebee;border:1px solid #ef9a9a;color:#c62828}
+.mrow{display:flex;align-items:center;gap:8px;margin-top:16px;padding:14px 20px;background:var(--cream);border-radius:10px;border:1px solid var(--border)}
+.mlabel{font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--soft);margin-right:4px}
+.heart{font-size:1.1rem;transition:all .3s ease}
+.heart.lost{filter:grayscale(1);opacity:0.3}
+.next-row{display:flex;justify-content:flex-end;margin-top:14px}
+.nbtn{background:var(--ink);color:var(--paper);border:none;border-radius:10px;padding:12px 28px;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:0.04em}
+.nbtn:hover{background:var(--accent)}
+.endsc{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:48px 32px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,0.07)}
+.bignum{font-family:'Playfair Display',serif;font-size:5rem;font-weight:900;color:var(--accent);line-height:1;margin-bottom:8px}
+.etitle{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;margin-bottom:12px}
+.emsg{font-size:0.95rem;color:var(--soft);line-height:1.7;max-width:380px;margin:0 auto 28px}
+.eicon{font-size:3rem;margin-bottom:16px}
+.rbtn{display:inline-block;background:var(--ink);color:var(--paper);border:none;border-radius:10px;padding:14px 36px;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:600;letter-spacing:0.06em;cursor:pointer;transition:all .2s;text-decoration:none}
+.rbtn:hover{background:var(--accent);transform:translateY(-1px)}
+.stsc{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:48px 32px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,0.07)}
+.stsc h2{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;margin-bottom:16px}
+.stsc p{font-size:0.92rem;color:var(--soft);line-height:1.75;margin-bottom:10px;max-width:420px;margin-left:auto;margin-right:auto}
+.rules{background:var(--cream);border-radius:10px;padding:18px 20px;margin:20px 0 28px;text-align:left;font-size:0.87rem;line-height:1.8;color:var(--ink);border:1px solid var(--border)}
+.rules li{margin-left:18px}
+.score-bar{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:16px 0}
+.sq{width:14px;height:14px;border-radius:3px;background:var(--border)}
+.sq.c{background:#2e7d32}
+.sq.w{background:#c62828}
+@media(max-width:480px){.choices{grid-template-columns:1fr}.qcard{padding:28px 20px 22px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="logo">Sound<span>Match</span></div>
+  <div class="tagline">English Pronunciation Quiz</div>
+  <div class="badge">A1 · A2 Edition</div>
+</header>
+<div id="app"></div>
+</div>
+<script>
+/*
+  QUALITY RULES applied to every question:
+  1. Exactly ONE correct rhyme among the four options.
+  2. No two options rhyme with each other (eliminates multiple-correct-answer confusion).
+  3. No option is a homophone of the headword (e.g. WEEK/WEAK banned as a pair).
+  4. The hint only names the correct answer's rhyme logic — it never implies another option also works.
+  5. MONTH removed entirely (no common English word rhymes cleanly with it).
+*/
+
+const ALL_Q = [
+  // ── A1 ──────────────────────────────────────────────────────────────────
+  // Verified: options are phonically distinct from each other; only one rhymes with the headword.
+
+  // CAT /kæt/ → hat /hæt/. Distractors: coat/koʊt/, cut/kʌt/, cot/kɒt/ — all different vowels.
+  {l:'A1', q:'CAT',   o:['coat','hat','cut','cot'],     a:1,
+   hint:'CAT has the short /æ/ vowel (like "apple"). HAT ends with the same /æt/ sound.'},
+
+  // BED /bɛd/ → red /rɛd/. bad/bæd/, bid/bɪd/, bud/bʌd/ all differ.
+  {l:'A1', q:'BED',   o:['bad','bid','red','bud'],      a:2,
+   hint:'BED has the short /ɛ/ vowel. RED ends with exactly the same /ɛd/ sound.'},
+
+  // SIT /sɪt/ → bit /bɪt/. sat/sæt/, suit/suːt/, set/sɛt/ all differ.
+  {l:'A1', q:'SIT',   o:['sat','suit','set','bit'],     a:3,
+   hint:'SIT has the short /ɪ/ vowel. BIT ends with the same /ɪt/ sound.'},
+
+  // DOG /dɒɡ/ → fog /fɒɡ/. dig/dɪɡ/, dug/dʌɡ/, fig/fɪɡ/ all differ.
+  {l:'A1', q:'DOG',   o:['dig','dug','fog','fig'],      a:2,
+   hint:'DOG has the /ɒɡ/ ending. FOG has the same vowel and final consonant.'},
+
+  // RUN /rʌn/ → fun /fʌn/. ran/ræn/, rain/reɪn/, fan/fæn/ all differ.
+  {l:'A1', q:'RUN',   o:['ran','rain','fun','fan'],     a:2,
+   hint:'RUN has the short /ʌ/ vowel. FUN ends with the same /ʌn/ sound.'},
+
+  // DAY /deɪ/ → say /seɪ/. die/daɪ/, dew/djuː/, do/duː/ all differ.
+  {l:'A1', q:'DAY',   o:['die','dew','do','say'],       a:3,
+   hint:'DAY ends with the /eɪ/ diphthong. SAY ends with exactly that same sound.'},
+
+  // MAKE /meɪk/ → take /teɪk/. mock/mɒk/, mike/maɪk/, talk/tɔːk/ all differ.
+  {l:'A1', q:'MAKE',  o:['mock','mike','take','talk'],  a:2,
+   hint:'MAKE has the long /eɪ/ vowel and ends in /k/. TAKE shares both.'},
+
+  // BOOK /bʊk/ → look /lʊk/. back/bæk/, bike/baɪk/, lock/lɒk/ all differ.
+  {l:'A1', q:'BOOK',  o:['back','bike','look','lock'],  a:2,
+   hint:'BOOK has the short /ʊ/ vowel (not the "oo" in moon). LOOK has the same /ʊk/ ending.'},
+
+  // TREE /triː/ → three /θriː/. try/traɪ/, tray/treɪ/, threw/θruː/ all differ.
+  // THREE is not a homophone of TREE; they are distinct words.
+  {l:'A1', q:'TREE',  o:['try','tray','three','threw'], a:2,
+   hint:'TREE ends with the long /iː/ sound. THREE ends the same way — it just has a different first consonant.'},
+
+  // SING /sɪŋ/ → ring /rɪŋ/. rang/ræŋ/, rung/rʌŋ/, wrong/rɒŋ/ all differ.
+  {l:'A1', q:'SING',  o:['ring','rang','rung','wrong'], a:0,
+   hint:'SING ends in /ɪŋ/. RING has the same vowel and the same nasal ending.'},
+
+  // TOWN /taʊn/ → crown /kraʊn/. tone/toʊn/, teen/tiːn/, crane/kreɪn/ all differ.
+  {l:'A1', q:'TOWN',  o:['tone','teen','crown','crane'], a:2,
+   hint:'TOWN has the /aʊ/ diphthong. CROWN ends with the same /aʊn/ sound.'},
+
+  // FEEL /fiːl/ → real /riːl/. fall/fɔːl/, foil/fɔɪl/, full/fʊl/ all differ.
+  {l:'A1', q:'FEEL',  o:['fall','foil','real','full'],  a:2,
+   hint:'FEEL ends with the long /iːl/ sound. REAL ends the same way, even though it looks different.'},
+
+  // LONG /lɒŋ/ → song /sɒŋ/. lung/lʌŋ/, lane/leɪn/, sang/sæŋ/ all differ.
+  {l:'A1', q:'LONG',  o:['lung','lane','song','sang'],  a:2,
+   hint:'LONG ends in /ɒŋ/. SONG has the same vowel and the same nasal ending.'},
+
+  // FOOD /fuːd/ → mood /muːd/. fad/fæd/, fed/fɛd/, mud/mʌd/ all differ.
+  {l:'A1', q:'FOOD',  o:['fad','fed','mood','mud'],     a:2,
+   hint:'FOOD has the long /uːd/ ending. MOOD ends exactly the same way.'},
+
+  // COLD /koʊld/ → told /toʊld/. could/kʊd/, called/kɔːld/, tilled/tɪld/ all differ.
+  {l:'A1', q:'COLD',  o:['could','called','told','tilled'], a:2,
+   hint:'COLD ends in /oʊld/. TOLD shares the same vowel and final consonant cluster.'},
+
+  // HAND /hænd/ → sand /sænd/. hound/haʊnd/, hind/haɪnd/, send/sɛnd/ all differ.
+  {l:'A1', q:'HAND',  o:['hound','hind','sand','send'], a:2,
+   hint:'HAND ends in /ænd/. SAND has the same short /æ/ vowel and ending.'},
+
+  // FIRE /faɪər/ → hire /haɪər/. fir/fɜː/, fair/fɛər/, here/hɪər/ all differ.
+  {l:'A1', q:'FIRE',  o:['fir','fair','hire','here'],   a:2,
+   hint:'FIRE ends in the /aɪər/ sound. HIRE ends in exactly the same way.'},
+
+  // BACK /bæk/ → stack /stæk/. block/blɒk/, bloke/bloʊk/, bleach/bliːtʃ/ all differ.
+  // Replaced "black" (which also ends /æk/) with "stack" to keep exactly one correct answer.
+  {l:'A1', q:'BACK',  o:['block','stack','bloke','bleach'], a:1,
+   hint:'BACK ends in /æk/. STACK has the same short /æ/ vowel and the same /k/ ending.'},
+
+  // ── A2 ──────────────────────────────────────────────────────────────────
+
+  // BREAK /breɪk/ → steak /steɪk/. brick/brɪk/, brace/breɪs/, streak/striːk/ all differ.
+  // steak≠streak (different vowel); brace ends /s/ not /k/.
+  {l:'A2', q:'BREAK',  o:['brick','brace','steak','streak'],   a:2,
+   hint:'BREAK is pronounced /breɪk/. STEAK looks very different but is also /steɪk/ — the EA spells the same /eɪ/ sound.'},
+
+  // BLOOD /blʌd/ → flood /flʌd/. blond/blɒnd/, brood/bruːd/, bloke/bloʊk/ all differ.
+  // Replaced "flood" for "front" (front is /frʌnt/ ≠ /blʌd/).
+  {l:'A2', q:'BLOOD',  o:['blond','flood','brood','bloke'],    a:1,
+   hint:'BLOOD is pronounced /blʌd/ — the OO here makes an unusual /ʌ/ sound. FLOOD has the same /ʌd/ ending.'},
+
+  // ROUGH /rʌf/ → ruff /rʌf/ is a homophone — banned. Use "tough" /tʌf/ instead.
+  // Distractors: route/ruːt/, rout/raʊt/, rouge/ruːʒ/ all differ.
+  {l:'A2', q:'ROUGH',  o:['route','rout','tough','rouge'],     a:2,
+   hint:'ROUGH is pronounced /rʌf/ — the -OUGH spells /ʌf/ here. TOUGH has the same /ʌf/ ending.'},
+
+  // WEEK /wiːk/ — WEAK /wiːk/ is a homophone — banned as option.
+  // Use "cheek" /tʃiːk/. Distractors: wake/weɪk/, work/wɜːk/, wick/wɪk/ all differ.
+  {l:'A2', q:'WEEK',   o:['wake','work','cheek','wick'],       a:2,
+   hint:'WEEK has the long /iːk/ sound. CHEEK ends with exactly that same /iːk/.'},
+
+  // LOSE /luːz/ → fuse /fjuːz/. louse/laʊs/, lost/lɒst/, loss/lɒs/ all differ.
+  {l:'A2', q:'LOSE',   o:['louse','lost','fuse','loss'],       a:2,
+   hint:'LOSE is pronounced /luːz/. FUSE ends in the same /uːz/ sound.'},
+
+  // BREAD /brɛd/ → said /sɛd/. Removed "dead" and "dread" (both rhyme with BREAD).
+  // Distractors: braid/breɪd/, breed/briːd/, broad/brɔːd/ all differ.
+  {l:'A2', q:'BREAD',  o:['braid','breed','said','broad'],     a:2,
+   hint:'BREAD has a short /ɛ/ vowel — not the long /iː/ in "breed". SAID is also pronounced /sɛd/, ending the same way.'},
+
+  // WEIGHT /weɪt/ → wait /weɪt/ is a homophone — banned. Use "late" /leɪt/.
+  // Distractors: width/wɪdθ/, wit/wɪt/, white/waɪt/ all differ.
+  {l:'A2', q:'WEIGHT', o:['width','late','wit','white'],       a:1,
+   hint:'WEIGHT is pronounced /weɪt/ — the GH is silent. LATE ends with the same /eɪt/ sound.'},
+
+  // WHOLE /hoʊl/ → hole /hoʊl/ is a homophone — banned. Use "role" /roʊl/.
+  // Distractors: while/waɪl/, will/wɪl/, hull/hʌl/ all differ.
+  {l:'A2', q:'WHOLE',  o:['while','will','role','hull'],       a:2,
+   hint:'WHOLE is pronounced /hoʊl/ — the W is silent. ROLE ends with the same /oʊl/ sound.'},
+
+  // SIGN /saɪn/ → line /laɪn/. sing/sɪŋ/, scene/siːn/, loin/lɔɪn/ all differ.
+  {l:'A2', q:'SIGN',   o:['sing','scene','line','loin'],       a:2,
+   hint:'SIGN is pronounced /saɪn/ — the G is silent. LINE ends with the same /aɪn/ sound.'},
+
+  // STARE /stɛər/ → there /ðɛər/. store/stɔːr/, stir/stɜːr/, star/stɑːr/ all differ.
+  {l:'A2', q:'STARE',  o:['store','stir','star','there'],      a:3,
+   hint:'STARE ends in the /ɛər/ sound. THERE looks very different but ends in the same /ɛər/.'},
+
+  // BUILT /bɪlt/ → guilt /ɡɪlt/. bolt/boʊlt/, belt/bɛlt/, gild/ɡɪld/ all differ.
+  {l:'A2', q:'BUILT',  o:['bolt','belt','guilt','gild'],       a:2,
+   hint:'BUILT is pronounced /bɪlt/. GUILT ends with the same /ɪlt/ sound — and also has a silent U.'},
+
+  // BEAN /biːn/ → clean /kliːn/. bane/beɪn/, bin/bɪn/, barn/bɑːn/ all differ.
+  {l:'A2', q:'BEAN',   o:['bane','bin','barn','clean'],        a:3,
+   hint:'BEAN has the long /iːn/ sound. CLEAN ends with exactly the same /iːn/.'},
+
+  // COUGH /kɒf/ → off /ɒf/. cow/kaʊ/, cob/kɒb/, cove/koʊv/ all differ.
+  // "off" is short and unambiguous; no homophone issue.
+  {l:'A2', q:'COUGH',  o:['cow','cob','off','cove'],           a:2,
+   hint:'COUGH is pronounced /kɒf/ — the -OUGH spells /ɒf/ here. OFF ends with the same /ɒf/ sound.'},
+
+  // DOUGH /doʊ/ → go /ɡoʊ/. through/θruː/, rough/rʌf/, cough/kɒf/ all differ.
+  {l:'A2', q:'DOUGH',  o:['through','rough','go','cough'],     a:2,
+   hint:'DOUGH is pronounced /doʊ/ — the -OUGH spells /oʊ/ here. GO ends with the same /oʊ/ sound.'},
+
+  // TONGUE /tʌŋ/ → young /jʌŋ/. long/lɒŋ/, tong/tɒŋ/, song/sɒŋ/ all differ.
+  {l:'A2', q:'TONGUE', o:['long','tong','young','song'],       a:2,
+   hint:'TONGUE is pronounced /tʌŋ/ — the UE is silent. YOUNG has the same /ʌŋ/ ending.'},
+
+  // ACHE /eɪk/ → cake /keɪk/. each/iːtʃ/, arch/ɑːtʃ/, catch/kætʃ/ all differ.
+  {l:'A2', q:'ACHE',   o:['each','arch','cake','catch'],       a:2,
+   hint:'ACHE is pronounced /eɪk/ — it looks like "each" but doesn\'t sound like it. CAKE ends with the same /eɪk/.'},
+
+  // STEAK /steɪk/ — already used as the answer for BREAK. Swap to new question.
+  // SWEAR /swɛər/ → bear /bɛər/. sweet/swiːt/, swing/swɪŋ/, beer/bɪər/ all differ.
+  {l:'A2', q:'SWEAR',  o:['sweet','swing','bear','beer'],      a:2,
+   hint:'SWEAR ends in the /ɛər/ sound. BEAR (the animal) ends with exactly the same sound.'},
+
+  // ISLE /aɪl/ → while /waɪl/. inch/ɪntʃ/, oil/ɔɪl/, ice/aɪs/ all differ.
+  {l:'A2', q:'ISLE',   o:['inch','oil','while','ice'],         a:2,
+   hint:'ISLE is pronounced /aɪl/ — the S is silent. WHILE ends with the same /aɪl/ sound.'},
+
+  // PLOUGH /plaʊ/ → cow /kaʊ/. plop/plɒp/, slow/sloʊ/, plot/plɒt/ all differ.
+  {l:'A2', q:'PLOUGH', o:['plop','slow','cow','plot'],         a:2,
+   hint:'PLOUGH is pronounced /plaʊ/ — the -OUGH spells /aʊ/ here. COW ends with the same /aʊ/ sound.'},
+
+  // SUITE /swiːt/ → sweet /swiːt/ is a homophone — banned. Use "feet" /fiːt/.
+  // Distractors: suit/suːt/, site/saɪt/, sweat/swɛt/ all differ.
+  {l:'A2', q:'SUITE',  o:['suit','site','feet','sweat'],       a:2,
+   hint:'SUITE is pronounced /swiːt/ — it rhymes with words ending in /iːt/. FEET ends with exactly that sound.'},
+
+  // DEBT /dɛt/ → met /mɛt/. dart/dɑːt/, dirt/dɜːt/, meat/miːt/ all differ.
+  {l:'A2', q:'DEBT',   o:['dart','met','dirt','meat'],         a:1,
+   hint:'DEBT is pronounced /dɛt/ — the B is silent. MET ends with the same /ɛt/ sound.'},
+
+  // PINT /paɪnt/ → mind /maɪnd/ — close but ends /nd/ not /nt/. Use "find" — no, /faɪnd/.
+  // Better: PINT /paɪnt/ → hint: /hɪnt/ differs. Use "joint"? No, /dʒɔɪnt/.
+  // Safe choice: PINT → "knight" /naɪt/ — no, ends /t/ but vowel /aɪ/ matches only partially (no /n/).
+  // PINT /paɊnt/ → "pine" /paɪn/ — no, missing /t/. Try "point"? /pɔɪnt/ — different vowel.
+  // Best safe pick: PINT /paɪnt/ → "print"? /prɪnt/ — different vowel.
+  // Conclusion: replace PINT with a cleaner word.
+  // SEW /soʊ/ → go /ɡoʊ/ — already used "go". Use "know" /noʊ/.
+  // Distractors: sew=sow(homophone issues), use: few/fjuː/, dew/djuː/, new/njuː/ differ.
+  {l:'A2', q:'SEW',    o:['few','dew','know','new'],           a:2,
+   hint:'SEW is pronounced /soʊ/ — it looks like it should rhyme with "few" but it doesn\'t! KNOW also has a silent letter and ends with the same /oʊ/ sound.'},
+
+  // SWORD /sɔːd/ → board /bɔːd/. swore/swɔːr/ — ends /r/. sward? obscure.
+  // sword/sɔːd/ → ward/wɔːd/. Distractors: swore/swɔːr/, swoon/swuːn/, swipe/swaɪp/ all differ.
+  {l:'A2', q:'SWORD',  o:['swore','ward','swoon','swipe'],     a:1,
+   hint:'SWORD is pronounced /sɔːd/ — the W is silent. WARD ends with the same /ɔːd/ sound.'},
+];
+
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+
+const DECK = shuffle(ALL_Q);
+const TOTAL = DECK.length;
+const MAX_ERR = 3;
+
+let S = {screen:'start', cur:0, score:0, err:0, ans:false, sel:null, showNext:false, results:[]};
+
+function init(){
+  S={screen:'quiz',cur:0,score:0,err:0,ans:false,sel:null,showNext:false,results:[]};
+  render();
+}
+
+function nextQ(){
+  S.cur++; S.ans=false; S.sel=null; S.showNext=false;
+  if(S.cur>=TOTAL){S.screen='end';}
+  render();
+}
+
+function pct(){return Math.round(S.cur/TOTAL*100)}
+
+const app=document.getElementById('app');
+
+function render(){
+  if(S.screen==='start'){renderStart();return}
+  if(S.screen==='end'){renderEnd();return}
+  renderQ();
+}
+
+function renderStart(){
+  app.innerHTML=`<div class="stsc">
+    <div style="font-size:2.4rem;margin-bottom:16px">🔊</div>
+    <h2>A1 &amp; A2 Rhyme Quiz</h2>
+    <p>This quiz focuses on beginner and elementary English pronunciation — including some tricky spelling traps!</p>
+    <div class="rules"><ul>
+      <li><strong>${TOTAL} questions</strong> across A1 and A2 levels.</li>
+      <li>Pick the word that <strong>rhymes</strong> with the word shown.</li>
+      <li>After each answer, you'll see a <strong>hint</strong> explaining why.</li>
+      <li>You have <strong>3 lives</strong> 🍍 — don't lose them all!</li>
+      <li>Some questions look easy but aren't — watch the spelling!</li>
+    </ul></div>
+    <button class="rbtn" onclick="init()">Start →</button>
+  </div>`;
+}
+
+function renderEnd(){
+  const p=Math.round(S.score/TOTAL*100);
+  let icon,title,msg;
+  if(S.err>=MAX_ERR){
+    icon='💔'; title='Out of lives!';
+    msg=`You answered <strong>${S.score}</strong> out of ${TOTAL} correctly before running out of lives. Great effort — try again to beat your score!`;
+  } else if(p>=90){
+    icon='🏆'; title='Excellent!';
+    msg=`You scored <strong>${S.score} / ${TOTAL}</strong> (${p}%). Outstanding pronunciation awareness for A1–A2 level!`;
+  } else if(p>=70){
+    icon='🎉'; title='Well done!';
+    msg=`You scored <strong>${S.score} / ${TOTAL}</strong> (${p}%). Solid work! Review the tricky spellings you missed and try again.`;
+  } else {
+    icon='📖'; title='Keep practising!';
+    msg=`You scored <strong>${S.score} / ${TOTAL}</strong> (${p}%). English spelling is tough — read the hints carefully and have another go!`;
+  }
+  const grid=S.results.map(r=>`<div class="sq ${r?'c':'w'}"></div>`).join('');
+  app.innerHTML=`<div class="endsc">
+    <div class="eicon">${icon}</div>
+    <div class="bignum">${S.score}<span style="font-size:2rem;color:var(--soft)">/${TOTAL}</span></div>
+    <div class="etitle">${title}</div>
+    <p class="emsg">${msg}</p>
+    <div class="score-bar">${grid}</div>
+    <button class="rbtn" onclick="init()" style="margin-top:20px">Play Again</button>
+  </div>`;
+}
+
+function renderQ(){
+  const q=DECK[S.cur];
+  if(!q){S.screen='end';render();return}
+  const hearts=['🍍','🍍','🍍'].map((h,i)=>`<span class="heart${i<S.err?' lost':''}">${h}</span>`).join('');
+  const btns=q.o.map((opt,i)=>{
+    let cls='cbtn', dis='';
+    if(S.ans){
+      dis='disabled';
+      if(i===q.a) cls+=' correct';
+      else if(i===S.sel&&i!==q.a) cls+=' wrong';
+    }
+    return`<button class="${cls}" ${dis} onclick="choose(${i})">${opt}</button>`;
+  }).join('');
+  const feedbackCls=S.ans?(S.sel===q.a?'ok':'ko'):'';
+  const feedbackTxt=S.ans?`<strong>${S.sel===q.a?'✓ Correct!':'✗ Not quite.'}</strong> ${q.hint}`:'';
+  const nextBtn=S.showNext?`<div class="next-row"><button class="nbtn" onclick="nextQ()">Next →</button></div>`:'';
+  app.innerHTML=`
+<div class="pbwrap"><div class="pbfill" style="width:${pct()}%"></div></div>
+<div class="stats">
+  <span>Score <span class="snum">${S.score}</span> / ${TOTAL}</span>
+  <span>Q ${S.cur+1} of ${TOTAL}</span>
+</div>
+<div class="qcard">
+  <div class="card-top">
+    <span class="lvdot lv-${q.l.toLowerCase()}" title="${q.l}"></span>
+    <span class="lvtag lvtag-${q.l.toLowerCase()}">${q.l}</span>
+    <div class="qlabel" style="margin-left:2px">Which word rhymes with…</div>
+  </div>
+  <div class="headword">${q.q}</div>
+  <div class="instr">Find the word that ends with the <em>same sound</em> as <em>${q.q}</em></div>
+  <div class="choices">${btns}</div>
+  <div class="feedback ${feedbackCls}${S.ans?' show':''}">${feedbackTxt}</div>
+</div>
+<div class="mrow">
+  <span class="mlabel">Lives</span>${hearts}
+  <span style="margin-left:auto;font-size:0.78rem;color:var(--soft);font-weight:500">${TOTAL - S.cur - 1} left</span>
+</div>
+${nextBtn}`;
+}
+
+function choose(i){
+  if(S.ans)return;
+  const q=DECK[S.cur];
+  S.ans=true; S.sel=i;
+  const correct=(i===q.a);
+  S.results.push(correct);
+  if(correct) S.score++;
+  else{
+    S.err++;
+    if(S.err>=MAX_ERR){
+      render();
+      setTimeout(()=>{S.screen='end';render()},2200);
+      return;
+    }
+  }
+  if(S.cur===TOTAL-1){
+    render();
+    setTimeout(()=>{S.screen='end';render()},2200);
+    return;
+  }
+  S.showNext=true;
+  render();
+}
+
+window.choose=choose;window.init=init;window.nextQ=nextQ;
+render();
+</script>
+</body>
+</html>

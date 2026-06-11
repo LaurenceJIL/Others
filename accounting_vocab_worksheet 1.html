@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professional Accounting English — B1 Worksheet (With Answer Keys)</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #002c5f;
+  --navy-mid: #1a3c6d;
+  --navy-light: #e8edf5;
+  --gold: #c8931a;
+  --gold-light: #fdf4e0;
+  --red: #c0392b;
+  --red-light: #fdf0ef;
+  --green: #1e6b44;
+  --green-light: #eaf4ee;
+  --ink: #1a1a1a;
+  --ink-mid: #555;
+  --ink-faint: #999;
+  --surface: #f7f6f2;
+  --white: #ffffff;
+  --rule: #ddd9ce;
+  --radius: 6px;
+  --radius-lg: 12px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;background:var(--surface);}
+body{font-family:'IBM Plex Sans',sans-serif;color:var(--ink);line-height:1.65;}
+
+/* ── HEADER ── */
+.site-header{
+  background:var(--navy);
+  padding:2rem 2rem 0;
+  position:relative;
+  overflow:hidden;
+}
+.site-header::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--gold),#e8b84b,var(--gold));
+}
+.header-inner{max-width:1000px;margin:0 auto;position:relative;}
+.header-label{font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:.5rem;}
+.header-title{font-family:'IBM Plex Serif',serif;font-size:clamp(20px,3.5vw,30px);color:#fff;font-weight:600;line-height:1.2;margin-bottom:.35rem;}
+.header-sub{font-size:13px;color:rgba(255,255,255,.55);margin-bottom:1.4rem;}
+
+/* ── TABS ── */
+.tab-nav{background:var(--navy);display:flex;gap:3px;overflow-x:auto;}
+.tab-btn{
+  padding:.85rem 1.4rem;font-size:12.5px;font-weight:500;
+  background:transparent;color:rgba(255,255,255,.4);
+  border:none;border-bottom:2.5px solid transparent;
+  cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s;
+}
+.tab-btn.active{color:#fff;border-bottom-color:var(--gold);}
+
+/* ── MAIN ── */
+.main{max-width:1000px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;animation:fadeIn .22s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+.ex-badge{display:inline-block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--gold);background:var(--gold-light);border:0.5px solid #e0c070;padding:3px 10px;border-radius:20px;margin-bottom:.65rem;}
+h2.ex-title{font-family:'IBM Plex Serif',serif;font-size:22px;font-weight:600;color:var(--navy);margin-bottom:.4rem;}
+.instructions{font-size:13.5px;color:var(--ink-mid);background:var(--navy-light);border-left:3px solid var(--navy-mid);padding:.75rem 1rem;border-radius:0 var(--radius) var(--radius) 0;margin-bottom:1.8rem;}
+
+/* ── VOCAB GRID ── */
+.vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:12px;}
+.vocab-card{background:var(--white);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:1rem;display:flex;gap:.8rem;}
+.vocab-term{font-weight:600;color:var(--navy);font-size:14.5px;display:block;}
+.vocab-pos{font-size:11px;color:var(--gold);font-style:italic;margin-left:6px;}
+.vocab-def{font-size:13.5px;color:var(--ink-mid);}
+
+/* ── EXERCISE STYLES ── */
+.token-bank{display:flex;flex-wrap:wrap;gap:10px;background:var(--white);padding:1.2rem;border:1px solid var(--rule);border-radius:var(--radius-lg);margin-bottom:1.5rem;}
+.drag-token{background:var(--navy-light);border:1.5px solid var(--navy-mid);color:var(--navy);padding:5px 12px;border-radius:4px;cursor:grab;font-weight:600;font-size:13px;user-select:none;}
+.drag-token.used{opacity:.3;cursor:not-allowed;}
+.email-container{background:var(--white);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:2rem;font-size:15px;line-height:2;box-shadow:var(--shadow);}
+.drop-zone{display:inline-block;min-width:140px;height:30px;vertical-align:middle;background:#f0f3f8;border:1.5px dashed #a0b0c8;border-radius:4px;margin:0 4px;text-align:center;line-height:26px;font-size:13px;}
+.drop-zone.filled{background:var(--navy-light);border-style:solid;color:var(--navy);font-weight:600;}
+.drop-zone.correct-fill{background:var(--green-light);border-color:var(--green);color:var(--green);}
+.drop-zone.wrong-fill{background:var(--red-light);border-color:var(--red);color:var(--red);}
+
+.mc-item{background:var(--white);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:1.2rem;margin-bottom:1rem;}
+.mc-options{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.8rem;}
+.mc-opt{padding:.6rem;border:1px solid var(--rule);border-radius:var(--radius);cursor:pointer;font-size:13.5px;display:flex;align-items:center;gap:8px;}
+.mc-opt.correct-answer{background:var(--green-light);border-color:var(--green);color:var(--green);font-weight:600;}
+
+.tf-item{background:var(--white);border:1px solid var(--rule);padding:1rem;border-radius:var(--radius-lg);margin-bottom:.8rem;display:flex;justify-content:space-between;align-items:center;}
+.tf-stmt{font-size:14.5px;max-width:75%;}
+.tf-btns{display:flex;gap:10px;}
+.tf-btn{padding:5px 15px;border:1px solid var(--rule);background:#fff;border-radius:4px;cursor:pointer;font-size:13px;}
+.tf-btn.selected{background:var(--navy);color:#fff;border-color:var(--navy);}
+.tf-item.is-correct{background:var(--green-light);border-color:var(--green);}
+
+.grammar-list{background:var(--white);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:1.5rem;}
+.grammar-row{padding:.8rem 0;border-bottom:1px solid var(--rule);font-size:14.5px;}
+select.grammar-sel{padding:2px 5px;border:1px solid var(--navy-mid);border-radius:4px;background:var(--navy-light);font-family:inherit;font-weight:600;}
+.correct-sel{background:var(--green-light) !important;color:var(--green);}
+
+/* ── BUTTONS ── */
+.btn-group{margin-top:2rem;display:flex;gap:12px;}
+.check-btn{padding:12px 25px;background:var(--navy);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-weight:600;font-size:14px;}
+.show-btn{padding:12px 25px;background:var(--white);color:var(--navy);border:1.5px solid var(--navy);border-radius:var(--radius);cursor:pointer;font-weight:600;font-size:14px;}
+.feedback-box{margin-top:1.5rem;padding:1rem;border-radius:var(--radius-lg);display:none;font-weight:600;}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-label">Professional English · Level B1</div>
+    <h1 class="header-title">Accounting Operations Report</h1>
+    <p class="header-sub">Interactive Review of Financial Vocabulary and Grammar</p>
+  </div>
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('vocab')">Vocabulary</button>
+    <button class="tab-btn" onclick="showTab('part1')">Part 1: Drag & Drop</button>
+    <button class="tab-btn" onclick="showTab('part2')">Part 2: Multiple Choice</button>
+    <button class="tab-btn" onclick="showTab('part3')">Part 3: True / False</button>
+    <button class="tab-btn" onclick="showTab('part4')">Part 4: Grammar</button>
+  </div>
+</header>
+
+<div class="main">
+
+<div id="tab-vocab" class="tab-panel active">
+  <div class="ex-badge">Reference</div>
+  <h2 class="ex-title">20 Accounting Terms</h2>
+  <p class="instructions">Essential vocabulary for modern industrial accounting.</p>
+  <div class="vocab-grid" id="vocab-grid"></div>
+</div>
+
+<div id="tab-part1" class="tab-panel">
+  <div class="ex-badge">Exercise 1</div>
+  <h2 class="ex-title">Performance Update Email</h2>
+  <p class="instructions">Complete the email by dragging the correct terms into the gaps.</p>
+  <div class="token-bank" id="token-bank"></div>
+  <div class="email-container">
+    <p>Dear Finance Team,</p>
+    <p>Following our audit, we noted that monthly <span class="drop-zone" data-ans="Revenue"></span> is consistent. However, <span class="drop-zone" data-ans="Inventory"></span> is piling up. A <span class="drop-zone" data-ans="Bottleneck"></span> in logistics has caused a significant <span class="drop-zone" data-ans="Backlog"></span> of orders.</p>
+    <p>This has increased our <span class="drop-zone" data-ans="WIP"></span> (Work In Progress) and affected our <span class="drop-zone" data-ans="Liquidity"></span>. To manage cash, we must prioritize our <span class="drop-zone" data-ans="Payables"></span>. Our year-end <span class="drop-zone" data-ans="Forecast"></span> remains cautious.</p>
+  </div>
+  <div class="btn-group">
+    <button class="check-btn" onclick="checkPart1()">Check Answers</button>
+    <button class="show-btn" onclick="showPart1()">Show Correct Answers</button>
+  </div>
+  <div class="feedback-box" id="p1-fb"></div>
+</div>
+
+<div id="tab-part2" class="tab-panel">
+  <div class="ex-badge">Exercise 2</div>
+  <h2 class="ex-title">Contextual Selection</h2>
+  <div id="mc-container"></div>
+  <div class="btn-group">
+    <button class="check-btn" onclick="checkPart2()">Check Answers</button>
+    <button class="show-btn" onclick="showPart2()">Show Correct Answers</button>
+  </div>
+  <div class="feedback-box" id="p2-fb"></div>
+</div>
+
+<div id="tab-part3" class="tab-panel">
+  <div class="ex-badge">Exercise 3</div>
+  <h2 class="ex-title">True or False Statements</h2>
+  <div id="tf-container"></div>
+  <div class="btn-group">
+    <button class="check-btn" onclick="checkPart3()">Check Answers</button>
+    <button class="show-btn" onclick="showPart3()">Show Correct Answers</button>
+  </div>
+  <div class="feedback-box" id="p3-fb"></div>
+</div>
+
+<div id="tab-part4" class="tab-panel">
+  <div class="ex-badge">Exercise 4</div>
+  <h2 class="ex-title">Grammar & Structure</h2>
+  <div class="grammar-list" id="grammar-container"></div>
+  <div class="btn-group">
+    <button class="check-btn" onclick="checkPart4()">Check Answers</button>
+    <button class="show-btn" onclick="showPart4()">Show Correct Answers</button>
+  </div>
+  <div class="feedback-box" id="p4-fb"></div>
+</div>
+
+</div>
+
+<script>
+const VOCAB = [
+  { term:"Work In Progress (WIP)", def:"Unfinished products currently in production." },
+  { term:"Liquidity", def:"The ability to pay short-term debts with available cash." },
+  { term:"Revenue", def:"Total income from sales before costs." },
+  { term:"Cash Flow", def:"The movement of money in and out of the business." },
+  { term:"Backlog", def:"Unfulfilled customer orders waiting to be processed." },
+  { term:"Bottleneck", def:"A process stage that limits the total output." },
+  { term:"Inventory", def:"Stock of raw materials or finished goods." },
+  { term:"Balance Sheet", def:"Financial statement of assets and liabilities." },
+  { term:"Current Assets", def:"Assets to be converted into cash within one year." },
+  { term:"Liabilities", def:"Debts or financial obligations of a company." },
+  { term:"Depreciation", def:"Reduction in the value of an asset over time." },
+  { term:"Overhead", def:"Regular business expenses (rent, utilities)." },
+  { term:"Receivables", def:"Money owed to the company by its clients." },
+  { term:"Payables", def:"Money the company owes to its suppliers." },
+  { term:"Profit Margin", def:"Profit expressed as a percentage of revenue." },
+  { term:"Cost of Labor", def:"Wages and benefits paid to employees." },
+  { term:"Purchase Order", def:"Official document sent to a supplier to buy goods." },
+  { term:"Amortize", def:"To write off the cost of an asset over a period." },
+  { term:"Allocate", def:"To distribute resources or costs to specific departments." },
+  { term:"Forecast", def:"An estimation of future financial outcomes." }
+];
+
+/* BUILD VOCAB */
+const grid = document.getElementById('vocab-grid');
+VOCAB.forEach(v => {
+  grid.innerHTML += `<div class="vocab-card"><div><span class="vocab-term">${v.term}</span><span class="vocab-def">${v.def}</span></div></div>`;
+});
+
+/* PART 1 LOGIC */
+const p1Pool = ["Revenue", "Inventory", "Bottleneck", "Backlog", "WIP", "Liquidity", "Payables", "Forecast", "Overhead", "Receivables"].sort(() => Math.random() - 0.5);
+p1Pool.forEach(t => {
+  document.getElementById('token-bank').innerHTML += `<div class="drag-token" draggable="true" ondragstart="drag(event)" id="tok-${t}">${t}</div>`;
+});
+
+function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+document.querySelectorAll('.drop-zone').forEach(z => {
+  z.ondragover = (e) => e.preventDefault();
+  z.ondrop = (e) => {
+    e.preventDefault();
+    const id = e.dataTransfer.getData("text");
+    const tok = document.getElementById(id);
+    z.innerText = tok.innerText;
+    z.dataset.val = tok.innerText;
+    z.classList.add('filled');
+  };
+});
+
+function checkPart1() {
+  let s = 0;
+  document.querySelectorAll('.drop-zone').forEach(z => {
+    z.classList.remove('correct-fill', 'wrong-fill');
+    if (z.dataset.val === z.dataset.ans) { s++; z.classList.add('correct-fill'); }
+    else z.classList.add('wrong-fill');
+  });
+  const fb = document.getElementById('p1-fb');
+  fb.style.display='block'; fb.innerText = `Score: ${s}/8`;
+}
+
+function showPart1() {
+  document.querySelectorAll('.drop-zone').forEach(z => {
+    z.innerText = z.dataset.ans;
+    z.classList.add('filled', 'correct-fill');
+  });
+}
+
+/* PART 2 LOGIC */
+const mcData = [
+  { q: "The _____ is used to estimate future sales and costs.", a: "Forecast", alt: ["Balance Sheet", "Backlog", "WIP"] },
+  { q: "We must _____ the marketing costs across all departments.", a: "Allocate", alt: ["Amortize", "Depreciate", "Forecast"] },
+  { q: "If we have high _____, we might struggle to pay suppliers today.", a: "Liabilities", alt: ["Revenue", "Receivables", "Current Assets"] },
+  { q: "Our _____ increased because the new factory is producing more.", a: "Overhead", alt: ["Liquidity", "Payables", "Backlog"] },
+  { q: "Please sign the _____ for the 50 new laptops.", a: "Purchase Order", alt: ["Profit Margin", "Depreciation", "Inventory"] },
+  { q: "The machinery's _____ is recorded as a non-cash expense.", a: "Depreciation", alt: ["Liquidity", "WIP", "Revenue"] },
+  { q: "A healthy _____ ensures we remain profitable after costs.", a: "Profit Margin", alt: ["Cash Flow", "Liability", "Receivable"] },
+  { q: "High _____ means customers owe us a lot of money.", a: "Receivables", alt: ["Payables", "Liquidity", "Inventory"] }
+];
+
+mcData.forEach((item, idx) => {
+  const opts = [item.a, ...item.alt].sort(() => Math.random() - 0.5);
+  document.getElementById('mc-container').innerHTML += `<div class="mc-item" data-idx="${idx}"><p><strong>${idx+1}.</strong> ${item.q}</p>
+    <div class="mc-options">${opts.map(o => `<label class="mc-opt"><input type="radio" name="mc${idx}" value="${o}"> ${o}</label>`).join('')}</div></div>`;
+});
+
+function checkPart2() {
+  let s = 0;
+  mcData.forEach((item, idx) => {
+    const sel = document.querySelector(`input[name="mc${idx}"]:checked`);
+    if (sel && sel.value === item.a) s++;
+  });
+  document.getElementById('p2-fb').style.display='block';
+  document.getElementById('p2-fb').innerText = `Score: ${s}/8`;
+}
+
+function showPart2() {
+  mcData.forEach((item, idx) => {
+    const opts = document.querySelectorAll(`input[name="mc${idx}"]`);
+    opts.forEach(opt => {
+      if (opt.value === item.a) {
+        opt.checked = true;
+        opt.parentElement.classList.add('correct-answer');
+      }
+    });
+  });
+}
+
+/* PART 3 LOGIC */
+const tfData = [
+  { s: "Revenue includes only the profit from a sale.", a: "False" },
+  { s: "A bottleneck reduces the overall speed of production.", a: "True" },
+  { s: "Current assets are items intended to be kept for many years.", a: "False" },
+  { s: "Liabilities are what the company owes to other parties.", a: "True" },
+  { s: "Inventory includes raw materials and completed products.", a: "True" },
+  { s: "Amortize means to increase the value of an asset.", a: "False" },
+  { s: "Cash flow tracks the actual movement of money.", a: "True" },
+  { s: "A purchase order is a request for payment after delivery.", a: "False" },
+  { s: "Profit margin is calculated as a percentage.", a: "True" },
+  { s: "Receivables are a type of asset for the company.", a: "True" },
+  { s: "Overhead covers direct costs like raw materials.", a: "False" },
+  { s: "WIP refers to items currently on the production line.", a: "True" }
+].sort(() => Math.random() - 0.5);
+
+tfData.forEach((item, idx) => {
+  document.getElementById('tf-container').innerHTML += `<div class="tf-item" id="tf-row-${idx}"><span class="tf-stmt">${idx+1}. ${item.s}</span>
+    <div class="tf-btns"><button class="tf-btn" onclick="setTF(${idx}, 'True')">True</button><button class="tf-btn" onclick="setTF(${idx}, 'False')">False</button></div></div>`;
+});
+
+let userTF = {};
+function setTF(idx, val) {
+  userTF[idx] = val;
+  const btns = document.querySelectorAll(`#tf-row-${idx} .tf-btn`);
+  btns.forEach(b => b.classList.toggle('selected', b.innerText === val));
+}
+
+function checkPart3() {
+  let s = 0;
+  tfData.forEach((item, idx) => {
+    if (userTF[idx] === item.a) { s++; document.getElementById(`tf-row-${idx}`).classList.add('is-correct'); }
+  });
+  document.getElementById('p3-fb').style.display='block';
+  document.getElementById('p3-fb').innerText = `Score: ${s}/12`;
+}
+
+function showPart3() {
+  tfData.forEach((item, idx) => {
+    userTF[idx] = item.a;
+    const btns = document.querySelectorAll(`#tf-row-${idx} .tf-btn`);
+    btns.forEach(b => b.classList.toggle('selected', b.innerText === item.a));
+    document.getElementById(`tf-row-${idx}`).classList.add('is-correct');
+  });
+}
+
+/* PART 4 LOGIC */
+const gData = [
+  { s: "The auditor _____ the accounts every Monday.", o: ["checks", "checking", "is check"], a: "checks" },
+  { s: "We _____ reach the target last month.", o: ["didn't", "haven't", "not"], a: "didn't" },
+  { s: "The machinery is depreciated _____ five years.", o: ["over", "at", "to"], a: "over" },
+  { s: "Inventory _____ by 10% since January.", o: ["has increased", "is increase", "increased"], a: "has increased" },
+  { s: "You _____ verify all purchase orders.", o: ["must", "should to", "ought"], a: "must" },
+  { s: "The CEO is responsible _____ the final budget.", o: ["for", "to", "at"], a: "for" },
+  { s: "If the backlog grows, we _____ hire more staff.", o: ["will", "would", "going to"], a: "will" },
+  { s: "The balance sheet was signed _____ the CFO.", o: ["by", "at", "of"], a: "by" },
+  { s: "How _____ money is allocated to R&D?", o: ["much", "many", "often"], a: "much" },
+  { s: "We are _____ the WIP report right now.", o: ["preparing", "prepare", "prepares"], a: "preparing" },
+  { s: "Last year, we _____ a major bottleneck.", o: ["had", "have", "have had"], a: "had" },
+  { s: "The forecast is better _____ the previous one.", o: ["than", "that", "as"], a: "than" }
+];
+
+gData.forEach((item, idx) => {
+  const sel = `<select class="grammar-sel" id="g-${idx}"><option value="">---</option>${item.o.map(opt => `<option value="${opt}">${opt}</option>`).join('')}</select>`;
+  document.getElementById('grammar-container').innerHTML += `<div class="grammar-row">${idx+1}. ${item.s.replace('_____', sel)}</div>`;
+});
+
+function checkPart4() {
+  let s = 0;
+  gData.forEach((item, idx) => {
+    const el = document.getElementById(`g-${idx}`);
+    if (el.value === item.a) { s++; el.classList.add('correct-sel'); }
+  });
+  document.getElementById('p4-fb').style.display='block';
+  document.getElementById('p4-fb').innerText = `Score: ${s}/12`;
+}
+
+function showPart4() {
+  gData.forEach((item, idx) => {
+    const el = document.getElementById(`g-${idx}`);
+    el.value = item.a;
+    el.classList.add('correct-sel');
+  });
+}
+
+function showTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); color: var(--color-text-primary); }
+  .ws { max-width: 820px; margin: 0 auto; padding: 1.5rem 1rem; }
+  .tab-bar { display: flex; gap: 6px; margin-bottom: 0; flex-wrap: wrap; }
+  .tab-btn {
+    padding: 8px 18px; font-size: 13px; font-weight: 500; border-radius: 8px 8px 0 0;
+    border: 0.5px solid var(--color-border-secondary); border-bottom: none;
+    background: var(--color-background-secondary); color: var(--color-text-secondary);
+    cursor: pointer; transition: background 0.15s;
+  }
+  .tab-btn.active { background: var(--color-background-primary); color: var(--color-text-primary); }
+  .tab-panel { display: none; background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); border-radius: 0 8px 8px 8px; padding: 2rem; }
+  .tab-panel.active { display: block; }
+  h1 { font-size: 22px; font-weight: 500; margin-bottom: 0.4rem; }
+  h2 { font-size: 17px; font-weight: 500; margin-bottom: 1rem; color: var(--color-text-primary); }
+  .subtitle { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1.5rem; }
+  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 1.5rem 0; }
+  p { font-size: 15px; line-height: 1.75; margin-bottom: 1rem; }
+  .vocab-highlight { font-weight: 500; border-bottom: 1.5px solid #378ADD; }
+  .instructions { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1.5rem; padding: 0.75rem 1rem; background: var(--color-background-secondary); border-radius: 8px; border-left: 3px solid #378ADD; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 1.5rem; }
+  td, th { padding: 10px 12px; border: 0.5px solid var(--color-border-tertiary); vertical-align: top; }
+  th { background: var(--color-background-secondary); font-weight: 500; font-size: 13px; }
+  .match-word { font-weight: 500; }
+  .tf-stmt { font-size: 14.5px; line-height: 1.6; margin-bottom: 1rem; padding: 0.75rem 1rem; border: 0.5px solid var(--color-border-tertiary); border-radius: 8px; }
+  .tf-stmt label { display: inline-flex; align-items: center; gap: 6px; margin-right: 18px; cursor: pointer; font-size: 13px; }
+  .stmt-text { margin-bottom: 8px; }
+  .word-bank { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem; padding: 1rem; background: var(--color-background-secondary); border-radius: 8px; border: 0.5px solid var(--color-border-tertiary); }
+  .word-chip { background: var(--color-background-primary); border: 0.5px solid #378ADD; color: #185FA5; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; }
+  .fill-blank { border: none; border-bottom: 1.5px solid #378ADD; background: transparent; color: var(--color-text-primary); font-size: 14.5px; font-family: var(--font-sans); width: 130px; padding: 2px 4px; outline: none; }
+  .fill-blank:focus { border-bottom-color: #533AB7; }
+  .check-btn { margin-top: 1.5rem; padding: 8px 24px; background: transparent; border: 0.5px solid var(--color-border-secondary); border-radius: 8px; font-size: 14px; cursor: pointer; color: var(--color-text-primary); }
+  .check-btn:hover { background: var(--color-background-secondary); }
+  .feedback { margin-top: 1rem; font-size: 14px; padding: 0.75rem 1rem; border-radius: 8px; display: none; }
+  .feedback.show { display: block; }
+  .feedback.good { background: #EAF3DE; color: #3B6D11; border: 0.5px solid #97C459; }
+  .feedback.bad { background: #FCEBEB; color: #A32D2D; border: 0.5px solid #F09595; }
+  .correct-mark { color: #3B6D11; font-weight: 500; }
+  .wrong-mark { color: #A32D2D; font-weight: 500; }
+  .score-line { font-size: 14px; margin-bottom: 0.5rem; font-weight: 500; }
+  select.match-sel { border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-primary); font-size: 13px; border-radius: 6px; padding: 4px 8px; width: 100%; font-family: var(--font-sans); }
+  .page-label { font-size: 11px; letter-spacing: 0.05em; color: var(--color-text-secondary); text-transform: uppercase; margin-bottom: 0.25rem; }
+  .ex-num { display: inline-block; background: #185FA5; color: #E6F1FB; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px; margin-bottom: 0.75rem; }
+</style>
+
+<div class="ws">
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showTab('reading')">Reading text</button>
+    <button class="tab-btn" onclick="showTab('ex1')">Exercise 1</button>
+    <button class="tab-btn" onclick="showTab('ex2')">Exercise 2</button>
+    <button class="tab-btn" onclick="showTab('ex3')">Exercise 3</button>
+  </div>
+
+  <!-- READING TEXT -->
+  <div id="tab-reading" class="tab-panel active">
+    <div class="page-label">Worksheet — B1 English for IT professionals</div>
+    <h1>Designing for the future: innovation in product design</h1>
+    <div class="subtitle">Read the text carefully. The underlined words are key vocabulary items for this worksheet.</div>
+    <hr class="divider">
+    <p>In today's fast-moving world, <span class="vocab-highlight">innovative</span> product design is one of the most important factors that separates successful technology companies from the rest. To <span class="vocab-highlight">develop</span> a product that truly meets users' needs, designers and engineers must work closely together from the very beginning of a project.</p>
+    <p>The starting point is always the user. Good designers spend time studying the <span class="vocab-highlight">requirements</span> of the people who will use the product. They collect <span class="vocab-highlight">feedback</span> through surveys, interviews, and testing sessions. This information helps them understand what problems users face and what <span class="vocab-highlight">features</span> would make their lives easier.</p>
+    <p>Once a team has a clear picture of what users need, they begin to <span class="vocab-highlight">prototype</span> possible solutions. A prototype is an early version of a product that is used to test ideas before the final design is completed. Teams often create multiple prototypes and <span class="vocab-highlight">evaluate</span> each one carefully. The goal is to <span class="vocab-highlight">identify</span> both strengths and weaknesses before spending time and money on <span class="vocab-highlight">implementation</span>.</p>
+    <p>Modern product design is also strongly influenced by <span class="vocab-highlight">agile</span> methods. Agile teams work in short cycles called sprints, which makes it easier to <span class="vocab-highlight">adapt</span> to new information or changing priorities. Instead of following a rigid plan, the team <span class="vocab-highlight">iterates</span> — meaning they improve the product step by step, releasing small <span class="vocab-highlight">updates</span> regularly.</p>
+    <p>Another key principle is <span class="vocab-highlight">collaboration</span>. The best products are rarely created by one person working alone. Designers, developers, testers, and business managers must all <span class="vocab-highlight">contribute</span> their expertise. Regular meetings and shared tools help teams stay <span class="vocab-highlight">aligned</span> on goals and priorities throughout the project.</p>
+    <p>Finally, design teams must consider <span class="vocab-highlight">scalability</span> — whether the product will still work well when the number of users grows significantly. A product that performs perfectly for one hundred users may <span class="vocab-highlight">fail</span> when used by one million. Building with scalability in mind means the <span class="vocab-highlight">architecture</span> of the product must be planned carefully from the start. Companies that invest in this kind of careful, user-centred design are far more likely to build products that last.</p>
+    <hr class="divider">
+    <p style="font-size:12px; color:var(--color-text-secondary);">Vocabulary items tested in exercises: <em>innovative, develop, requirements, feedback, features, prototype, evaluate, identify, implementation, agile, adapt, iterates, updates, collaboration, contribute, aligned, scalability, fail, architecture, agile</em></p>
+  </div>
+
+  <!-- EXERCISE 1: MATCH -->
+  <div id="tab-ex1" class="tab-panel">
+    <span class="ex-num">Exercise 1</span>
+    <h2>Match the word with its definition</h2>
+    <div class="instructions">Match each vocabulary item in the left column with the correct definition in the right column. Two vocabulary items do not have a matching definition — leave those blank. Use the dropdown menus to select your answers.</div>
+    <table id="match-table">
+      <thead><tr><th style="width:38%">Vocabulary item</th><th>Definition — select the matching item</th></tr></thead>
+      <tbody id="match-tbody"></tbody>
+    </table>
+    <button class="check-btn" onclick="checkMatch()">Check answers</button>
+    <div class="feedback" id="match-feedback"></div>
+  </div>
+
+  <!-- EXERCISE 2: TRUE/FALSE -->
+  <div id="tab-ex2" class="tab-panel">
+    <span class="ex-num">Exercise 2</span>
+    <h2>True or false?</h2>
+    <div class="instructions">Read each statement. Decide if it is <strong>True</strong> or <strong>False</strong> according to the text. Circle or tick your answer.</div>
+    <div id="tf-container"></div>
+    <button class="check-btn" onclick="checkTF()">Check answers</button>
+    <div class="feedback" id="tf-feedback"></div>
+  </div>
+
+  <!-- EXERCISE 3: GAP FILL -->
+  <div id="tab-ex3" class="tab-panel">
+    <span class="ex-num">Exercise 3</span>
+    <h2>Complete the text</h2>
+    <div class="instructions">Use eight of the ten words in the box below to complete the text. There are two extra words you do not need. Write one word in each gap.</div>
+    <div class="word-bank" id="wordbank"></div>
+    <div id="gapfill-text" style="font-size:15px; line-height:2;"></div>
+    <button class="check-btn" onclick="checkGap()">Check answers</button>
+    <div class="feedback" id="gap-feedback"></div>
+  </div>
+</div>
+
+<script>
+const matchWords = [
+  { word: "requirements", def: "The things that a product must be able to do, decided before work begins.", answer: "requirements" },
+  { word: "prototype", def: "An early test version of a product used to check if an idea works.", answer: "prototype" },
+  { word: "scalability", def: "The ability of a product to handle a much larger number of users without problems.", answer: "scalability" },
+  { word: "feedback", def: "Information from users about whether something is working well or not.", answer: "feedback" },
+  { word: "EXTRA_1", word: "collaborate", def: null, answer: null },
+  { word: "implementation", def: "The process of putting a plan or design into action.", answer: "implementation" },
+  { word: "architecture", def: "The overall structure and organisation of a software system.", answer: "architecture" },
+  { word: "agile", def: "A method of working in short repeated cycles that allows teams to change direction quickly.", answer: "agile" },
+  { word: "EXTRA_2", word: "aligned", def: null, answer: null },
+  { word: "evaluate", def: "To carefully study something and decide how good or useful it is.", answer: "evaluate" },
+];
+
+const matchItems = [
+  { word: "requirements", isExtra: false },
+  { word: "prototype", isExtra: false },
+  { word: "scalability", isExtra: false },
+  { word: "feedback", isExtra: false },
+  { word: "collaborate", isExtra: true },
+  { word: "implementation", isExtra: false },
+  { word: "architecture", isExtra: false },
+  { word: "agile", isExtra: false },
+  { word: "aligned", isExtra: true },
+  { word: "evaluate", isExtra: false },
+];
+
+const definitions = [
+  { id: "def_req", text: "The things that a product must be able to do, decided before work begins.", answer: "requirements" },
+  { id: "def_proto", text: "An early test version of a product used to check if an idea works.", answer: "prototype" },
+  { id: "def_scale", text: "The ability of a product to handle a much larger number of users without problems.", answer: "scalability" },
+  { id: "def_feed", text: "Information from users about whether something is working well or not.", answer: "feedback" },
+  { id: "def_impl", text: "The process of putting a plan or design into action.", answer: "implementation" },
+  { id: "def_arch", text: "The overall structure and organisation of a software system.", answer: "architecture" },
+  { id: "def_agile", text: "A method of working in short repeated cycles that allows teams to change direction quickly.", answer: "agile" },
+  { id: "def_eval", text: "To carefully study something and decide how good or useful it is.", answer: "evaluate" },
+];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const shuffledDefs = shuffle(definitions);
+
+function buildMatch() {
+  const tbody = document.getElementById('match-tbody');
+  matchItems.forEach((item, idx) => {
+    const tr = document.createElement('tr');
+    let defCell;
+    if (item.isExtra) {
+      defCell = `<td style="color:var(--color-text-secondary); font-style:italic; font-size:13px;">— no definition needed —</td>`;
+    } else {
+      const opts = shuffledDefs.map(d => `<option value="${d.answer}">${d.text}</option>`).join('');
+      defCell = `<td><select class="match-sel" id="match-sel-${idx}"><option value="">— select a definition —</option>${opts}</select></td>`;
+    }
+    tr.innerHTML = `<td class="match-word">${item.word}</td>${defCell}`;
+    tbody.appendChild(tr);
+  });
+}
+
+function checkMatch() {
+  let score = 0; let total = 0; let html = '';
+  matchItems.forEach((item, idx) => {
+    if (item.isExtra) return;
+    total++;
+    const sel = document.getElementById(`match-sel-${idx}`);
+    if (!sel) return;
+    const val = sel.value;
+    if (val === item.word) { score++; html += `<div class="correct-mark">✓ "${item.word}" — correct.</div>`; }
+    else { 
+      const correctDef = shuffledDefs.find(d => d.answer === item.word);
+      html += `<div class="wrong-mark">✗ "${item.word}" — the correct definition: "${correctDef ? correctDef.text : ''}"</div>`; 
+    }
+  });
+  const fb = document.getElementById('match-feedback');
+  fb.innerHTML = `<div class="score-line">Score: ${score} / ${total}</div>${html}`;
+  fb.className = 'feedback show ' + (score === total ? 'good' : 'bad');
+}
+
+const tfData = [
+  { stmt: "According to the text, innovative product design is important for technology companies that want to succeed.", key: "true", vocab: "innovative" },
+  { stmt: "Designers collect feedback only through online surveys.", key: "false", vocab: "feedback" },
+  { stmt: "A prototype is used to test ideas before the final design is finished.", key: "true", vocab: "prototype" },
+  { stmt: "Agile teams follow a strict, unchanging plan from start to finish.", key: "false", vocab: "agile" },
+  { stmt: "When a team iterates, it means they improve the product step by step.", key: "true", vocab: "iterates" },
+  { stmt: "Collaboration means one person completes the whole project alone.", key: "false", vocab: "collaboration" },
+  { stmt: "Scalability means a product should work well even when the number of users grows significantly.", key: "true", vocab: "scalability" },
+  { stmt: "The architecture of a product does not need to be planned before development begins, according to the text.", key: "false", vocab: "architecture" },
+];
+
+function buildTF() {
+  const container = document.getElementById('tf-container');
+  tfData.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'tf-stmt';
+    div.innerHTML = `<div class="stmt-text"><strong>${i + 1}.</strong> ${item.stmt}</div>
+      <label><input type="radio" name="tf${i}" value="true"> True</label>
+      <label><input type="radio" name="tf${i}" value="false"> False</label>`;
+    container.appendChild(div);
+  });
+}
+
+function checkTF() {
+  let score = 0; let html = '';
+  tfData.forEach((item, i) => {
+    const sel = document.querySelector(`input[name="tf${i}"]:checked`);
+    const val = sel ? sel.value : null;
+    if (val === item.key) { score++; html += `<div class="correct-mark">✓ Statement ${i+1} — ${item.key.charAt(0).toUpperCase()+item.key.slice(1)}. Correct.</div>`; }
+    else { html += `<div class="wrong-mark">✗ Statement ${i+1} — The answer is <strong>${item.key}</strong>.</div>`; }
+  });
+  const fb = document.getElementById('tf-feedback');
+  fb.innerHTML = `<div class="score-line">Score: ${score} / 8</div>${html}`;
+  fb.className = 'feedback show ' + (score >= 6 ? 'good' : 'bad');
+}
+
+const gapWords = ["contribute", "updates", "adapt", "identify", "develop", "features", "fail", "aligned", "collaborate", "innovative"];
+const gapExtras = ["collaborate", "innovative"];
+
+const gapSentences = [
+  { before: "Successful technology companies must ", blank: "develop", after: " products that truly meet user needs." },
+  { before: "Before writing any code, engineers must ", blank: "identify", after: " the main problems that the product will solve." },
+  { before: "A product with poor planning may ", blank: "fail", after: " when the number of users increases suddenly." },
+  { before: "Agile teams are able to ", blank: "adapt", after: " quickly when priorities change during a project." },
+  { before: "Releasing regular ", blank: "updates", after: " allows teams to fix problems and improve the product gradually." },
+  { before: "All team members should ", blank: "contribute", after: " their skills and knowledge to the design process." },
+  { before: "The most useful ", blank: "features", after: " in a product are the ones that solve real problems for users." },
+  { before: "It is important for the whole team to stay ", blank: "aligned", after: " on the goals of the project throughout development." },
+];
+
+function buildGap() {
+  const wb = document.getElementById('wordbank');
+  const shuffledBank = shuffle(gapWords);
+  shuffledBank.forEach(w => {
+    const chip = document.createElement('span');
+    chip.className = 'word-chip';
+    chip.textContent = w;
+    wb.appendChild(chip);
+  });
+  const container = document.getElementById('gapfill-text');
+  gapSentences.forEach((s, i) => {
+    const p = document.createElement('p');
+    p.innerHTML = `<strong>${i+1}.</strong> ${s.before}<input class="fill-blank" type="text" id="gap-${i}" autocomplete="off" spellcheck="false" placeholder="________">${s.after}`;
+    container.appendChild(p);
+  });
+}
+
+function checkGap() {
+  let score = 0; let html = '';
+  gapSentences.forEach((s, i) => {
+    const val = (document.getElementById(`gap-${i}`).value || '').trim().toLowerCase();
+    if (val === s.blank.toLowerCase()) { score++; html += `<div class="correct-mark">✓ Gap ${i+1} — correct: <strong>${s.blank}</strong></div>`; }
+    else { html += `<div class="wrong-mark">✗ Gap ${i+1} — correct answer: <strong>${s.blank}</strong></div>`; }
+  });
+  const fb = document.getElementById('gap-feedback');
+  fb.innerHTML = `<div class="score-line">Score: ${score} / 8</div>${html}`;
+  fb.className = 'feedback show ' + (score >= 6 ? 'good' : 'bad');
+}
+
+function showTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+buildMatch();
+buildTF();
+buildGap();
+</script>

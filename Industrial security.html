@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Industrial Security English Training</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #f39c12;
+            --success: #27ae60;
+            --error: #e74c3c;
+            --bg: #f4f7f6;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--primary); line-height: 1.6; padding: 20px; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1, h2 { border-bottom: 2px solid var(--primary); padding-bottom: 10px; }
+        .matching-set { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .word-item { font-weight: bold; background: #eee; padding: 10px; border-radius: 4px; }
+        select { width: 100%; padding: 8px; border-radius: 4px; }
+        
+        .document-box { background: #fffdf0; border: 1px solid #e6db55; padding: 25px; margin-top: 20px; position: relative; line-height: 2; }
+        .clue-box { background: #d1ecf1; border: 1px solid #bee5eb; padding: 10px; margin-bottom: 10px; min-height: 40px; font-weight: bold; color: #0c5460; display: none; }
+        
+        input[type="text"] { border: none; border-bottom: 2px solid var(--primary); background: transparent; width: 120px; padding: 2px 5px; font-size: 1rem; color: #2980b9; font-weight: bold; }
+        input.correct { border-bottom-color: var(--success); background-color: #d4edda; }
+        input.wrong { border-bottom-color: var(--error); background-color: #f8d7da; }
+        
+        .btn-group { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+        button { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-clue { background: var(--accent); color: white; }
+        .btn-check { background: var(--success); color: white; }
+        .btn-reset { background: var(--primary); color: white; }
+        button:hover { opacity: 0.8; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Industrial Security: Language Module</h1>
+    <p>Welcome, Officer. Complete the vocabulary matching before proceeding to the site documentation.</p>
+
+    <div id="matching-section">
+        <h2>Part 1: Vocabulary Matching</h2>
+        <div id="sets-container"></div>
+        <button class="btn-check" onclick="startPart2()">Proceed to Documents</button>
+    </div>
+
+    <div id="gapfill-section" class="hidden">
+        <h2>Part 2: Site Documentation</h2>
+        
+        <div id="doc1-container">
+            <h3>Document 1: Internal Email</h3>
+            <div class="clue-box" id="clues-doc1"></div>
+            <div class="btn-group">
+                <button class="btn-clue" onclick="showClues(1, 1)">Clue 1</button>
+                <button class="btn-clue" onclick="showClues(1, 2)">Clue 2</button>
+                <button class="btn-clue" onclick="showClues(1, 3)">Clue 3</button>
+            </div>
+            
+            <div class="document-box" id="doc1-text">
+                <strong>To:</strong> Site Management Team<br>
+                <strong>Subject:</strong> External Defense Audit<br><br>
+                Dear Team, Following our last safety <input type="text" data-ans="audit" id="g1">, we identified vulnerabilities. 
+                The north <input type="text" data-ans="perimeter" id="g2"> fence is damaged, which could allow an 
+                <input type="text" data-ans="intruder" id="g3"> to enter. We are installing a new <input type="text" data-ans="sensor" id="g4"> 
+                system near the <input type="text" data-ans="ammonia" id="g5"> tanks. 
+                All staff must wear their <input type="text" data-ans="badge" id="g6"> at all times. 
+                No one will have <input type="text" data-ans="authorization" id="g7"> to enter the <input type="text" data-ans="storage" id="g8"> 
+                area containing <input type="text" data-ans="nitrate" id="g9"> or <input type="text" data-ans="phosphate" id="g10"> 
+                without a scan. We must follow this <input type="text" data-ans="protocol" id="g11"> to prevent a security 
+                <input type="text" data-ans="breach" id="g12">. During <input type="text" data-ans="bulk" id="g13"> shipments, 
+                please use the <input type="text" data-ans="cctv" id="g14"> to monitor the docks to maintain a high production 
+                <input type="text" data-ans="yield" id="g15"> safely.
+            </div>
+            <div class="btn-group">
+                <button class="btn-check" onclick="checkGaps(1)">Correction</button>
+                <button class="btn-reset" onclick="resetGaps(1)">Try Again</button>
+            </div>
+        </div>
+
+        <hr style="margin: 40px 0;">
+
+        <div id="doc2-container">
+            <h3>Document 2: Incident Report</h3>
+            <div class="clue-box" id="clues-doc2"></div>
+            <div class="btn-group">
+                <button class="btn-clue" onclick="showClues(2, 1)">Clue 1</button>
+                <button class="btn-clue" onclick="showClues(2, 2)">Clue 2</button>
+                <button class="btn-clue" onclick="showClues(2, 3)">Clue 3</button>
+            </div>
+            
+            <div class="document-box" id="doc2-text">
+                <strong>Report ID:</strong> 202-SEC-44<br>
+                <strong>Incident Type:</strong> Containment Failure<br><br>
+                During a routine <input type="text" data-ans="inspection" id="g16">, a technician found a faulty 
+                <input type="text" data-ans="valve" id="g17">. A small <input type="text" data-ans="leak" id="g18"> 
+                resulted in a chemical <input type="text" data-ans="spill" id="g19"> on the loading floor. 
+                The substance is highly <input type="text" data-ans="corrosive" id="g20">. Workers were processing 
+                <input type="text" data-ans="urea" id="g21">, which is not <input type="text" data-ans="flammable" id="g22">, 
+                but is still <input type="text" data-ans="hazardous" id="g23"> to skin. 
+                Primary <input type="text" data-ans="containment" id="g24"> was successful. 
+                All personnel were wearing required <input type="text" data-ans="ppe" id="g25">, including a 
+                <input type="text" data-ans="helmet" id="g26"> and safety <input type="text" data-ans="goggles" id="g27">. 
+                A fire <input type="text" data-ans="extinguisher" id="g28"> was placed on standby. 
+                The emergency <input type="text" data-ans="siren" id="g29"> was not sounded because an 
+                <input type="text" data-ans="evacuation" id="g30"> was not necessary.
+            </div>
+            <div class="btn-group">
+                <button class="btn-check" onclick="checkGaps(2)">Correction</button>
+                <button class="btn-reset" onclick="resetGaps(2)">Try Again</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const vocab = [
+        {w: "Perimeter", d: "The outer boundary or 'edge' of the facility."},
+        {w: "Ammonia", d: "A chemical used in fertilizer, dangerous if inhaled."},
+        {w: "Breach", d: "A failure or 'hole' in security or a fence."},
+        {w: "PPE", d: "Personal Protective Equipment (clothing/gear)."},
+        {w: "Valve", d: "A device that controls flow in a pipe."},
+        {w: "Corrosive", d: "A substance that eats away at materials or skin."},
+        {w: "Sensor", d: "A device that detects heat, motion, or smoke."},
+        {w: "Nitrate", d: "A chemical compound vital for plant growth."},
+        {w: "Intruder", d: "A person who enters without permission."},
+        {w: "Audit", d: "A formal examination or 'check-up' of records."},
+        {w: "Flammable", d: "Able to catch fire very easily."},
+        {w: "Containment", d: "Keeping a hazardous substance in a specific area."},
+        {w: "Authorization", d: "Official permission to enter a zone."},
+        {w: "Leak", d: "An unintentional hole where gas/liquid escapes."},
+        {w: "Bulk", d: "Large quantities of unpackaged goods."},
+        {w: "Siren", d: "A loud noise used for emergency warnings."},
+        {w: "Urea", d: "A common organic fertilizer component."},
+        {w: "Inspection", d: "An organized walk-through to find problems."},
+        {w: "Badge", d: "An ID card used to open electronic locks."},
+        {w: "Spill", d: "An accidental release of liquid onto the floor."},
+        {w: "Goggles", d: "Protective eyewear for chemical safety."},
+        {w: "CCTV", d: "Security cameras (Closed-circuit television)."},
+        {w: "Yield", d: "The total amount of product produced."},
+        {w: "Extinguisher", d: "Portable device to put out small fires."},
+        {w: "Protocol", d: "A set of official rules for a task."},
+        {w: "Hazardous", d: "Dangerous to health or safety."},
+        {w: "Phosphate", d: "A salt used in agricultural products."},
+        {w: "Evacuation", d: "Moving everyone out for safety."},
+        {w: "Storage", d: "Area where finished products are kept."},
+        {w: "Helmet", d: "Hard hat used to protect the head."}
+    ];
+
+    const clueMap = {
+        "1-1": ["audit", "perimeter", "intruder", "sensor", "ammonia"],
+        "1-2": ["badge", "authorization", "storage", "nitrate", "phosphate"],
+        "1-3": ["protocol", "breach", "bulk", "cctv", "yield"],
+        "2-1": ["inspection", "valve", "leak", "spill", "corrosive"],
+        "2-2": ["urea", "flammable", "hazardous", "containment", "ppe"],
+        "2-3": ["helmet", "goggles", "extinguisher", "siren", "evacuation"]
+    };
+
+    function initMatching() {
+        const container = document.getElementById('sets-container');
+        for (let i = 0; i < 5; i++) {
+            let setHtml = `<div class="matching-set">`;
+            let setWords = vocab.slice(i * 6, (i + 1) * 6);
+            let shuffledDefs = [...setWords].sort(() => Math.random() - 0.5);
+            
+            setWords.forEach((item, idx) => {
+                setHtml += `<div class="word-item">${item.w}</div>
+                            <select id="match-${i}-${idx}">
+                                <option value="">--Select Definition--</option>
+                                ${shuffledDefs.map(d => `<option value="${d.w}">${d.d}</option>`).join('')}
+                            </select>`;
+            });
+            setHtml += `</div>`;
+            container.innerHTML += setHtml;
+        }
+    }
+
+    function startPart2() {
+        document.getElementById('matching-section').classList.add('hidden');
+        document.getElementById('gapfill-section').classList.remove('hidden');
+        window.scrollTo(0,0);
+    }
+
+    function showClues(doc, clueNum) {
+        const box = document.getElementById(`clues-doc${doc}`);
+        box.style.display = 'block';
+        box.innerText = "Words to use: " + clueMap[`${doc}-${clueNum}`].join(", ");
+    }
+
+    function checkGaps(doc) {
+        const inputs = document.querySelectorAll(`#doc${doc}-text input`);
+        inputs.forEach(input => {
+            if (input.value.toLowerCase().trim() === input.getAttribute('data-ans').toLowerCase()) {
+                input.className = 'correct';
+            } else {
+                input.className = 'wrong';
+            }
+        });
+    }
+
+    function resetGaps(doc) {
+        const inputs = document.querySelectorAll(`#doc${doc}-text input`);
+        inputs.forEach(input => {
+            input.value = '';
+            input.className = '';
+        });
+        document.getElementById(`clues-doc${doc}`).style.display = 'none';
+    }
+
+    initMatching();
+</script>
+
+</body>
+</html>
