@@ -1,2 +1,2 @@
-# TP
+# Others
 Repository for other interactive exercises
