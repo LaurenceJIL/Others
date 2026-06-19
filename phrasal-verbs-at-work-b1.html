@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business English Phrasal Verbs (B1 Level)</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #eff6ff;
+            --success: #15803d;
+            --success-light: #f0fdf4;
+            --error: #b91c1c;
+            --error-light: #fef2f2;
+            --text: #1f2937;
+            --gray-light: #f3f4f6;
+            --border: #d1d5db;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        h1 { color: var(--primary); margin-top: 0; border-bottom: 2px solid var(--gray-light); padding-bottom: 10px; }
+        h2 { color: var(--primary); margin-top: 25px; }
+        p.intro { color: #4b5563; font-size: 1.1rem; }
+
+        .exercise-card {
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 25px;
+            background: #ffffff;
+        }
+
+        .instructions {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        /* Exercise 1 Layout */
+        .match-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .match-verb {
+            background: var(--gray-light);
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+
+        /* Exercise 2 Click-to-Place Layout */
+        .word-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            background: var(--gray-light);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        .word-chip {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            user-select: none;
+            transition: all 0.2s;
+        }
+        .word-chip:hover { border-color: var(--primary); background: var(--primary-light); }
+        .word-chip.selected { background: var(--primary); color: white; border-color: var(--primary); opacity: 0.5; }
+        .word-chip.used { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
+        
+        .gap-sentence { margin-bottom: 12px; }
+        .drop-target {
+            display: inline-block;
+            min-width: 100px;
+            border-bottom: 2px dashed var(--primary);
+            padding: 0 5px;
+            text-align: center;
+            font-weight: bold;
+            color: var(--primary);
+            cursor: pointer;
+        }
+        .drop-target:empty::before { content: "Click word then here"; color: #9ca3af; font-size: 0.85rem; font-weight: normal; }
+
+        /* Exercise 3 & 4 Text Blocks */
+        .text-passage {
+            background: #fafafa;
+            border-left: 4px solid var(--border);
+            padding: 20px;
+            border-radius: 0 4px 4px 0;
+            line-height: 2.2;
+        }
+        .inline-select {
+            width: auto;
+            display: inline-block;
+            padding: 2px 5px;
+            margin: 0 4px;
+        }
+        .inline-input {
+            width: 100px;
+            padding: 4px 8px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 0.95rem;
+            margin: 0 4px;
+            text-align: center;
+        }
+
+        /* Feedback Styles */
+        .feedback-msg {
+            margin-top: 15px;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: none;
+        }
+        .correct-bg { background-color: var(--success-light); color: var(--success); border: 1px solid var(--success); }
+        .incorrect-bg { background-color: var(--error-light); color: var(--error); border: 1px solid var(--error); }
+        .is-correct { background-color: var(--success-light) !important; border-color: var(--success) !important; color: var(--success); }
+        .is-incorrect { background-color: var(--error-light) !important; border-color: var(--error) !important; color: var(--error); }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-top: 15px;
+        }
+        .btn:hover { background-color: #1d4ed8; }
+        .reset-btn { background-color: #6b7280; margin-left: 10px; }
+        .reset-btn:hover { background-color: #4b5563; }
+        
+        .score-summary {
+            background: #f0fdf4;
+            border: 2px solid #bbf7d0;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Phrasal Verbs in the Workplace (Level B1)</h1>
+    <p class="intro">Complete the four exercises below to test your understanding of common phrasal verbs used in office environments.</p>
+
+    <!-- EXERCISE 1 -->
+    <div class="exercise-card" id="ex1">
+        <h2>Exercise 1: Matching Definitions</h2>
+        <div class="instructions">Select the correct phrasal verb that matches each formal workplace definition.</div>
+        <div id="ex1-container"></div>
+        <button class="btn" onclick="checkEx1()">Check Answers</button>
+        <div class="feedback-msg" id="ex1-feedback"></div>
+    </div>
+
+    <!-- EXERCISE 2 -->
+    <div class="exercise-card" id="ex2">
+        <h2>Exercise 2: Complete the Sentences</h2>
+        <div class="instructions">First, click a word in the word bank. Then, click the blank space where it belongs. (There are 2 extra words!)</div>
+        <div class="word-bank" id="ex2-bank"></div>
+        <div id="ex2-sentences"></div>
+        <button class="btn" onclick="checkEx2()">Check Answers</button>
+        <button class="btn reset-btn" onclick="resetEx2()">Clear Blanks</button>
+        <div class="feedback-msg" id="ex2-feedback"></div>
+    </div>
+
+    <!-- EXERCISE 3 -->
+    <div class="exercise-card" id="ex3">
+        <h2>Exercise 3: Text Multiple Choice</h2>
+        <div class="instructions">Read the email from a project manager and select the correct option for each blank space.</div>
+        <div class="text-passage" id="ex3-passage"></div>
+        <button class="btn" onclick="checkEx3()">Check Answers</button>
+        <div class="feedback-msg" id="ex3-feedback"></div>
+    </div>
+
+    <!-- EXERCISE 4 -->
+    <div class="exercise-card" id="ex4">
+        <h2>Exercise 4: Text Gap Fill (Type the missing word)</h2>
+        <div class="instructions">Read the update about office renovations and type the missing word phrasal verbs. Each gap needs exactly ONE word. Choose from carry, catch, deal, fill, go, hand, have, keep, look, run, set, take, turn or watch. </div>
+        <div class="text-passage" id="ex4-passage"></div>
+        <button class="btn" onclick="checkEx4()">Check Answers</button>
+        <div class="feedback-msg" id="ex4-feedback"></div>
+    </div>
+
+    <!-- GLOBAL SCORE -->
+    <div class="score-summary">
+        <h3>Your Total Progress</h3>
+        <p style="font-size: 1.5rem; margin: 5px 0;" id="total-score-text">Total Score: 0 / 40 (0%)</p>
+    </div>
+</div>
+
+<script>
+// Data Storage Structures
+const ex1Data = [
+    { verb: "set up", def: "To arrange or organize an event, system, or meeting" },
+    { verb: "call off", def: "To cancel an event or an agreement that was planned" },
+    { verb: "put off", def: "To delay or postpone an action or decision until a later time" },
+    { verb: "look into", def: "To investigate, research, or check the facts of a situation" },
+    { verb: "run out of", def: "To finish the entire supply of something useful (like time or paper)" },
+    { verb: "hand in", def: "To submit or give a document/report to a manager or authority" },
+    { verb: "fill out", def: "To complete a form or document by writing information in the spaces" },
+    { verb: "find out", def: "To discover information or learn a new fact" },
+    { verb: "go over", def: "To review, examine, or check something carefully" },
+    { verb: "keep up with", def: "To stay informed about changes or move at the same speed as others" }
+];
+
+const ex2Data = {
+    words: ["back up", "break down", "bring up", "carry out", "deal with", "get ahead", "give up", "hold on", "log in", "look forward to", "turn down", "work out"],
+    sentences: [
+        { text: "We need to safely [GAP] all company files onto the external hard drive every Friday.", ans: "back up" },
+        { text: "Please [GAP] a moment while I transfer your call to the accounting department.", ans: "hold on" },
+        { text: "It is difficult to [GAP] in this competitive industry without working hard.", ans: "get ahead" },
+        { text: "Our technical team will [GAP] the market research project next month.", ans: "carry out" },
+        { text: "The IT helpdesk has to [GAP] dozens of password problems every morning.", ans: "deal with" },
+        { text: "I [GAP] meeting our international clients at the conference tomorrow.", ans: "look forward to" },
+        { text: "If the projector doesn't work, let's try to [GAP] the solution together.", ans: "work out" },
+        { text: "Please do not [GAP] the issue of budget cuts during the general staff meeting.", ans: "bring up" },
+        { text: "To view your digital payslip, you must first [GAP] using your employee ID.", ans: "log in" },
+        { text: "Unfortunately, management decided to [GAP] our proposal for a new office kitchen.", ans: "turn down" }
+    ]
+};
+
+const ex3Data = {
+    text: "Hi Team, we need to complete this project soon because we are running [1] of time. I want everyone to focus[2] their assigned tasks. Please remember to look [3] your data before saving it. If you come [4] any system bugs, report them immediately. Do not put [5] writing your final summaries. We must hand [6] the client draft by Wednesday. If any problems come [7], please text me. I am sure we can work [8] a solution together. Let's carry [9] working hard until Friday afternoon. I am looking [10] to seeing your final results!",
+    options: [
+        ["out", "off"], ["on", "at"], ["over", "at"], ["across", "about"], ["off", "up"], 
+        ["in", "to"], ["up", "out"], ["out", "on"], ["on", "away"], ["forward", "ahead"]
+    ],
+    answers: ["out", "on", "over", "across", "off", "in", "up", "out", "on", "forward"]
+};
+
+const ex4Data = {
+    text: "Attention staff: The company is planning to [1] up a new regional workspace next month. We will [2] on five new customer service agents to help manage the increased workload. Before the new branch opens, our technical lead needs to [3] into our cloud network security. We don't want to [4] into any data problems on launch day. If you want to apply for a transfer to the new location, you must [5] out the internal application form online. Please remember to [6] off your desktop monitors before leaving the old office tonight. The logistics team will [7] with moving the physical furniture over the weekend. We expect everyone to [8] up with their regular daily responsibilities during this transition. Please [9] in your current keys to HR by Friday noon. Thank you all for helping us [10] out this expansion smoothly.",
+    answers: ["set", "take", "look", "run", "fill", "turn", "deal", "keep", "hand", "carry"]
+};
+
+// State Variables for Tracking Scores
+let scores = { ex1: 0, ex2: 0, ex3: 0, ex4: 0 };
+let currentSelectedWord = null;
+
+// Initialization
+window.onload = function() {
+    initEx1();
+    initEx2();
+    initEx3();
+    initEx4();
+};
+
+function updateGlobalScore() {
+    let total = scores.ex1 + scores.ex2 + scores.ex3 + scores.ex4;
+    let pct = Math.round((total / 40) * 100);
+    document.getElementById("total-score-text").innerText = `Total Score: ${total} / 40 (${pct}%)`;
+}
+
+// Exercise 1 Logic
+function initEx1() {
+    const container = document.getElementById("ex1-container");
+    // Shuffle options for dropdowns safely
+    let verbs = ex1Data.map(d => d.verb).sort(() => Math.random() - 0.5);
+    
+    let html = "";
+    ex1Data.forEach((item, index) => {
+        let selectHtml = `<select id="ex1-ans-${index}"><option value="">-- Choose phrasal verb --</option>`;
+        verbs.forEach(v => { selectHtml += `<option value="${v}">${v}</option>`; });
+        selectHtml += `</select>`;
+        
+        html += `<div class="match-row">
+            <div class="match-def">${item.def}</div>
+            <div>${selectHtml}</div>
+        </div>`;
+    });
+    container.innerHTML = html;
+}
+
+function checkEx1() {
+    let correctCount = 0;
+    ex1Data.forEach((item, index) => {
+        let selectEl = document.getElementById(`ex1-ans-${index}`);
+        if (selectEl.value === item.verb) {
+            selectEl.className = "is-correct";
+            correctCount++;
+        } else {
+            selectEl.className = "is-incorrect";
+        }
+    });
+    scores.ex1 = correctCount;
+    showFeedback("ex1-feedback", correctCount, 10);
+    updateGlobalScore();
+}
+
+// Exercise 2 Logic
+function initEx2() {
+    const bank = document.getElementById("ex2-bank");
+    const sentencesContainer = document.getElementById("ex2-sentences");
+    
+    // Build Word Bank
+    bank.innerHTML = "";
+    ex2Data.words.forEach((word, index) => {
+        let span = document.createElement("span");
+        span.className = "word-chip";
+        span.innerText = word;
+        span.id = `ex2-chip-${index}`;
+        span.onclick = function() { selectWord(this, word); };
+        bank.appendChild(span);
+    });
+
+    // Build Sentences
+    sentencesContainer.innerHTML = "";
+    ex2Data.sentences.forEach((s, index) => {
+        let div = document.createElement("div");
+        div.className = "gap-sentence";
+        
+        let parts = s.text.split("[GAP]");
+        div.appendChild(document.createTextNode((index + 1) + ". " + parts[0]));
+        
+        let gap = document.createElement("span");
+        gap.className = "drop-target";
+        gap.id = `ex2-gap-${index}`;
+        gap.onclick = function() { placeWord(this); };
+        div.appendChild(gap);
+        
+        div.appendChild(document.createTextNode(parts[1]));
+        sentencesContainer.appendChild(div);
+    });
+}
+
+function selectWord(element, word) {
+    if (element.classList.contains('used')) return;
+    document.querySelectorAll('#ex2-bank .word-chip').forEach(c => c.classList.remove('selected'));
+    currentSelectedWord = { el: element, word: word };
+    element.classList.add('selected');
+}
+
+function placeWord(gapElement) {
+    // If gap has an existing word, return it to play
+    if (gapElement.innerText !== "") {
+        let oldWord = gapElement.innerText;
+        let oldChip = Array.from(document.querySelectorAll('#ex2-bank .word-chip')).find(c => c.innerText === oldWord);
+        if (oldChip) oldChip.classList.remove('used');
+    }
+
+    if (currentSelectedWord) {
+        gapElement.innerText = currentSelectedWord.word;
+        gapElement.className = "drop-target"; // Clear dynamic scoring classes if re-clicked
+        currentSelectedWord.el.classList.remove('selected');
+        currentSelectedWord.el.classList.add('used');
+        currentSelectedWord = null;
+    } else {
+        // Clearing gap item back to bank on click
+        let currentWord = gapElement.innerText;
+        if(currentWord !== "") {
+            let matchingChip = Array.from(document.querySelectorAll('#ex2-bank .word-chip')).find(c => c.innerText === currentWord);
+            if (matchingChip) matchingChip.classList.remove('used');
+            gapElement.innerText = "";
+        }
+    }
+}
+
+function resetEx2() {
+    document.querySelectorAll('.drop-target').forEach(gap => { gap.innerText = ""; gap.className = "drop-target"; });
+    document.querySelectorAll('#ex2-bank .word-chip').forEach(chip => { chip.className = "word-chip"; });
+    currentSelectedWord = null;
+}
+
+function checkEx2() {
+    let correctCount = 0;
+    ex2Data.sentences.forEach((s, index) => {
+        let gap = document.getElementById(`ex2-gap-${index}`);
+        if (gap.innerText === s.ans) {
+            gap.className = "drop-target is-correct";
+            correctCount++;
+        } else {
+            gap.className = "drop-target is-incorrect";
+        }
+    });
+    scores.ex2 = correctCount;
+    showFeedback("ex2-feedback", correctCount, 10);
+    updateGlobalScore();
+}
+
+// Exercise 3 Logic
+function initEx3() {
+    const passage = document.getElementById("ex3-passage");
+    let html = ex3Data.text;
+    
+    ex3Data.options.forEach((opts, idx) => {
+        let selectHtml = `<select id="ex3-ans-${idx}" class="inline-select"><option value="">...</option>`;
+        opts.forEach(o => { selectHtml += `<option value="${o}">${o}</option>`; });
+        selectHtml += `</select>`;
+        html = html.replace(`[${idx + 1}]`, selectHtml);
+    });
+    passage.innerHTML = html;
+}
+
+function checkEx3() {
+    let correctCount = 0;
+    ex3Data.answers.forEach((ans, idx) => {
+        let el = document.getElementById(`ex3-ans-${idx}`);
+        if (el.value === ans) {
+            el.className = "inline-select is-correct";
+            correctCount++;
+        } else {
+            el.className = "inline-select is-incorrect";
+        }
+    });
+    scores.ex3 = correctCount;
+    showFeedback("ex3-feedback", correctCount, 10);
+    updateGlobalScore();
+}
+
+// Exercise 4 Logic
+function initEx4() {
+    const passage = document.getElementById("ex4-passage");
+    let html = ex4Data.text;
+    
+    for (let i = 0; i < 10; i++) {
+        let inputHtml = `<input type="text" id="ex4-ans-${i}" class="inline-input" autocomplete="off">`;
+        html = html.replace(`[${i + 1}]`, inputHtml);
+    }
+    passage.innerHTML = html;
+}
+
+function checkEx4() {
+    let correctCount = 0;
+    ex4Data.answers.forEach((ans, idx) => {
+        let el = document.getElementById(`ex4-ans-${idx}`);
+        // Trim inputs and convert to lowercase to guarantee string evaluation reliability
+        if (el.value.trim().toLowerCase() === ans.toLowerCase()) {
+            el.className = "inline-input is-correct";
+            correctCount++;
+        } else {
+            el.className = "inline-input is-incorrect";
+        }
+    });
+    scores.ex4 = correctCount;
+    showFeedback("ex4-feedback", correctCount, 10);
+    updateGlobalScore();
+}
+
+// Utility Function for Displaying Local Element Results
+function showFeedback(elementId, correct, total) {
+    const el = document.getElementById(elementId);
+    el.style.display = "block";
+    el.innerText = `You scored ${correct} out of ${total}.`;
+    if (correct === total) {
+        el.className = "feedback-msg correct-bg";
+    } else {
+        el.className = "feedback-msg incorrect-bg";
+    }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phrasal Verbs at Work — B1 Practice</title>
+<style>
+  :root{
+    --navy:#1f3a5f;
+    --navy-deep:#142a45;
+    --bg:#eee6d3;
+    --paper:#faf7f1;
+    --paper-line:#dfd2b3;
+    --manila:#e7d3a1;
+    --manila-dark:#c9a865;
+    --ink:#2b2b2e;
+    --muted:#6b6456;
+    --green:#2e7d52;
+    --green-bg:#e3f3ea;
+    --red:#b3261e;
+    --red-bg:#fbe9e7;
+    --amber:#a8741a;
+    --font-display:'Courier New', Courier, monospace;
+    --font-body:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--font-body);
+    line-height:1.5;
+    padding:24px 16px 60px;
+  }
+  .wrap{max-width:880px;margin:0 auto;}
+
+  /* header */
+  .page-header{text-align:center;margin-bottom:22px;}
+  .eyebrow{
+    font-family:var(--font-display);
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    font-size:.75rem;
+    color:var(--navy);
+    margin:0 0 6px;
+  }
+  h1{
+    font-family:var(--font-display);
+    font-size:2rem;
+    letter-spacing:.01em;
+    margin:0 0 10px;
+    color:var(--navy-deep);
+  }
+  .subtitle{margin:0;color:var(--muted);font-size:.98rem;max-width:560px;margin:0 auto;}
+
+  /* tabs */
+  .tab-nav{display:flex;gap:6px;padding-left:10px;margin-top:26px;flex-wrap:wrap;}
+  .tab{
+    clip-path:polygon(10% 0,90% 0,100% 100%,0% 100%);
+    padding:11px 22px 9px;
+    background:var(--manila-dark);
+    color:#fff;
+    border:none;
+    font-family:var(--font-display);
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    font-size:.78rem;
+    cursor:pointer;
+    position:relative;
+    top:4px;
+    transition:top .15s ease, background .15s ease;
+  }
+  .tab:hover{top:1px;}
+  .tab.active{
+    background:var(--manila);
+    color:var(--navy-deep);
+    top:0;
+    font-weight:700;
+    box-shadow:0 -3px 0 var(--navy) inset;
+  }
+
+  /* scoreboard */
+  .scoreboard{
+    background:var(--navy);
+    color:#fff;
+    border-radius:0 8px 8px 8px;
+    padding:10px 18px;
+    font-family:var(--font-display);
+    font-size:.78rem;
+    letter-spacing:.03em;
+    display:flex;
+    gap:18px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+  .scoreboard b{color:#ffe9b3;}
+  .scoreboard .total{margin-left:auto;border-left:1px solid rgba(255,255,255,.3);padding-left:18px;}
+
+  /* panels */
+  main{margin-top:0;}
+  .ex-panel{
+    display:none;
+    position:relative;
+    background:var(--paper);
+    border:1px solid var(--paper-line);
+    border-radius:0 10px 10px 10px;
+    padding:30px 28px 26px 56px;
+    box-shadow:0 2px 12px rgba(0,0,0,.08);
+  }
+  .ex-panel.active{display:block;}
+  .ex-panel::before{
+    content:"";
+    position:absolute;
+    left:16px;top:0;bottom:0;width:16px;
+    background-image:radial-gradient(circle, var(--bg) 0 5px, var(--paper-line) 5px 6px, transparent 6px);
+    background-size:16px 48px;
+    background-repeat:repeat-y;
+    background-position:center 22px;
+  }
+  .ex-head h2{
+    font-family:var(--font-display);
+    font-size:1.15rem;
+    color:var(--navy-deep);
+    margin:0 0 6px;
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  .ex-num{
+    font-size:.85rem;
+    color:#fff;
+    background:var(--navy);
+    padding:2px 8px;
+    border-radius:3px;
+  }
+  .ex-instructions{margin:0 0 22px;color:var(--muted);font-size:.95rem;}
+  .ex-body{margin-bottom:22px;}
+  .ex-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-top:1px dashed var(--paper-line);padding-top:18px;}
+
+  /* buttons */
+  .btn{
+    font-family:var(--font-display);
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    font-size:.78rem;
+    padding:10px 18px;
+    border-radius:5px;
+    border:1px solid var(--navy);
+    background:var(--navy);
+    color:#fff;
+    cursor:pointer;
+  }
+  .btn:hover{background:var(--navy-deep);}
+  .btn.btn-reset{background:transparent;color:var(--navy);}
+  .btn.btn-reset:hover{background:rgba(31,58,95,.08);}
+  :focus-visible{outline:3px solid var(--amber);outline-offset:2px;}
+
+  /* stamp / score badge */
+  .ex-score{margin-left:auto;}
+  .stamp{
+    display:inline-block;
+    font-family:var(--font-display);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    font-weight:700;
+    font-size:.78rem;
+    padding:6px 14px;
+    border:3px solid currentColor;
+    border-radius:4px;
+    transform:rotate(-5deg);
+    opacity:.92;
+  }
+  .stamp.good{color:var(--green);}
+  .stamp.mid{color:var(--amber);}
+  .stamp.bad{color:var(--red);}
+  @media (prefers-reduced-motion: no-preference){
+    .stamp{animation:stampIn .22s ease-out;}
+  }
+  @keyframes stampIn{from{transform:rotate(-5deg) scale(1.35);opacity:0;}to{transform:rotate(-5deg) scale(1);opacity:.92;}}
+  .score-placeholder{color:var(--muted);font-size:.85rem;font-family:var(--font-display);}
+
+  /* exercise 1: matching */
+  .match-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;}
+  @media (max-width:640px){.match-grid{grid-template-columns:1fr;}}
+  .match-col h3{
+    font-family:var(--font-display);
+    font-size:.75rem;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--muted);
+    margin:0 0 10px;
+  }
+  .pv-item{
+    display:block;
+    width:100%;
+    text-align:left;
+    padding:11px 14px;
+    margin-bottom:8px;
+    border:1px solid var(--manila-dark);
+    border-radius:6px;
+    background:#fff;
+    cursor:pointer;
+    font-size:.93rem;
+    color:var(--ink);
+    font-family:var(--font-body);
+  }
+  .pv-item.selected{background:#fff3cf;border-color:var(--amber);}
+  .pv-item.matched{background:var(--green-bg);border-color:var(--green);color:var(--green);cursor:default;}
+  .pv-item.wrong{background:var(--red-bg);border-color:var(--red);animation:shake .3s;}
+  @keyframes shake{
+    10%,90%{transform:translateX(-2px);}
+    20%,80%{transform:translateX(3px);}
+    30%,50%,70%{transform:translateX(-5px);}
+    40%,60%{transform:translateX(5px);}
+  }
+  @media (prefers-reduced-motion: reduce){.pv-item.wrong{animation:none;}}
+
+  /* exercise 2: drag and drop */
+  .bank{
+    display:flex;flex-wrap:wrap;gap:10px;
+    padding:14px;margin-bottom:20px;
+    background:var(--manila);
+    border:1px dashed var(--manila-dark);
+    border-radius:8px;
+    min-height:52px;
+  }
+  .chip{
+    font-family:var(--font-body);
+    font-size:.92rem;
+    padding:8px 15px;
+    border-radius:6px;
+    border:1px solid var(--manila-dark);
+    background:var(--paper);
+    color:var(--ink);
+    cursor:grab;
+    touch-action:none;
+    user-select:none;
+  }
+  .chip:hover{box-shadow:0 2px 6px rgba(0,0,0,.12);}
+  .chip.selected{outline:2px solid var(--navy);background:#fff3cf;}
+  .chip.chip-dragging-source{opacity:.3;}
+  .chip-clone{
+    position:fixed;z-index:999;pointer-events:none;
+    padding:8px 15px;border-radius:6px;
+    border:1px solid var(--manila-dark);
+    background:#fff;box-shadow:0 6px 16px rgba(0,0,0,.25);
+    font-family:var(--font-body);font-size:.92rem;
+    transform:rotate(-2deg);
+  }
+  .sentence-row{margin:11px 0;line-height:2.1;font-size:.97rem;}
+  .s-num{color:var(--muted);font-family:var(--font-display);font-size:.85rem;margin-right:2px;}
+  .blank{
+    display:inline-block;min-width:70px;
+    padding:4px 10px;margin:0 3px;
+    border:none;border-bottom:2px dashed var(--navy);
+    border-radius:4px;text-align:center;
+    cursor:pointer;background:rgba(31,58,95,.06);
+    color:var(--muted);font-weight:600;
+    font-family:var(--font-body);font-size:.95rem;
+  }
+  .blank.filled{color:var(--ink);border-bottom-style:solid;background:#fff;}
+  .blank.drop-hover{background:#fff3cf;border-bottom-color:var(--amber);}
+  .blank.correct{background:var(--green-bg);border-bottom-color:var(--green);color:var(--green);}
+  .blank.incorrect{background:var(--red-bg);border-bottom-color:var(--red);color:var(--red);}
+  .blank .hint{font-size:.72rem;color:var(--red);margin-left:3px;font-weight:400;}
+
+  /* exercise 3: two-choice */
+  .passage{font-size:1rem;line-height:2.3;}
+  .gap-group{display:inline-flex;gap:4px;margin:0 4px;vertical-align:middle;}
+  .choice-btn{
+    font-family:var(--font-body);font-size:.82rem;
+    padding:4px 11px;border:1px solid var(--manila-dark);
+    background:#fff;border-radius:14px;cursor:pointer;color:var(--ink);
+  }
+  .choice-btn.selected{background:var(--navy);color:#fff;border-color:var(--navy);}
+  .gap-group.correct .choice-btn.selected{background:var(--green);border-color:var(--green);}
+  .gap-group.incorrect .choice-btn.selected{background:var(--red);border-color:var(--red);}
+  .choice-btn.reveal-correct{outline:2px solid var(--green);}
+
+  /* exercise 4: typed */
+  .type-wrap{display:inline-block;position:relative;margin:0 4px;vertical-align:middle;}
+  .type-input{
+    width:96px;font:inherit;font-size:.95rem;
+    padding:4px 7px;border:1px solid var(--manila-dark);
+    border-radius:4px;text-align:center;background:#fff;color:var(--ink);
+  }
+  .type-input.correct{border-color:var(--green);background:var(--green-bg);}
+  .type-input.incorrect{border-color:var(--red);background:var(--red-bg);}
+  .type-hint{display:block;font-size:.7rem;color:var(--red);margin-top:2px;font-family:var(--font-display);}
+
+  footer{text-align:center;margin-top:30px;color:var(--muted);font-size:.82rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="page-header">
+    <p class="eyebrow">Workplace English · Level B1</p>
+    <h1>Phrasal Verbs at Work</h1>
+    <p class="subtitle">Four short exercises to practise the phrasal verbs people use every day in the office.</p>
+  </header>
+
+  <nav class="tab-nav" id="tabNav">
+    <button class="tab active" data-tab="1" type="button">1 · Match</button>
+    <button class="tab" data-tab="2" type="button">2 · Complete</button>
+    <button class="tab" data-tab="3" type="button">3 · Choose</button>
+    <button class="tab" data-tab="4" type="button">4 · Type</button>
+  </nav>
+
+  <div class="scoreboard">
+    <span>Ex 1: <b id="sb-1">—</b></span>
+    <span>Ex 2: <b id="sb-2">—</b></span>
+    <span>Ex 3: <b id="sb-3">—</b></span>
+    <span>Ex 4: <b id="sb-4">—</b></span>
+    <span class="total">Total: <b id="sb-total">—</b></span>
+  </div>
+
+  <main id="exerciseMain" style="margin-top:0;padding-top:0;">
+
+    <section class="ex-panel active" id="panel-1">
+      <div class="ex-head">
+        <h2><span class="ex-num">01</span> Match the meaning</h2>
+        <p class="ex-instructions">Click a phrasal verb on the left, then click the definition that matches it on the right. Match all 10 pairs.</p>
+      </div>
+      <div class="ex-body" id="ex1-body"></div>
+      <div class="ex-controls">
+        <button class="btn" data-action="check-1" type="button">Check matches</button>
+        <button class="btn btn-reset" data-action="reset-1" type="button">Reset</button>
+        <span class="ex-score" id="score-1"><span class="score-placeholder">Score: —</span></span>
+      </div>
+    </section>
+
+    <section class="ex-panel" id="panel-2">
+      <div class="ex-head">
+        <h2><span class="ex-num">02</span> Complete the sentences</h2>
+        <p class="ex-instructions">Drag a word from the box into the correct gap below — or tap a word, then tap the gap. Two words in the box are not used.</p>
+      </div>
+      <div class="ex-body" id="ex2-body"></div>
+      <div class="ex-controls">
+        <button class="btn" data-action="check-2" type="button">Check answers</button>
+        <button class="btn btn-reset" data-action="reset-2" type="button">Reset</button>
+        <span class="ex-score" id="score-2"><span class="score-placeholder">Score: —</span></span>
+      </div>
+    </section>
+
+    <section class="ex-panel" id="panel-3">
+      <div class="ex-head">
+        <h2><span class="ex-num">03</span> Choose the right word</h2>
+        <p class="ex-instructions">Read the email below. For each gap, click the word that correctly completes the phrasal verb.</p>
+      </div>
+      <div class="ex-body" id="ex3-body"></div>
+      <div class="ex-controls">
+        <button class="btn" data-action="check-3" type="button">Check answers</button>
+        <button class="btn btn-reset" data-action="reset-3" type="button">Reset</button>
+        <span class="ex-score" id="score-3"><span class="score-placeholder">Score: —</span></span>
+      </div>
+    </section>
+
+    <section class="ex-panel" id="panel-4">
+      <div class="ex-head">
+        <h2><span class="ex-num">04</span> Type the missing word</h2>
+        <p class="ex-instructions">Read the email below. Type the missing word to complete each phrasal verb. Capitalisation doesn't matter. Press Enter to move to the next gap.</p>
+      </div>
+      <div class="ex-body" id="ex4-body"></div>
+      <div class="ex-controls">
+        <button class="btn" data-action="check-4" type="button">Check answers</button>
+        <button class="btn btn-reset" data-action="reset-4" type="button">Reset</button>
+        <span class="ex-score" id="score-4"><span class="score-placeholder">Score: —</span></span>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>Phrasal verbs at work — B1 practice. Works fully offline, no internet connection required.</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- data ---------- */
+
+  var EX1_DATA = [
+    {id:1, phrase:"look into", def:"to investigate or examine something carefully"},
+    {id:2, phrase:"carry out", def:"to do and complete a task or plan"},
+    {id:3, phrase:"point out", def:"to mention a fact so that someone notices it"},
+    {id:4, phrase:"follow up", def:"to contact someone again about something discussed earlier"},
+    {id:5, phrase:"catch up on", def:"to do things you didn't have time for before"},
+    {id:6, phrase:"put off", def:"to delay something until a later time"},
+    {id:7, phrase:"deal with", def:"to take action to manage a problem or situation"},
+    {id:8, phrase:"hand in", def:"to give a document to someone in authority"},
+    {id:9, phrase:"set up", def:"to arrange or organise something, such as a meeting"},
+    {id:10, phrase:"come up with", def:"to think of an idea, plan or solution"}
+  ];
+
+  var EX2_SENTENCES = [
+    {text:"Could you ___ up the address online?", answer:"look"},
+    {text:"We need to ___ out the cost before deciding.", answer:"find"},
+    {text:"Please ___ down your number in case we get cut off.", answer:"write"},
+    {text:"We had to ___ off the meeting until Monday.", answer:"put"},
+    {text:"Remember to ___ in your timesheet by 5 p.m.", answer:"hand"},
+    {text:"IT will ___ up your new laptop tomorrow.", answer:"set"},
+    {text:"Let's ___ through the agenda together before the call.", answer:"go"},
+    {text:"Please ___ on with the project while I'm on leave.", answer:"carry"},
+    {text:"I'll ___ back to you by email this afternoon.", answer:"get"},
+    {text:"She will ___ over the project next month.", answer:"take"}
+  ];
+  var EX2_BANK = ["look","find","write","put","hand","set","go","carry","get","take","throw","paint"];
+
+  var EX3_SEGMENTS = [
+    {t:"Hi Team, I wanted to follow "}, {gap:{options:["up","down"],answer:"up"}},
+    {t:" on yesterday's meeting. Please look "}, {gap:{options:["after","into"],answer:"into"}},
+    {t:" the budget figures and find "}, {gap:{options:["up","out"],answer:"out"}},
+    {t:" the latest costs before Friday. We need to carry "}, {gap:{options:["on","out"],answer:"out"}},
+    {t:" the client survey and hand "}, {gap:{options:["in","out"],answer:"in"}},
+    {t:" your reports on time. If you run "}, {gap:{options:["over","into"],answer:"into"}},
+    {t:" any problems, get "}, {gap:{options:["down","back"],answer:"back"}},
+    {t:" to me straight away. Let's catch "}, {gap:{options:["up","down"],answer:"up"}},
+    {t:" on Monday to go "}, {gap:{options:["up","over"],answer:"over"}},
+    {t:" the results and set "}, {gap:{options:["out","up"],answer:"out"}},
+    {t:" the next steps."}
+  ];
+
+  var EX4_SEGMENTS = [
+    {t:"Hi everyone, welcome to the team. Please look "}, {gap:{answer:"through"}},
+    {t:" the handbook and fill "}, {gap:{answer:"in"}},
+    {t:" the attached form today. If you run "}, {gap:{answer:"into"}},
+    {t:" any questions, reach "}, {gap:{answer:"out"}},
+    {t:" to HR. We will follow "}, {gap:{answer:"up"}},
+    {t:" next week and check "}, {gap:{answer:"in"}},
+    {t:" on your progress. Try to catch "}, {gap:{answer:"up"}},
+    {t:" on the training videos and hand "}, {gap:{answer:"in"}},
+    {t:" your paperwork by Friday. We hope you settle "}, {gap:{answer:"in"}},
+    {t:" quickly, and we look "}, {gap:{answer:"forward"}},
+    {t:" to working with you."}
+  ];
+
+  /* ---------- helpers ---------- */
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  var exScores = [null, null, null, null];
+
+  function recalcTotal(){
+    var sum = 0, count = 0;
+    exScores.forEach(function(s){ if (s !== null){ sum += s; count++; } });
+    var el = document.getElementById('sb-total');
+    el.textContent = count ? (sum + '/' + (count * 10)) : '—';
+  }
+
+  function showScore(ex, score, total){
+    exScores[ex - 1] = score;
+    var badge = document.getElementById('score-' + ex);
+    badge.innerHTML = '';
+    var stamp = document.createElement('span');
+    var ratio = score / total;
+    stamp.className = 'stamp ' + (ratio >= 0.7 ? 'good' : (ratio >= 0.4 ? 'mid' : 'bad'));
+    stamp.textContent = 'Score ' + score + '/' + total;
+    badge.appendChild(stamp);
+    document.getElementById('sb-' + ex).textContent = score + '/' + total;
+    recalcTotal();
+  }
+
+  function clearScore(ex){
+    exScores[ex - 1] = null;
+    var badge = document.getElementById('score-' + ex);
+    badge.innerHTML = '<span class="score-placeholder">Score: —</span>';
+    document.getElementById('sb-' + ex).textContent = '—';
+    recalcTotal();
+  }
+
+  /* ---------- exercise 1: matching ---------- */
+
+  var ex1State = { matchedIds: {}, matchedCount: 0, selLeft: null, selRight: null };
+
+  function renderEx1(){
+    ex1State = { matchedIds: {}, matchedCount: 0, selLeft: null, selRight: null };
+    var root = document.getElementById('ex1-body');
+    root.innerHTML = '';
+    var grid = document.createElement('div');
+    grid.className = 'match-grid';
+
+    var leftCol = document.createElement('div');
+    leftCol.className = 'match-col';
+    var lh = document.createElement('h3'); lh.textContent = 'Phrasal verbs';
+    leftCol.appendChild(lh);
+
+    var rightCol = document.createElement('div');
+    rightCol.className = 'match-col';
+    var rh = document.createElement('h3'); rh.textContent = 'Definitions';
+    rightCol.appendChild(rh);
+
+    var leftOrder = shuffle(EX1_DATA.map(function(d){ return d.id; }));
+    var rightOrder = shuffle(EX1_DATA.map(function(d){ return d.id; }));
+
+    leftOrder.forEach(function(id){
+      var data = EX1_DATA.filter(function(d){ return d.id === id; })[0];
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'pv-item';
+      btn.dataset.id = id; btn.dataset.side = 'left';
+      btn.textContent = data.phrase;
+      leftCol.appendChild(btn);
+    });
+    rightOrder.forEach(function(id){
+      var data = EX1_DATA.filter(function(d){ return d.id === id; })[0];
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'pv-item';
+      btn.dataset.id = id; btn.dataset.side = 'right';
+      btn.textContent = data.def;
+      rightCol.appendChild(btn);
+    });
+
+    grid.appendChild(leftCol);
+    grid.appendChild(rightCol);
+    root.appendChild(grid);
+  }
+
+  document.getElementById('panel-1').addEventListener('click', function(e){
+    var item = e.target.closest ? e.target.closest('.pv-item') : null;
+    if (!item || item.classList.contains('matched')) return;
+    var side = item.dataset.side;
+
+    if (side === 'left'){
+      if (ex1State.selLeft === item){ item.classList.remove('selected'); ex1State.selLeft = null; return; }
+      if (ex1State.selLeft) ex1State.selLeft.classList.remove('selected');
+      ex1State.selLeft = item; item.classList.add('selected');
+    } else {
+      if (ex1State.selRight === item){ item.classList.remove('selected'); ex1State.selRight = null; return; }
+      if (ex1State.selRight) ex1State.selRight.classList.remove('selected');
+      ex1State.selRight = item; item.classList.add('selected');
+    }
+
+    if (ex1State.selLeft && ex1State.selRight){
+      var L = ex1State.selLeft, R = ex1State.selRight;
+      if (L.dataset.id === R.dataset.id){
+        L.classList.remove('selected'); R.classList.remove('selected');
+        L.classList.add('matched'); R.classList.add('matched');
+        ex1State.matchedIds[L.dataset.id] = true;
+        ex1State.matchedCount++;
+      } else {
+        L.classList.add('wrong'); R.classList.add('wrong');
+        (function(LL, RR){
+          setTimeout(function(){
+            LL.classList.remove('selected', 'wrong');
+            RR.classList.remove('selected', 'wrong');
+          }, 500);
+        })(L, R);
+      }
+      ex1State.selLeft = null; ex1State.selRight = null;
+    }
+  });
+
+  function checkEx1(){ showScore(1, ex1State.matchedCount, 10); }
+  function resetEx1(){ renderEx1(); clearScore(1); }
+
+  /* ---------- exercise 2: drag and drop ---------- */
+
+  var ex2Drag = null;
+  var ex2Selected = null;
+  var ex2JustDragged = false;
+
+  function renderEx2(){
+    ex2Drag = null; ex2Selected = null; ex2JustDragged = false;
+    var root = document.getElementById('ex2-body');
+    root.innerHTML = '';
+
+    var bank = document.createElement('div');
+    bank.className = 'bank'; bank.id = 'ex2-bank';
+    shuffle(EX2_BANK).forEach(function(word){
+      bank.appendChild(makeChip(word));
+    });
+    root.appendChild(bank);
+
+    var list = document.createElement('div');
+    list.className = 'sentence-list';
+    EX2_SENTENCES.forEach(function(s, idx){
+      var parts = s.text.split('___');
+      var row = document.createElement('p');
+      row.className = 'sentence-row';
+      var num = document.createElement('span');
+      num.className = 's-num'; num.textContent = (idx + 1) + '.';
+      row.appendChild(num);
+      row.appendChild(document.createTextNode(' ' + parts[0]));
+      var blank = document.createElement('button');
+      blank.type = 'button'; blank.className = 'blank';
+      blank.textContent = '_____';
+      blank.dataset.answer = s.answer;
+      row.appendChild(blank);
+      row.appendChild(document.createTextNode(parts[1]));
+      list.appendChild(row);
+    });
+    root.appendChild(list);
+  }
+
+  function makeChip(word){
+    var chip = document.createElement('button');
+    chip.type = 'button'; chip.className = 'chip';
+    chip.dataset.word = word;
+    chip.textContent = word;
+    return chip;
+  }
+
+  function placeWordInBlank(word, blank, chipEl){
+    blank.textContent = word;
+    blank.classList.add('filled');
+    blank.classList.remove('correct', 'incorrect', 'drop-hover');
+    blank.dataset.placed = word;
+    if (chipEl && chipEl.parentNode) chipEl.parentNode.removeChild(chipEl);
+  }
+
+  function returnWordToBank(blank){
+    var word = blank.dataset.placed;
+    if (!word) return;
+    blank.textContent = '_____';
+    blank.classList.remove('filled', 'correct', 'incorrect');
+    delete blank.dataset.placed;
+    var bank = document.getElementById('ex2-bank');
+    if (bank) bank.appendChild(makeChip(word));
+  }
+
+  var panel2 = document.getElementById('panel-2');
+
+  panel2.addEventListener('pointerdown', function(e){
+    var chip = e.target.closest ? e.target.closest('.chip') : null;
+    if (!chip) return;
+    ex2Drag = { chip: chip, startX: e.clientX, startY: e.clientY, moved: false, clone: null };
+    window.addEventListener('pointermove', onEx2PointerMove);
+    window.addEventListener('pointerup', onEx2PointerUp);
+    window.addEventListener('pointercancel', onEx2PointerCancel);
+  });
+
+  function onEx2PointerMove(e){
+    if (!ex2Drag) return;
+    var dx = e.clientX - ex2Drag.startX, dy = e.clientY - ex2Drag.startY;
+    if (!ex2Drag.moved && Math.sqrt(dx * dx + dy * dy) > 6){
+      ex2Drag.moved = true;
+      var rect = ex2Drag.chip.getBoundingClientRect();
+      var clone = ex2Drag.chip.cloneNode(true);
+      clone.classList.add('chip-clone');
+      clone.style.width = rect.width + 'px';
+      clone.style.left = rect.left + 'px';
+      clone.style.top = rect.top + 'px';
+      document.body.appendChild(clone);
+      ex2Drag.clone = clone;
+      ex2Drag.chip.classList.add('chip-dragging-source');
+    }
+    if (ex2Drag.moved && ex2Drag.clone){
+      ex2Drag.clone.style.left = (e.clientX - ex2Drag.clone.offsetWidth / 2) + 'px';
+      ex2Drag.clone.style.top = (e.clientY - ex2Drag.clone.offsetHeight / 2) + 'px';
+      var under = document.elementFromPoint(e.clientX, e.clientY);
+      var hoverBlank = under && under.closest ? under.closest('.blank') : null;
+      document.querySelectorAll('.blank.drop-hover').forEach(function(b){ b.classList.remove('drop-hover'); });
+      if (hoverBlank && !hoverBlank.classList.contains('filled')) hoverBlank.classList.add('drop-hover');
+    }
+  }
+
+  function onEx2PointerUp(e){
+    cleanupEx2Listeners();
+    if (!ex2Drag) return;
+    if (ex2Drag.moved){
+      ex2JustDragged = true;
+      var under = document.elementFromPoint(e.clientX, e.clientY);
+      var dropBlank = under && under.closest ? under.closest('.blank') : null;
+      if (dropBlank && !dropBlank.classList.contains('filled')){
+        placeWordInBlank(ex2Drag.chip.dataset.word, dropBlank, ex2Drag.chip);
+      }
+      if (ex2Drag.clone && ex2Drag.clone.parentNode) ex2Drag.clone.parentNode.removeChild(ex2Drag.clone);
+      ex2Drag.chip.classList.remove('chip-dragging-source');
+      document.querySelectorAll('.blank.drop-hover').forEach(function(b){ b.classList.remove('drop-hover'); });
+    }
+    ex2Drag = null;
+  }
+
+  function onEx2PointerCancel(){
+    cleanupEx2Listeners();
+    if (ex2Drag){
+      if (ex2Drag.clone && ex2Drag.clone.parentNode) ex2Drag.clone.parentNode.removeChild(ex2Drag.clone);
+      ex2Drag.chip.classList.remove('chip-dragging-source');
+    }
+    ex2Drag = null;
+  }
+
+  function cleanupEx2Listeners(){
+    window.removeEventListener('pointermove', onEx2PointerMove);
+    window.removeEventListener('pointerup', onEx2PointerUp);
+    window.removeEventListener('pointercancel', onEx2PointerCancel);
+  }
+
+  panel2.addEventListener('click', function(e){
+    if (ex2JustDragged){ ex2JustDragged = false; return; }
+    var chip = e.target.closest ? e.target.closest('.chip') : null;
+    var blank = e.target.closest ? e.target.closest('.blank') : null;
+
+    if (chip){
+      if (ex2Selected === chip){ chip.classList.remove('selected'); ex2Selected = null; return; }
+      if (ex2Selected) ex2Selected.classList.remove('selected');
+      ex2Selected = chip; chip.classList.add('selected');
+      return;
+    }
+    if (blank){
+      if (blank.classList.contains('filled')){
+        returnWordToBank(blank);
+        if (ex2Selected){ ex2Selected.classList.remove('selected'); ex2Selected = null; }
+        return;
+      }
+      if (ex2Selected){
+        placeWordInBlank(ex2Selected.dataset.word, blank, ex2Selected);
+        ex2Selected.classList.remove('selected');
+        ex2Selected = null;
+      }
+    }
+  });
+
+  function checkEx2(){
+    var blanks = document.querySelectorAll('#ex2-body .blank');
+    var score = 0;
+    blanks.forEach(function(b){
+      b.classList.remove('correct', 'incorrect');
+      var oldHint = b.querySelector('.hint');
+      if (oldHint) oldHint.parentNode.removeChild(oldHint);
+      var placed = b.dataset.placed || '';
+      var ans = b.dataset.answer;
+      if (placed && placed === ans){
+        b.classList.add('correct'); score++;
+      } else {
+        b.classList.add('incorrect');
+        var hint = document.createElement('span');
+        hint.className = 'hint';
+        hint.textContent = '(' + ans + ')';
+        b.appendChild(hint);
+      }
+    });
+    showScore(2, score, 10);
+  }
+  function resetEx2(){ renderEx2(); clearScore(2); }
+
+  /* ---------- exercise 3: two-choice gaps ---------- */
+
+  function renderEx3(){
+    var root = document.getElementById('ex3-body');
+    root.innerHTML = '';
+    var p = document.createElement('p');
+    p.className = 'passage';
+    EX3_SEGMENTS.forEach(function(seg){
+      if (seg.t !== undefined){
+        p.appendChild(document.createTextNode(seg.t));
+      } else if (seg.gap){
+        var group = document.createElement('span');
+        group.className = 'gap-group';
+        group.dataset.answer = seg.gap.answer;
+        seg.gap.options.forEach(function(opt){
+          var b = document.createElement('button');
+          b.type = 'button'; b.className = 'choice-btn';
+          b.textContent = opt; b.dataset.value = opt;
+          group.appendChild(b);
+        });
+        p.appendChild(group);
+      }
+    });
+    root.appendChild(p);
+  }
+
+  document.getElementById('panel-3').addEventListener('click', function(e){
+    var btn = e.target.closest ? e.target.closest('.choice-btn') : null;
+    if (!btn) return;
+    var group = btn.parentElement;
+    Array.prototype.forEach.call(group.querySelectorAll('.choice-btn'), function(b){
+      b.classList.remove('selected', 'reveal-correct');
+    });
+    btn.classList.add('selected');
+    group.dataset.selected = btn.dataset.value;
+    group.classList.remove('correct', 'incorrect');
+  });
+
+  function checkEx3(){
+    var groups = document.querySelectorAll('#ex3-body .gap-group');
+    var score = 0;
+    groups.forEach(function(g){
+      var ans = g.dataset.answer, sel = g.dataset.selected;
+      g.classList.remove('correct', 'incorrect');
+      Array.prototype.forEach.call(g.querySelectorAll('.choice-btn'), function(b){ b.classList.remove('reveal-correct'); });
+      if (sel === ans){
+        g.classList.add('correct'); score++;
+      } else {
+        g.classList.add('incorrect');
+        var correctBtn = Array.prototype.filter.call(g.children, function(b){ return b.dataset.value === ans; })[0];
+        if (correctBtn) correctBtn.classList.add('reveal-correct');
+      }
+    });
+    showScore(3, score, 10);
+  }
+  function resetEx3(){ renderEx3(); clearScore(3); }
+
+  /* ---------- exercise 4: typed answers ---------- */
+
+  function renderEx4(){
+    var root = document.getElementById('ex4-body');
+    root.innerHTML = '';
+    var p = document.createElement('p');
+    p.className = 'passage';
+    var inputs = [];
+    EX4_SEGMENTS.forEach(function(seg){
+      if (seg.t !== undefined){
+        p.appendChild(document.createTextNode(seg.t));
+      } else if (seg.gap){
+        var wrap = document.createElement('span');
+        wrap.className = 'type-wrap';
+        var inp = document.createElement('input');
+        inp.type = 'text'; inp.className = 'type-input';
+        inp.setAttribute('autocomplete', 'off');
+        inp.setAttribute('autocapitalize', 'off');
+        inp.setAttribute('spellcheck', 'false');
+        inp.setAttribute('aria-label', 'missing word');
+        inp.dataset.answer = seg.gap.answer;
+        wrap.appendChild(inp);
+        p.appendChild(wrap);
+        inputs.push(inp);
+      }
+    });
+    root.appendChild(p);
+
+    inputs.forEach(function(inp, idx){
+      inp.addEventListener('keydown', function(e){
+        if (e.key === 'Enter'){
+          e.preventDefault();
+          if (idx + 1 < inputs.length){
+            inputs[idx + 1].focus();
+          } else {
+            var checkBtn = document.querySelector('[data-action="check-4"]');
+            if (checkBtn) checkBtn.click();
+          }
+        }
+      });
+    });
+  }
+
+  function checkEx4(){
+    var inputs = document.querySelectorAll('#ex4-body .type-input');
+    var score = 0;
+    inputs.forEach(function(inp){
+      var wrap = inp.parentElement;
+      var oldHint = wrap.querySelector('.type-hint');
+      if (oldHint) wrap.removeChild(oldHint);
+      inp.classList.remove('correct', 'incorrect');
+      var val = (inp.value || '').trim().toLowerCase();
+      var ans = (inp.dataset.answer || '').toLowerCase();
+      if (val && val === ans){
+        inp.classList.add('correct'); score++;
+      } else {
+        inp.classList.add('incorrect');
+        var hint = document.createElement('span');
+        hint.className = 'type-hint';
+        hint.textContent = '→ ' + inp.dataset.answer;
+        wrap.appendChild(hint);
+      }
+    });
+    showScore(4, score, 10);
+  }
+  function resetEx4(){ renderEx4(); clearScore(4); }
+
+  /* ---------- tabs ---------- */
+
+  document.getElementById('tabNav').addEventListener('click', function(e){
+    var tab = e.target.closest ? e.target.closest('.tab') : null;
+    if (!tab) return;
+    var n = tab.dataset.tab;
+    Array.prototype.forEach.call(document.querySelectorAll('.tab'), function(t){
+      t.classList.toggle('active', t === tab);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.ex-panel'), function(p){
+      p.classList.toggle('active', p.id === 'panel-' + n);
+    });
+  });
+
+  /* ---------- controls ---------- */
+
+  var ACTIONS = {
+    'check-1': checkEx1, 'reset-1': resetEx1,
+    'check-2': checkEx2, 'reset-2': resetEx2,
+    'check-3': checkEx3, 'reset-3': resetEx3,
+    'check-4': checkEx4, 'reset-4': resetEx4
+  };
+
+  document.getElementById('exerciseMain').addEventListener('click', function(e){
+    var btn = e.target.closest ? e.target.closest('[data-action]') : null;
+    if (!btn) return;
+    var action = ACTIONS[btn.dataset.action];
+    if (action) action();
+  });
+
+  /* ---------- init ---------- */
+
+  function init(){
+    renderEx1();
+    renderEx2();
+    renderEx3();
+    renderEx4();
+  }
+
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+})();
+</script>
+</body>
+</html>
